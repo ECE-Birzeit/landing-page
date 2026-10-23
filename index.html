@@ -9,7 +9,83 @@
 <meta property="og:description" content="Open, step-by-step lab manuals for the Department of Electrical &amp; Computer Engineering at Birzeit University.">
 <meta property="og:url" content="https://birzeit.me/">
 <meta property="og:type" content="website">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230a0a0a'/%3E%3Ctext x='16' y='22' text-anchor='middle' font-family='monospace' font-size='14' font-weight='600' fill='%23fafafa'%3EECE%3C/text%3E%3C/svg%3E">
+<meta property="og:site_name" content="ECE Lab Manuals">
+<meta property="og:image" content="https://birzeit.me/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="ECE Lab Manuals, Birzeit University: every ECE lab manual, in one place.">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://birzeit.me/">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://birzeit.me/#website",
+      "url": "https://birzeit.me/",
+      "name": "ECE Lab Manuals",
+      "description": "Open, step-by-step lab manuals for the Department of Electrical & Computer Engineering at Birzeit University."
+    },
+    {
+      "@type": "ItemList",
+      "name": "ECE lab manuals",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "item": {
+            "@type": "Course",
+            "courseCode": "ENCS4110",
+            "name": "Computer Design Laboratory",
+            "url": "https://encs4110.birzeit.me/",
+            "description": "Lab manual for the ARM Cortex-M4 on the TM4C123 Tiva C LaunchPad: registers, assembly, GPIO, interrupts, ADC and UART.",
+            "provider": {
+              "@type": "CollegeOrUniversity",
+              "name": "Birzeit University",
+              "sameAs": "https://www.birzeit.edu"
+            }
+          }
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "item": {
+            "@type": "Course",
+            "courseCode": "ENCS4101",
+            "name": "Embedded Systems Laboratory",
+            "url": "https://encs4101.birzeit.me/",
+            "description": "Lab manual for embedded systems on STM32 with CubeIDE and HAL: clocks, interrupts, timers and PWM, motors, ADC, I2C and UART.",
+            "provider": {
+              "@type": "CollegeOrUniversity",
+              "name": "Birzeit University",
+              "sameAs": "https://www.birzeit.edu"
+            }
+          }
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "item": {
+            "@type": "Course",
+            "courseCode": "ENCS5150",
+            "name": "Advanced Computer Systems Engineering Laboratory",
+            "url": "https://encs5150.birzeit.me/",
+            "description": "Lab manual for Android apps in Java with SQLite and REST APIs, and Spring Boot backends.",
+            "provider": {
+              "@type": "CollegeOrUniversity",
+              "name": "Birzeit University",
+              "sameAs": "https://www.birzeit.edu"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap">
@@ -251,7 +327,7 @@
 <footer class="pad-x">
   <span class="dept">Electrical &amp; Computer Engineering, Birzeit University</span>
   <span class="by">Developed by <a href="https://mabushelbaia.com">Mohammad Abu-Shelbaia</a></span>
-  <span class="end"><a href="https://github.com/ECE-Birzeit">GitHub ↗</a><span>Open source · 2026-10-23</span></span>
+  <span class="end"><a href="https://github.com/ECE-Birzeit">GitHub ↗</a><span>Open source · Updated <time id="updated" datetime="2026-10-23">2026-10-23</time></span></span>
 </footer>
 
 <script>
@@ -274,6 +350,14 @@
       apply(mode);
     });
     mq.addEventListener('change', function (e) { if (!chosen) apply(e.matches ? 'dark' : 'light'); });
+
+    // Report which lab and which button was used; GA treats our subdomains as internal links.
+    document.getElementById('labs').addEventListener('click', function (e) {
+      var a = e.target.closest('a');
+      if (!a || typeof gtag !== 'function') return;
+      var kind = a.classList.contains('open') ? 'manual' : a.closest('h2') ? 'title' : a.textContent.trim().toLowerCase();
+      gtag('event', 'lab_click', { lab: a.closest('.lab').dataset.code, link_type: kind, link_url: a.href });
+    });
 
     var labs = Array.prototype.slice.call(document.querySelectorAll('.lab'));
     var input = document.getElementById('q');

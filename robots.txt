@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://birzeit.me/sitemap.xml
+Sitemap: https://encs4110.birzeit.me/sitemap.xml
+Sitemap: https://encs4101.birzeit.me/sitemap.xml
+Sitemap: https://encs5150.birzeit.me/sitemap.xml
