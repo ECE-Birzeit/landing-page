@@ -81,10 +81,23 @@
     padding: 32px clamp(20px, 3vw, 40px) 40px; background: var(--p);
     transition: background .15s, color .15s, opacity .2s;
   }
-  .lab:hover { background: var(--i); color: var(--p) }
+  /* Each lab borrows its site's accent: --a for text and marks, --af for filled buttons */
+  [data-mono=paper] .lab[data-lab=encs4110] { --a: #dc2626; --af: #b91c1c }
+  [data-mono=paper] .lab[data-lab=encs4101] { --a: #0369a1; --af: #075985 }
+  [data-mono=paper] .lab[data-lab=encs5150] { --a: #ea580c; --af: #c2410c }
+  [data-mono=ink] .lab[data-lab=encs4110] { --a: #f87171; --af: #f87171 }
+  [data-mono=ink] .lab[data-lab=encs4101] { --a: #38bdf8; --af: #38bdf8 }
+  [data-mono=ink] .lab[data-lab=encs5150] { --a: #fb923c; --af: #fb923c }
+  .lab::before {
+    content: ''; position: absolute; inset: 0 0 auto; height: 4px; background: var(--a);
+    transform: scaleX(0); transform-origin: left; transition: transform .25s ease-out;
+  }
+  .lab:hover, .lab:focus-within { background: color-mix(in srgb, var(--a) 7%, var(--p)) }
+  .lab:hover::before, .lab:focus-within::before { transform: scaleX(1) }
+  .lab:hover .lab-actions a.open, .lab:focus-within .lab-actions a.open { background: var(--af); border-color: var(--af); color: var(--p) }
   .lab.dim { opacity: .3 }
   .lab-meta { display: flex; justify-content: space-between; font: 400 12px 'Geist Mono', monospace; opacity: .75 }
-  .lab-code { margin-top: 32px; font-family: 'Geist Mono', monospace; font-weight: 500; font-size: clamp(52px, 5vw, 72px); line-height: 1; letter-spacing: -.06em }
+  .lab-code { margin-top: 32px; font-family: 'Geist Mono', monospace; font-weight: 500; font-size: clamp(52px, 5vw, 72px); line-height: 1; letter-spacing: -.06em; color: var(--a) }
   .lab h2 { margin: 8px 0 0; font: 600 26px/1.15 'Geist', sans-serif; letter-spacing: -.02em; text-wrap: balance }
   .lab h2 a { text-decoration: none }
   .lab h2 a::after { content: ''; position: absolute; inset: 0 }
@@ -92,7 +105,7 @@
   .lab-desc { margin: 0; max-width: 440px; font-size: 16px; line-height: 1.55; opacity: .85; text-wrap: pretty }
   .lab-chips { margin: 0; font: 400 13px/1.7 'Geist Mono', monospace; opacity: .75 }
   .lab-actions { display: flex; gap: 8px; margin-top: auto; padding-top: 16px }
-  .lab-actions a { position: relative; z-index: 1; height: 48px; display: flex; align-items: center; padding: 0 16px; border: 1px solid currentColor; font: 400 13px 'Geist Mono', monospace; text-decoration: none }
+  .lab-actions a { position: relative; z-index: 1; transition: background .15s, border-color .15s, color .15s; height: 48px; display: flex; align-items: center; padding: 0 16px; border: 1px solid currentColor; font: 400 13px 'Geist Mono', monospace; text-decoration: none }
   .lab-actions a.open { flex: 1; justify-content: space-between; padding: 0 18px; border-width: 1.5px; font: 600 15px 'Geist', sans-serif }
 
   /* Next lab */
@@ -157,7 +170,7 @@
   </div>
 
   <section id="labs" aria-label="Labs">
-    <article class="lab"
+    <article class="lab" data-lab="encs4110"
       data-code="ENCS4110" data-url="https://encs4110.me/"
       data-search="encs4110 computer design laboratory tm4c123 arm cortex-m4 hardware lab cortex-m4 arm assembly stack procedures gpio interrupts adc uart tiva launchpad tm4c ek-tm4c123gxl arm cortex assembly computer design">
       <div class="lab-meta"><span>Lab 01</span><span>Hardware lab</span></div>
@@ -173,7 +186,7 @@
       </div>
     </article>
 
-    <article class="lab"
+    <article class="lab" data-lab="encs4101"
       data-code="ENCS4101" data-url="https://encs4101.birzeit.me/"
       data-search="encs4101 embedded systems laboratory stm32 cubeide hal hardware lab clocks gpio interrupts timers pwm dc stepper motors adc i²c i2c uart embedded hal cubeide motors pwm encoder lcd keypad">
       <div class="lab-meta"><span>Lab 02</span><span>Hardware lab</span></div>
@@ -189,7 +202,7 @@
       </div>
     </article>
 
-    <article class="lab"
+    <article class="lab" data-lab="encs5150"
       data-code="ENCS5150" data-url="https://encs5150.birzeit.me/"
       data-search="encs5150 advanced computer systems engineering laboratory android (java) spring boot software lab activities intents fragments sqlite sharedpreferences rest json spring boot android java android studio jdk spring boot mvc encs515 mobile app">
       <div class="lab-meta"><span>Lab 03</span><span>Software lab</span></div>
