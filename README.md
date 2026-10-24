@@ -1,8 +1,8 @@
-<a href="https://birzeit.me"><img src="og.png" alt="ECE Lab Manuals, Birzeit University: every ECE lab manual, in one place." width="100%"></a>
+<a href="https://birzeit.me"><img src="og.png" alt="ECE Labs, Birzeit University: every ECE lab, in one place." width="100%"></a>
 
-# ECE Lab Manuals · birzeit.me
+# ECE Labs · birzeit.me
 
-The landing page at [birzeit.me](https://birzeit.me) that lists every lab manual of the Department of Electrical & Computer Engineering at Birzeit University, with search across lab codes, boards and topics.
+The landing page at [birzeit.me](https://birzeit.me) that lists every lab of the Department of Electrical & Computer Engineering at Birzeit University, with search across lab codes, boards and topics.
 
 **[Open birzeit.me](https://birzeit.me)** · [ENCS4110](https://encs4110.birzeit.me) · [ENCS4101](https://encs4101.birzeit.me) · [ENCS5150](https://encs5150.birzeit.me)
 
@@ -21,7 +21,7 @@ python3 -m http.server 8000   # http://localhost:8000
 | Path | Contents |
 |:--|:--|
 | `index.html` | The whole page: markup, styles, theme switch, search, analytics |
-| `og.png` | Link-preview image |
+| `og.png`, `og.svg` | Link-preview image and its source (render with Inkscape, Geist fonts installed) |
 | `favicon.png`, `apple-touch-icon.png` | Icons |
 | `sitemap.xml`, `robots.txt` | Search engine files, with sitemaps for all four sites |
 | `CNAME` | `birzeit.me` |
@@ -52,4 +52,4 @@ On every push to `main`, `.github/workflows/deploy.yml` writes the latest commit
 
 ---
 
-<sub>Part of [ECE Lab Manuals](https://birzeit.me) · Maintained by [Mohammad Abu-Shelbaia](https://mabushelbaia.com)</sub>
+<sub>Part of [ECE Labs](https://birzeit.me) · Maintained by [Mohammad Abu-Shelbaia](https://mabushelbaia.com)</sub>

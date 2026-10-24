@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <pattern id="d" width="36" height="36" patternUnits="userSpaceOnUse">
+      <circle cx="18" cy="18" r="1.5" fill="#0a0a0a" fill-opacity=".14"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="630" fill="#fafafa"/>
+  <rect y="97" width="1200" height="413" fill="url(#d)"/>
+  <rect y="95" width="1200" height="2" fill="#0a0a0a"/>
+  <rect y="510" width="1200" height="2" fill="#0a0a0a"/>
+  <text x="64" y="60" font-family="Geist" font-weight="600" font-size="28" letter-spacing="-.3" fill="#0a0a0a">ECE Labs</text>
+  <text x="206" y="60" font-family="Geist Mono" font-size="21" fill="#555555">Birzeit University</text>
+  <text x="1136" y="60" text-anchor="end" font-family="Geist Mono" font-size="21" fill="#0a0a0a">birzeit.me</text>
+  <text x="64" y="196" font-family="Geist Mono" font-size="22" fill="#555555">Department of Electrical &amp; Computer Engineering</text>
+  <text font-family="Geist" font-weight="600" font-size="104" letter-spacing="-5.7" fill="#0a0a0a">
+    <tspan x="58" y="320">Every ECE lab,</tspan>
+    <tspan x="58" y="416">in one place.</tspan>
+  </text>
+  <text y="581.5" font-family="Geist Mono" font-size="28.6" fill="#555555">
+    <tspan x="64" fill="#dc2626">ENCS4110</tspan><tspan x="236">/</tspan><tspan x="287" fill="#0369a1">ENCS4101</tspan><tspan x="459">/</tspan><tspan x="510" fill="#ea580c">ENCS5150</tspan>
+  </text>
+  <text x="1136" y="582" text-anchor="end" font-family="Geist Mono" font-size="22" fill="#555555">Search · Offline · Always current</text>
+</svg>
