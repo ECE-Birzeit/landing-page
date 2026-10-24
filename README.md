@@ -46,6 +46,10 @@ Then add the lab to the structured data (`application/ld+json`) and its sitemap 
 
 On every push to `main`, `.github/workflows/deploy.yml` writes the latest commit date into the footer and the sitemap, then deploys to GitHub Pages at [birzeit.me](https://birzeit.me).
 
+## License
+
+[MIT](LICENSE) © Mohammad Abu-Shelbaia. The Birzeit University name and logo are the university's; they are not licensed here.
+
 ---
 
 <sub>Part of [ECE Lab Manuals](https://birzeit.me) · Maintained by [Mohammad Abu-Shelbaia](https://github.com/mabushelbaia)</sub>
