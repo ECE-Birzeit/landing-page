@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>ECE Labs · Birzeit University</title>
+<meta name="description" content="A web platform for the lab manuals of the Department of Electrical &amp; Computer Engineering at Birzeit University: searchable, with copy-paste code, setup guides and printable PDFs.">
+<meta property="og:title" content="ECE Labs · Birzeit University">
+<meta property="og:description" content="A web platform for the lab manuals of the Department of Electrical &amp; Computer Engineering at Birzeit University: searchable, with copy-paste code, setup guides and printable PDFs.">
+<meta property="og:url" content="https://birzeit.me/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ECE Labs">
+<meta property="og:image" content="https://birzeit.me/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="ECE Labs, Birzeit University: every ECE lab, in one place.">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://birzeit.me/">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://birzeit.me/#website",
+      "url": "https://birzeit.me/",
+      "name": "ECE Labs",
+      "description": "A web platform for the lab manuals of the Department of Electrical & Computer Engineering at Birzeit University: searchable, with copy-paste code, setup guides and printable PDFs."
+    },
+    {
+      "@type": "ItemList",
+      "name": "ECE labs",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "item": {
+            "@type": "Course",
+            "courseCode": "ENCS4110",
+            "name": "Computer Design Laboratory",
+            "url": "https://encs4110.birzeit.me/",
+            "description": "Lab manual for the ARM Cortex-M4 on the TM4C123 Tiva C LaunchPad: registers, assembly, GPIO, interrupts, ADC and UART.",
+            "provider": {
+              "@type": "CollegeOrUniversity",
+              "name": "Birzeit University",
+              "sameAs": "https://www.birzeit.edu"
+            }
+          }
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "item": {
+            "@type": "Course",
+            "courseCode": "ENCS4101",
+            "name": "Embedded Systems Laboratory",
+            "url": "https://encs4101.birzeit.me/",
+            "description": "Lab manual for embedded systems on STM32 with CubeIDE and HAL: clocks, interrupts, timers and PWM, motors, ADC, I2C and UART.",
+            "provider": {
+              "@type": "CollegeOrUniversity",
+              "name": "Birzeit University",
+              "sameAs": "https://www.birzeit.edu"
+            }
+          }
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "item": {
+            "@type": "Course",
+            "courseCode": "ENCS5150",
+            "name": "Advanced Computer Systems Engineering Laboratory",
+            "url": "https://encs5150.birzeit.me/",
+            "description": "Lab manual for Android apps in Java with SQLite and REST APIs, and Spring Boot backends.",
+            "provider": {
+              "@type": "CollegeOrUniversity",
+              "name": "Birzeit University",
+              "sameAs": "https://www.birzeit.edu"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-K834Q72PP9"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-K834Q72PP9');
+</script>
+<script>
+  (function () {
+    var saved = null;
+    try { saved = { paper: 'light', ink: 'dark' }[localStorage.getItem('ece-labs-theme')] || localStorage.getItem('ece-labs-theme'); } catch (e) {}
+    var mode = saved || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', mode);
+  })();
+</script>
+<style>
+  html, body { margin: 0 }
+  * { box-sizing: border-box }
+  a { color: inherit }
+
+  [data-theme=light] { --p: #fafafa; --i: #0a0a0a; --mu: #555; --mu2: #2e2e2e; --dot: rgba(10,10,10,.14); --line: rgba(10,10,10,.2) }
+  [data-theme=dark] { --p: #0a0a0a; --i: #f5f5f5; --mu: #a8a8a8; --mu2: #d4d4d4; --dot: rgba(245,245,245,.14); --line: rgba(245,245,245,.22) }
+
+  body {
+    min-height: 100vh;
+    background: var(--p);
+    color: var(--i);
+    font-family: 'Geist', system-ui, sans-serif;
+    transition: background .25s, color .25s;
+  }
+  .mono { font-family: 'Geist Mono', monospace }
+  :focus-visible { outline: 2px solid currentColor; outline-offset: 3px }
+  .pad-x { padding-inline: clamp(20px, 4vw, 56px) }
+
+  .skip { position: absolute; inset-inline-start: -9999px }
+  .skip:focus { inset-inline-start: 16px; top: 16px; z-index: 10; padding: 10px 14px; background: var(--i); color: var(--p) }
+
+  /* Header */
+  header { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 32px; min-height: 64px; padding-block: 12px; border-bottom: 1px solid var(--i) }
+  .brand { flex: none; white-space: nowrap; display: flex; align-items: baseline; gap: 10px; text-decoration: none }
+  .brand b { font: 600 16px/1 'Geist', sans-serif; letter-spacing: -.01em }
+  .brand span { font: 400 12px/1 'Geist Mono', monospace; color: var(--mu) }
+  nav { display: flex; gap: 24px; margin-inline-start: auto; font-size: 14px }
+  nav a { text-decoration: none }
+  .theme { position: relative; flex: none; width: 44px; height: 24px; padding: 0; border: 1px solid var(--i); background: transparent; color: inherit; cursor: pointer }
+  .theme-knob { position: absolute; top: 2px; left: 2px; width: 18px; height: 18px; display: grid; place-items: center; background: var(--i); color: var(--p); transition: transform .25s ease-out }
+  .theme-knob svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: square }
+  [data-theme=dark] .theme-knob { transform: translateX(20px) }
+  [data-theme=light] .theme .moon, [data-theme=dark] .theme .sun { display: none }
+
+  /* Hero */
+  .hero {
+    display: flex; flex-wrap: wrap; align-items: flex-end; gap: 40px 64px;
+    padding-top: clamp(56px, 8vw, 112px); padding-bottom: clamp(40px, 5vw, 64px);
+    background-image: radial-gradient(circle, var(--dot) 1px, transparent 1.3px);
+    background-size: 24px 24px;
+  }
+  .hero-main { flex: 1 1 640px; min-width: 0 }
+  .eyebrow { font: 400 13px/1.4 'Geist Mono', monospace; color: var(--mu); margin-bottom: 28px }
+  h1 { margin: 0; font-weight: 600; font-size: clamp(48px, 8.4vw, 128px); line-height: .92; letter-spacing: -.055em; text-wrap: balance }
+  .hero-side { flex: 1 1 340px; max-width: 460px; display: flex; flex-direction: column; gap: 28px }
+  .lede { margin: 0; font-size: 18px; line-height: 1.6; color: var(--mu2); text-wrap: pretty }
+  form { display: flex; flex-direction: column; gap: 8px }
+  form label { display: flex; align-items: center; gap: 12px; height: 56px; border-bottom: 2px solid var(--i) }
+  form label span { font: 400 12px 'Geist Mono', monospace; color: var(--mu); white-space: nowrap }
+  form input { flex: 1; min-width: 0; height: 100%; border: 0; outline: none; background: transparent; color: inherit; font: 400 18px 'Geist Mono', monospace }
+  form input::placeholder { color: var(--mu) }
+  #find-status { min-height: 20px; font: 400 13px 'Geist Mono', monospace; color: var(--mu) }
+
+  /* Labs */
+  #labs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: var(--i); border-block: 1px solid var(--i) }
+  @media (max-width: 999px) { #labs { grid-template-columns: 1fr } }
+  .lab {
+    position: relative; display: flex; flex-direction: column; gap: 16px; min-height: 540px;
+    padding: 32px clamp(20px, 3vw, 40px) 40px; background: var(--p);
+    transition: background .15s, color .15s, opacity .2s;
+  }
+  /* Each lab borrows its site's accent: --a for text and marks, --af for filled buttons */
+  [data-theme=light] .lab[data-lab=encs4110] { --a: #dc2626; --af: #b91c1c }
+  [data-theme=light] .lab[data-lab=encs4101] { --a: #0369a1; --af: #075985 }
+  [data-theme=light] .lab[data-lab=encs5150] { --a: #ea580c; --af: #c2410c }
+  [data-theme=dark] .lab[data-lab=encs4110] { --a: #f87171; --af: #f87171 }
+  [data-theme=dark] .lab[data-lab=encs4101] { --a: #38bdf8; --af: #38bdf8 }
+  [data-theme=dark] .lab[data-lab=encs5150] { --a: #fb923c; --af: #fb923c }
+  .lab::before {
+    content: ''; position: absolute; inset: 0 0 auto; height: 4px; background: var(--a);
+    transform: scaleX(0); transform-origin: left; transition: transform .25s ease-out;
+  }
+  .lab:hover, .lab:focus-within { background: color-mix(in srgb, var(--a) 7%, var(--p)) }
+  .lab:hover::before, .lab:focus-within::before { transform: scaleX(1) }
+  .lab:hover .lab-code, .lab:focus-within .lab-code { color: var(--a) }
+  .lab:hover .lab-actions a.open, .lab:focus-within .lab-actions a.open { background: var(--af); border-color: var(--af); color: var(--p) }
+  .lab.dim { opacity: .3 }
+  .lab-meta { display: flex; justify-content: space-between; font: 400 12px 'Geist Mono', monospace; opacity: .75 }
+  .lab-code { margin-top: 32px; font-family: 'Geist Mono', monospace; font-weight: 500; font-size: clamp(52px, 5vw, 72px); line-height: 1; letter-spacing: -.06em; transition: color .15s }
+  .lab h2 { margin: 8px 0 0; font: 600 26px/1.15 'Geist', sans-serif; letter-spacing: -.02em; text-wrap: balance }
+  .lab h2 a { text-decoration: none }
+  .lab h2 a::after { content: ''; position: absolute; inset: 0 }
+  .lab-platform { font: 400 13px 'Geist Mono', monospace; opacity: .8 }
+  .lab-desc { margin: 0; max-width: 440px; font-size: 16px; line-height: 1.55; opacity: .85; text-wrap: pretty }
+  .lab-chips { margin: 0; font: 400 13px/1.7 'Geist Mono', monospace; opacity: .75 }
+  .lab-actions { display: flex; gap: 8px; margin-top: auto; padding-top: 16px }
+  .lab-actions a { position: relative; z-index: 1; transition: background .15s, border-color .15s, color .15s; height: 48px; display: flex; align-items: center; padding: 0 16px; border: 1px solid currentColor; font: 400 13px 'Geist Mono', monospace; text-decoration: none }
+  .lab-actions a.open { flex: 1; justify-content: space-between; padding: 0 18px; border-width: 1.5px; font: 600 15px 'Geist', sans-serif }
+
+  /* Next lab */
+  .next {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 8px 32px; padding-block: 24px;
+    border-bottom: 1px solid var(--i);
+    background-image: repeating-linear-gradient(135deg, var(--dot) 0 1px, transparent 1px 10px);
+  }
+  .next span { font: 400 12px 'Geist Mono', monospace; color: var(--mu) }
+  .next p { margin: 0; font-size: 15px; line-height: 1.5; text-wrap: pretty }
+  .next a, footer .by a { text-underline-offset: 3px }
+
+  /* About */
+  #about { border-bottom: 1px solid var(--i) }
+  #about-h { margin: 0; padding-top: 32px; font: 400 12px 'Geist Mono', monospace; color: var(--mu) }
+  .notes { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)) }
+  .note { display: flex; flex-direction: column; gap: 8px; padding: 20px clamp(20px, 3vw, 40px) 40px; border-inline-end: 1px solid var(--line) }
+  .note h3 { margin: 0; font: 600 18px/1.3 'Geist', sans-serif }
+  .note p { margin: 0; font-size: 15px; line-height: 1.55; color: var(--mu2); text-wrap: pretty }
+  .about-foot { margin: 0; padding-bottom: 32px; font-size: 14px; color: var(--mu2) }
+
+  /* Footer */
+  footer { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 32px; padding-block: 24px; font-size: 13px }
+  footer .dept { font-weight: 600 }
+  footer .by { color: var(--mu2) }
+  footer .end { margin-inline-start: auto; display: flex; flex-wrap: wrap; gap: 24px; font-family: 'Geist Mono', monospace }
+  footer .end a { text-decoration: none }
+  footer .end span { color: var(--mu) }
+
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important } }
+</style>
+</head>
+<body>
+<a class="skip" href="#labs">Skip to labs</a>
+
+<header class="pad-x">
+  <a class="brand" href="#top"><b>ECE Labs</b><span>Birzeit University</span></a>
+  <nav aria-label="Primary">
+    <a href="#labs">Labs</a>
+    <a href="#about">About</a>
+    <a href="https://github.com/ECE-Birzeit" target="_blank" rel="noopener">GitHub ↗</a>
+  </nav>
+  <button type="button" class="theme" role="switch" aria-checked="false" aria-label="Dark theme" title="Toggle dark theme">
+    <span class="theme-knob" aria-hidden="true">
+      <svg class="sun" viewBox="0 0 16 16"><circle cx="8" cy="8" r="3"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3 3l1.4 1.4M11.6 11.6L13 13M3 13l1.4-1.4M11.6 4.4L13 3"/></svg>
+      <svg class="moon" viewBox="0 0 16 16"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z"/></svg>
+    </span>
+  </button>
+</header>
+
+<main id="top">
+  <div class="hero pad-x">
+    <div class="hero-main">
+      <div class="eyebrow">Department of Electrical &amp; Computer Engineering</div>
+      <h1>Every ECE lab, in one place.</h1>
+    </div>
+    <div class="hero-side">
+      <p class="lede">The department's lab manuals as a searchable web platform, with setup guides and printable PDFs.</p>
+      <form role="search" id="find">
+        <label><span>Find a lab</span><input type="search" id="q" placeholder="code, board or topic" aria-describedby="find-status" autocomplete="off"></label>
+        <span id="find-status" aria-live="polite"></span>
+      </form>
+    </div>
+  </div>
+
+  <section id="labs" aria-label="Labs">
+    <article class="lab" data-lab="encs4110"
+      data-code="ENCS4110" data-url="https://encs4110.birzeit.me/"
+      data-search="encs4110 computer design laboratory tm4c123 arm cortex-m4 hardware lab cortex-m4 arm assembly stack procedures gpio interrupts adc uart tiva launchpad tm4c ek-tm4c123gxl arm cortex assembly computer design">
+      <div class="lab-meta"><span>Lab 01</span><span>Hardware lab</span></div>
+      <span class="lab-code">ENCS4110</span>
+      <h2><a href="https://encs4110.birzeit.me/" target="_blank" rel="noopener">Computer Design Laboratory</a></h2>
+      <span class="lab-platform">TM4C123 · ARM Cortex-M4</span>
+      <p class="lab-desc">Understand the ARM Cortex-M4 from the inside: registers, instruction set, and assembly, then put it to work on the Tiva C LaunchPad with real sensors and displays.</p>
+      <p class="lab-chips">Cortex-M4  /  ARM assembly  /  Stack &amp; procedures  /  GPIO  /  Interrupts  /  ADC · UART</p>
+      <div class="lab-actions">
+        <a class="open" href="https://encs4110.birzeit.me/" aria-label="Open the ENCS4110 manual" target="_blank" rel="noopener">Open manual <span aria-hidden="true">→</span></a>
+        <a href="https://encs4110.birzeit.me/manual/encs4110_manual.pdf" aria-label="ENCS4110 manual PDF" target="_blank" rel="noopener">PDF</a>
+        <a href="https://encs4110.birzeit.me/setup" aria-label="ENCS4110 setup guide" target="_blank" rel="noopener">Setup</a>
+      </div>
+    </article>
+
+    <article class="lab" data-lab="encs4101"
+      data-code="ENCS4101" data-url="https://encs4101.birzeit.me/"
+      data-search="encs4101 embedded systems laboratory stm32 cubeide hal hardware lab clocks gpio interrupts timers pwm dc stepper motors adc i²c i2c uart embedded hal cubeide motors pwm encoder lcd keypad">
+      <div class="lab-meta"><span>Lab 02</span><span>Hardware lab</span></div>
+      <span class="lab-code">ENCS4101</span>
+      <h2><a href="https://encs4101.birzeit.me/" target="_blank" rel="noopener">Embedded Systems Laboratory</a></h2>
+      <span class="lab-platform">STM32 · CubeIDE · HAL</span>
+      <p class="lab-desc">Build real embedded systems on STM32: clocks, interrupts, timers and PWM, motors, ADC, I²C and UART, ending with register-level programming.</p>
+      <p class="lab-chips">Clocks &amp; GPIO  /  Interrupts  /  Timers &amp; PWM  /  DC &amp; stepper motors  /  ADC  /  I²C · UART</p>
+      <div class="lab-actions">
+        <a class="open" href="https://encs4101.birzeit.me/" aria-label="Open the ENCS4101 manual" target="_blank" rel="noopener">Open manual <span aria-hidden="true">→</span></a>
+        <a href="https://encs4101.birzeit.me/ENCS4101-Manual.pdf" aria-label="ENCS4101 manual PDF" target="_blank" rel="noopener">PDF</a>
+        <a href="https://encs4101.birzeit.me/setup" aria-label="ENCS4101 setup guide" target="_blank" rel="noopener">Setup</a>
+      </div>
+    </article>
+
+    <article class="lab" data-lab="encs5150"
+      data-code="ENCS5150" data-url="https://encs5150.birzeit.me/"
+      data-search="encs5150 advanced computer systems engineering laboratory android (java) spring boot software lab activities intents fragments sqlite sharedpreferences rest json spring boot android java android studio jdk spring boot mvc encs515 mobile app">
+      <div class="lab-meta"><span>Lab 03</span><span>Software lab</span></div>
+      <span class="lab-code">ENCS5150</span>
+      <h2><a href="https://encs5150.birzeit.me/" target="_blank" rel="noopener">Advanced Computer Systems Engineering Laboratory</a></h2>
+      <span class="lab-platform">Android (Java) · Spring Boot</span>
+      <p class="lab-desc">Build Android apps in Java, persist data with SQLite, call REST APIs, and write the Spring Boot backend that serves them.</p>
+      <p class="lab-chips">Activities &amp; Intents  /  Fragments  /  SQLite  /  SharedPreferences  /  REST / JSON  /  Spring Boot</p>
+      <div class="lab-actions">
+        <a class="open" href="https://encs5150.birzeit.me/" aria-label="Open the ENCS5150 manual" target="_blank" rel="noopener">Open manual <span aria-hidden="true">→</span></a>
+        <a href="https://encs5150.birzeit.me/ENCS515-Manual.pdf" aria-label="ENCS5150 manual PDF" target="_blank" rel="noopener">PDF</a>
+        <a href="https://encs5150.birzeit.me/setup" aria-label="ENCS5150 setup guide" target="_blank" rel="noopener">Setup</a>
+      </div>
+    </article>
+  </section>
+
+  <div class="next pad-x">
+    <span>Next lab</span>
+    <p>More labs will be added here. Teaching one? <a href="https://mabushelbaia.com" target="_blank" rel="noopener">Get in touch</a>.</p>
+  </div>
+
+  <section id="about" aria-labelledby="about-h">
+    <h2 id="about-h" class="pad-x">Why web, not just PDF</h2>
+    <div class="notes">
+      <div class="note"><h3>Searchable</h3><p>Find a register, function or step without scrolling a PDF.</p></div>
+      <div class="note"><h3>Copy-paste code</h3><p>Code blocks paste cleanly into your IDE.</p></div>
+      <div class="note"><h3>Always current</h3><p>Fixes go live as soon as they are merged.</p></div>
+      <div class="note"><h3>Open source</h3><p>Spot a mistake? Open an issue or send a pull request.</p></div>
+    </div>
+    <p class="about-foot pad-x">Every lab still has a PDF for printing and working offline.</p>
+  </section>
+</main>
+
+<footer class="pad-x">
+  <span class="dept">Electrical &amp; Computer Engineering, Birzeit University</span>
+  <span class="by">Developed by <a href="https://mabushelbaia.com" target="_blank" rel="noopener">Mohammad Abu-Shelbaia</a></span>
+  <span class="end"><a href="/">New version →</a><a href="https://github.com/ECE-Birzeit" target="_blank" rel="noopener">GitHub ↗</a><span>Open source · Updated <time id="updated" datetime="2026-10-23">2026-10-23</time></span></span>
+</footer>
+
+<script>
+  (function () {
+    var root = document.documentElement;
+    var mq = window.matchMedia('(prefers-color-scheme: dark)');
+    var toggle = document.querySelector('.theme');
+    var chosen = false;
+    try { chosen = !!localStorage.getItem('ece-labs-theme'); } catch (e) {}
+
+    function apply(mode) {
+      root.setAttribute('data-theme', mode);
+      toggle.setAttribute('aria-checked', mode === 'dark' ? 'true' : 'false');
+    }
+    apply(root.getAttribute('data-theme'));
+    toggle.addEventListener('click', function () {
+      var mode = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      chosen = true;
+      try { localStorage.setItem('ece-labs-theme', mode); } catch (e) {}
+      apply(mode);
+    });
+    mq.addEventListener('change', function (e) { if (!chosen) apply(e.matches ? 'dark' : 'light'); });
+
+    // Report which lab and which button was used; GA treats our subdomains as internal links.
+    document.getElementById('labs').addEventListener('click', function (e) {
+      var a = e.target.closest('a');
+      if (!a || typeof gtag !== 'function') return;
+      var kind = a.classList.contains('open') ? 'manual' : a.closest('h2') ? 'title' : a.textContent.trim().toLowerCase();
+      gtag('event', 'lab_click', { lab: a.closest('.lab').dataset.code, link_type: kind, link_url: a.href });
+    });
+
+    var labs = Array.prototype.slice.call(document.querySelectorAll('.lab'));
+    var input = document.getElementById('q');
+    var status = document.getElementById('find-status');
+    var matches = labs;
+
+    function filter() {
+      var q = input.value.trim().toLowerCase();
+      matches = labs.filter(function (l) { return !q || l.dataset.search.indexOf(q) !== -1; });
+      labs.forEach(function (l) { l.classList.toggle('dim', matches.indexOf(l) === -1); });
+      status.textContent = !q ? ''
+        : !matches.length ? 'No lab matches. Try a code like 4101 or a board like STM32.'
+        : matches.length === 1 ? matches[0].dataset.code + ' · press Enter to open'
+        : matches.length + ' labs match';
+    }
+    input.addEventListener('input', filter);
+    document.getElementById('find').addEventListener('submit', function (e) {
+      e.preventDefault();
+      if (input.value.trim() && matches.length === 1) window.location.href = matches[0].dataset.url;
+    });
+  })();
+</script>
+</body>
+</html>
