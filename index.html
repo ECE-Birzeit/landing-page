@@ -108,9 +108,27 @@
   html, body { margin: 0 }
   * { box-sizing: border-box }
   a { color: inherit }
+  [hidden] { display: none !important }
 
-  [data-theme=light] { --p: #fafafa; --i: #0a0a0a; --mu: #555; --mu2: #2e2e2e; --dot: rgba(10,10,10,.14); --line: rgba(10,10,10,.2) }
-  [data-theme=dark] { --p: #0a0a0a; --i: #f5f5f5; --mu: #a8a8a8; --mu2: #d4d4d4; --dot: rgba(245,245,245,.14); --line: rgba(245,245,245,.22) }
+  [data-theme=light] {
+    --p: #f5f5f3; --card: #fff; --i: #0a0a0a; --mu: #555; --mu2: #2e2e2e;
+    --line: rgba(10,10,10,.12); --dot: rgba(10,10,10,.14); --soft: rgba(10,10,10,.05); --ok: #15803d;
+    --sh: 0 1px 2px rgba(10,10,10,.05), 0 10px 28px -12px rgba(10,10,10,.18);
+    --sh-lg: 0 2px 6px rgba(10,10,10,.05), 0 40px 80px -30px rgba(10,10,10,.35);
+  }
+  [data-theme=dark] {
+    --p: #0a0a0a; --card: #151515; --i: #f5f5f5; --mu: #a8a8a8; --mu2: #d4d4d4;
+    --line: rgba(245,245,245,.13); --dot: rgba(245,245,245,.12); --soft: rgba(245,245,245,.06); --ok: #4ade80;
+    --sh: 0 1px 2px rgba(0,0,0,.5), 0 10px 28px -12px rgba(0,0,0,.7);
+    --sh-lg: 0 2px 6px rgba(0,0,0,.4), 0 40px 80px -30px rgba(0,0,0,.9);
+  }
+  /* Each lab borrows its site's accent: --a for text and marks, --af for filled buttons */
+  [data-theme=light] [data-lab=encs4110] { --a: #dc2626; --af: #b91c1c }
+  [data-theme=light] [data-lab=encs4101] { --a: #0369a1; --af: #075985 }
+  [data-theme=light] [data-lab=encs5150] { --a: #ea580c; --af: #c2410c }
+  [data-theme=dark] [data-lab=encs4110] { --a: #f87171; --af: #f87171 }
+  [data-theme=dark] [data-lab=encs4101] { --a: #38bdf8; --af: #38bdf8 }
+  [data-theme=dark] [data-lab=encs5150] { --a: #fb923c; --af: #fb923c }
 
   body {
     min-height: 100vh;
@@ -119,215 +137,524 @@
     font-family: 'Geist', system-ui, sans-serif;
     transition: background .25s, color .25s;
   }
-  .mono { font-family: 'Geist Mono', monospace }
   :focus-visible { outline: 2px solid currentColor; outline-offset: 3px }
-  .pad-x { padding-inline: clamp(20px, 4vw, 56px) }
+  .wrap { max-width: 1280px; margin: 0 auto; padding-inline: clamp(20px, 4vw, 48px) }
+  .mono, .kicker { font-family: 'Geist Mono', monospace }
+  .kicker { font-size: 12px; color: var(--mu) }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap }
 
   .skip { position: absolute; inset-inline-start: -9999px }
   .skip:focus { inset-inline-start: 16px; top: 16px; z-index: 10; padding: 10px 14px; background: var(--i); color: var(--p) }
 
+  .btn { cursor: pointer; transition: background .15s, border-color .15s, color .15s, transform .15s }
+  .btn:hover { background: var(--soft) }
+  .btn:active { transform: translateY(1px) }
+
   /* Header */
-  header { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 32px; min-height: 64px; padding-block: 12px; border-bottom: 1px solid var(--i) }
+  header { border-bottom: 1px solid var(--line) }
+  header .wrap { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 28px; min-height: 68px; padding-block: 12px }
   .brand { flex: none; white-space: nowrap; display: flex; align-items: baseline; gap: 10px; text-decoration: none }
   .brand b { font: 600 16px/1 'Geist', sans-serif; letter-spacing: -.01em }
   .brand span { font: 400 12px/1 'Geist Mono', monospace; color: var(--mu) }
-  nav { display: flex; gap: 24px; margin-inline-start: auto; font-size: 14px }
-  nav a { text-decoration: none }
-  .theme { position: relative; flex: none; width: 44px; height: 24px; padding: 0; border: 1px solid var(--i); background: transparent; color: inherit; cursor: pointer }
-  .theme-knob { position: absolute; top: 2px; left: 2px; width: 18px; height: 18px; display: grid; place-items: center; background: var(--i); color: var(--p); transition: transform .25s ease-out }
-  .theme-knob svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: square }
-  [data-theme=dark] .theme-knob { transform: translateX(20px) }
+  nav { display: flex; gap: 4px; margin-inline-start: auto; font-size: 14px }
+  nav a { padding: 10px 14px; border-radius: 8px; text-decoration: none }
+  .theme { flex: none; width: 44px; height: 44px; display: grid; place-items: center; padding: 0; border: 1px solid var(--line); border-radius: 10px; background: var(--card); color: inherit }
+  .theme svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round }
   [data-theme=light] .theme .moon, [data-theme=dark] .theme .sun { display: none }
 
   /* Hero */
-  .hero {
-    display: flex; flex-wrap: wrap; align-items: flex-end; gap: 40px 64px;
-    padding-top: clamp(56px, 8vw, 112px); padding-bottom: clamp(40px, 5vw, 64px);
-    background-image: radial-gradient(circle, var(--dot) 1px, transparent 1.3px);
-    background-size: 24px 24px;
+  .hero { position: relative; overflow: hidden }
+  .hero::before {
+    content: ''; position: absolute; inset: 0;
+    background-image: radial-gradient(circle, var(--dot) 1px, transparent 1.3px); background-size: 24px 24px;
+    -webkit-mask-image: radial-gradient(ellipse at 72% 45%, #000 25%, transparent 72%);
+    mask-image: radial-gradient(ellipse at 72% 45%, #000 25%, transparent 72%);
   }
-  .hero-main { flex: 1 1 640px; min-width: 0 }
-  .eyebrow { font: 400 13px/1.4 'Geist Mono', monospace; color: var(--mu); margin-bottom: 28px }
-  h1 { margin: 0; font-weight: 600; font-size: clamp(48px, 8.4vw, 128px); line-height: .92; letter-spacing: -.055em; text-wrap: balance }
-  .hero-side { flex: 1 1 340px; max-width: 460px; display: flex; flex-direction: column; gap: 28px }
-  .lede { margin: 0; font-size: 18px; line-height: 1.6; color: var(--mu2); text-wrap: pretty }
-  form { display: flex; flex-direction: column; gap: 8px }
-  form label { display: flex; align-items: center; gap: 12px; height: 56px; border-bottom: 2px solid var(--i) }
-  form label span { font: 400 12px 'Geist Mono', monospace; color: var(--mu); white-space: nowrap }
-  form input { flex: 1; min-width: 0; height: 100%; border: 0; outline: none; background: transparent; color: inherit; font: 400 18px 'Geist Mono', monospace }
-  form input::placeholder { color: var(--mu) }
+  .hero .wrap { position: relative; display: flex; flex-wrap: wrap; align-items: center; gap: 56px; padding-top: clamp(48px, 7vw, 96px); padding-bottom: clamp(56px, 7vw, 104px) }
+  .hero-main { flex: 1 1 500px; min-width: 0; display: flex; flex-direction: column; gap: 28px }
+  .eyebrow { font: 400 13px/1.4 'Geist Mono', monospace; color: var(--mu) }
+  h1 { margin: 0; font-weight: 600; font-size: clamp(44px, 6.4vw, 92px); line-height: .95; letter-spacing: -.05em; text-wrap: balance }
+  .caret { display: inline-block; width: .09em; height: .78em; margin-inline-start: .06em; vertical-align: -.02em; background: var(--a); animation: blink 1.1s steps(1) infinite; transition: background .4s }
+  .lede { margin: 0; max-width: 520px; font-size: 18px; line-height: 1.6; color: var(--mu2); text-wrap: pretty }
+
+  #find { display: flex; flex-direction: column; gap: 14px; max-width: 560px }
+  .search { display: flex; align-items: center; gap: 12px; height: 64px; padding: 0 8px 0 18px; background: var(--card); border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--sh); transition: border-color .2s, box-shadow .2s }
+  .search:focus-within { border-color: var(--i); box-shadow: 0 0 0 4px var(--soft), var(--sh-lg) }
+  .search > svg { flex: none; width: 18px; height: 18px; color: var(--mu); fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round }
+  .search input { flex: 1; min-width: 0; height: 100%; border: 0; outline: none; background: transparent; color: inherit; font: 400 17px 'Geist Mono', monospace }
+  .search input::placeholder { color: var(--mu) }
+  .search input::-webkit-search-cancel-button { display: none }
+  .clear { height: 44px; padding: 0 14px; border: 1px solid var(--line); border-radius: 10px; background: transparent; color: inherit; font: 400 13px 'Geist Mono', monospace }
+  .go { height: 48px; padding: 0 16px; border: 0; border-radius: 10px; background: var(--i); color: var(--p); font: 600 14px 'Geist', sans-serif; white-space: nowrap; cursor: pointer; transition: box-shadow .15s }
+  .go:hover { box-shadow: var(--sh) }
+  .tries { display: flex; flex-wrap: wrap; align-items: center; gap: 8px }
+  .tries > span { margin-inline-end: 4px }
+  .chip { min-height: 36px; padding: 0 12px; border: 1px solid var(--line); border-radius: 999px; background: var(--card); color: inherit; font: 400 13px 'Geist Mono', monospace; cursor: pointer; transition: background .15s, border-color .15s, color .15s }
+  .chip:hover, .chip[aria-pressed=true] { background: var(--i); border-color: var(--i); color: var(--p) }
   #find-status { min-height: 20px; font: 400 13px 'Geist Mono', monospace; color: var(--mu) }
 
+  /* Hero preview: a manual page per lab, cycling until the visitor picks one */
+  .stage { flex: 1 1 520px; min-width: 0; position: relative; padding: 20px 8px }
+  .plate { position: absolute; border-radius: 18px; transition: background .5s, transform .5s cubic-bezier(.2,.7,.3,1) }
+  .plate-1 { inset: 40px 10px 0 40px; background: var(--a); transform: rotate(4deg) }
+  .plate-2 { inset: 30px 30px 10px 0; background: var(--card); border: 1px solid var(--line); transform: rotate(-3deg) }
+  .stage:hover .plate-1 { transform: rotate(6deg) translate(14px, -6px) }
+  .stage:hover .plate-2 { transform: rotate(-5deg) translate(-14px, 8px) }
+  .win { position: relative; background: var(--card); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--sh-lg); overflow: hidden }
+  .win-bar { display: flex; align-items: center; gap: 14px; height: 44px; padding: 0 14px; border-bottom: 1px solid var(--line) }
+  .win-dots { display: flex; gap: 6px }
+  .win-dots i { width: 10px; height: 10px; border-radius: 50%; background: var(--line) }
+  .win-url { flex: 1; min-width: 0; height: 26px; display: flex; align-items: center; padding: 0 10px; border-radius: 6px; background: var(--soft); font: 400 12px 'Geist Mono', monospace; color: var(--mu); white-space: nowrap; overflow: hidden; text-overflow: ellipsis }
+  .ptabs { position: relative; display: flex; border-bottom: 1px solid var(--line) }
+  .ptab { flex: 1; height: 48px; border: 0; background: transparent; color: inherit; font: 500 13px 'Geist Mono', monospace; letter-spacing: -.02em; cursor: pointer; transition: background .15s, color .15s }
+  .ptab:hover { background: var(--soft) }
+  .ptab[aria-selected=true] { color: var(--a) }
+  .ind { position: absolute; z-index: 1; bottom: -1px; left: 0; width: 33.334%; height: 2px; background: var(--a); transition: transform .35s cubic-bezier(.2,.7,.3,1), background .35s }
+  .prog { position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: var(--line); transform-origin: left; animation: prog 5s linear infinite }
+  .stage:hover .prog, .stage:focus-within .prog { animation-play-state: paused }
+  .stage.pinned .prog { display: none }
+  .pane { display: flex; flex-wrap: wrap; min-height: 380px; animation: fade .45s cubic-bezier(.2,.7,.3,1) }
+  .pside { flex: 1 1 170px; max-width: 200px; margin: 0; padding: 18px 12px; border-inline-end: 1px solid var(--line); list-style: none; display: flex; flex-direction: column; gap: 2px }
+  .pside .kicker { padding: 0 10px 10px; font-size: 11px; color: var(--mu) }
+  .pside li { padding: 8px 10px; border-radius: 7px; font-size: 13px; line-height: 1.3; color: var(--mu2) }
+  .pside li.on { background: color-mix(in srgb, var(--a) 12%, transparent); color: var(--a); font-weight: 600 }
+  .pmain { flex: 999 1 300px; min-width: 0; padding: 22px 22px 24px; display: flex; flex-direction: column; gap: 12px }
+  .pmain h3 { margin: 0; font: 600 22px/1.2 'Geist', sans-serif; letter-spacing: -.02em }
+  .pmain p { margin: 0; font-size: 14px; line-height: 1.55; color: var(--mu2) }
+  .pmain .open-link { align-self: flex-start; margin-top: 4px; font: 600 14px 'Geist', sans-serif; color: var(--a); text-underline-offset: 3px }
+  @media (max-width: 640px) { .pside { display: none } }
+
+  .codeblock { margin-top: 4px; border-radius: 10px; background: #111; color: #e8e8e8; overflow: hidden }
+  .codeblock-bar { display: flex; align-items: center; justify-content: space-between; height: 40px; padding: 0 6px 0 14px; border-bottom: 1px solid rgba(255,255,255,.08); font: 400 12px 'Geist Mono', monospace; color: #a3a3a3 }
+  .copy { height: 30px; padding: 0 10px; border: 1px solid rgba(255,255,255,.16); border-radius: 6px; background: transparent; color: #e8e8e8; font: 400 12px 'Geist Mono', monospace; cursor: pointer }
+  .copy:hover { background: rgba(255,255,255,.08) }
+  .codeblock pre { margin: 0; padding: 14px; font: 400 12.5px/1.65 'Geist Mono', monospace; white-space: pre; overflow-x: auto }
+
   /* Labs */
-  #labs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: var(--i); border-block: 1px solid var(--i) }
-  @media (max-width: 999px) { #labs { grid-template-columns: 1fr } }
+  #labs { border-top: 1px solid var(--line) }
+  #labs > .wrap { display: flex; flex-direction: column; gap: 32px; padding-top: 72px; padding-bottom: 88px }
+  .sec-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 20px }
+  .sec-head h2 { margin: 8px 0 0; font: 600 44px/1 'Geist', sans-serif; letter-spacing: -.04em }
+  .segs { display: flex; gap: 4px; padding: 4px; border: 1px solid var(--line); border-radius: 12px; background: var(--soft) }
+  .seg { height: 40px; padding: 0 16px; border: 0; border-radius: 9px; background: transparent; color: inherit; font: 500 14px 'Geist', sans-serif; cursor: pointer; transition: background .2s, box-shadow .2s }
+  .seg[aria-pressed=true] { background: var(--card); box-shadow: var(--sh) }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: 24px }
+
   .lab {
-    position: relative; display: flex; flex-direction: column; gap: 16px; min-height: 540px;
-    padding: 32px clamp(20px, 3vw, 40px) 40px; background: var(--p);
-    transition: background .15s, color .15s, opacity .2s;
+    position: relative; display: flex; flex-direction: column; overflow: hidden;
+    background: var(--card); border: 1px solid var(--line); border-radius: 18px; box-shadow: var(--sh);
+    transition: transform .3s cubic-bezier(.2,.7,.3,1), box-shadow .3s, border-color .3s, opacity .3s, filter .3s;
   }
-  /* Each lab borrows its site's accent: --a for text and marks, --af for filled buttons */
-  [data-theme=light] .lab[data-lab=encs4110] { --a: #dc2626; --af: #b91c1c }
-  [data-theme=light] .lab[data-lab=encs4101] { --a: #0369a1; --af: #075985 }
-  [data-theme=light] .lab[data-lab=encs5150] { --a: #ea580c; --af: #c2410c }
-  [data-theme=dark] .lab[data-lab=encs4110] { --a: #f87171; --af: #f87171 }
-  [data-theme=dark] .lab[data-lab=encs4101] { --a: #38bdf8; --af: #38bdf8 }
-  [data-theme=dark] .lab[data-lab=encs5150] { --a: #fb923c; --af: #fb923c }
-  .lab::before {
-    content: ''; position: absolute; inset: 0 0 auto; height: 4px; background: var(--a);
-    transform: scaleX(0); transform-origin: left; transition: transform .25s ease-out;
+  .lab:hover, .lab:focus-within {
+    transform: translateY(-8px);
+    box-shadow: 0 34px 60px -28px color-mix(in srgb, var(--a) 60%, transparent), var(--sh);
+    border-color: color-mix(in srgb, var(--a) 55%, var(--line));
   }
-  .lab:hover, .lab:focus-within { background: color-mix(in srgb, var(--a) 7%, var(--p)) }
-  .lab:hover::before, .lab:focus-within::before { transform: scaleX(1) }
+  .lab.dim { opacity: .3; filter: grayscale(1); transform: scale(.97) }
+  .lab-art {
+    position: relative; height: 168px; display: grid; place-items: center; color: var(--a);
+    background-color: color-mix(in srgb, var(--a) 9%, var(--card));
+    background-image: radial-gradient(circle, color-mix(in srgb, var(--a) 28%, transparent) 1px, transparent 1.3px);
+    background-size: 16px 16px; border-bottom: 1px solid var(--line);
+  }
+  .lab-art svg { width: 176px; height: 121px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; transition: transform .5s cubic-bezier(.2,.7,.3,1) }
+  .lab-art text { fill: currentColor; stroke: none; font-family: 'Geist Mono', monospace }
+  .lab:hover .lab-art svg, .lab:focus-within .lab-art svg { transform: scale(1.1) rotate(-4deg) }
+  .lab-no { position: absolute; top: 14px; left: 16px; font: 400 12px 'Geist Mono', monospace; color: var(--mu2) }
+  .lab-kind { position: absolute; top: 12px; right: 14px; padding: 4px 9px; border: 1px solid var(--line); border-radius: 999px; background: var(--card); font: 400 11px 'Geist Mono', monospace; color: var(--mu2) }
+  .lab-body { flex: 1; display: flex; flex-direction: column; gap: 12px; padding: 22px 24px 24px }
+  .lab-code { font: 500 46px/1 'Geist Mono', monospace; letter-spacing: -.06em; transition: color .2s }
   .lab:hover .lab-code, .lab:focus-within .lab-code { color: var(--a) }
+  .lab h3 { margin: 2px 0 0; font: 600 22px/1.2 'Geist', sans-serif; letter-spacing: -.02em; text-wrap: balance }
+  .lab h3 a { text-decoration: none }
+  .lab h3 a::after { content: ''; position: absolute; inset: 0; border-radius: 18px }
+  .lab-platform { font: 400 13px 'Geist Mono', monospace; color: var(--mu) }
+  .lab-desc { margin: 0; font-size: 15px; line-height: 1.55; color: var(--mu2); text-wrap: pretty }
+  .pills { position: relative; z-index: 1; display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px }
+  .pill { min-height: 34px; padding: 0 11px; border: 1px solid var(--line); border-radius: 999px; background: transparent; color: var(--mu2); font: 400 12px 'Geist Mono', monospace; cursor: pointer; transition: border-color .15s, color .15s, background .15s }
+  .pill:hover { border-color: var(--a); color: var(--a); background: color-mix(in srgb, var(--a) 8%, transparent) }
+  .lab-actions { position: relative; z-index: 1; display: flex; gap: 8px; margin-top: auto; padding-top: 14px }
+  .lab-actions a { height: 48px; display: flex; align-items: center; padding: 0 15px; border: 1px solid var(--line); border-radius: 11px; font: 400 13px 'Geist Mono', monospace; text-decoration: none; transition: background .2s, border-color .2s, color .2s }
+  .lab-actions a:hover { border-color: var(--a); color: var(--a) }
+  .lab-actions a.open { flex: 1; justify-content: space-between; padding: 0 18px; border: 1.5px solid var(--i); font: 600 15px 'Geist', sans-serif }
   .lab:hover .lab-actions a.open, .lab:focus-within .lab-actions a.open { background: var(--af); border-color: var(--af); color: var(--p) }
-  .lab.dim { opacity: .3 }
-  .lab-meta { display: flex; justify-content: space-between; font: 400 12px 'Geist Mono', monospace; opacity: .75 }
-  .lab-code { margin-top: 32px; font-family: 'Geist Mono', monospace; font-weight: 500; font-size: clamp(52px, 5vw, 72px); line-height: 1; letter-spacing: -.06em; transition: color .15s }
-  .lab h2 { margin: 8px 0 0; font: 600 26px/1.15 'Geist', sans-serif; letter-spacing: -.02em; text-wrap: balance }
-  .lab h2 a { text-decoration: none }
-  .lab h2 a::after { content: ''; position: absolute; inset: 0 }
-  .lab-platform { font: 400 13px 'Geist Mono', monospace; opacity: .8 }
-  .lab-desc { margin: 0; max-width: 440px; font-size: 16px; line-height: 1.55; opacity: .85; text-wrap: pretty }
-  .lab-chips { margin: 0; font: 400 13px/1.7 'Geist Mono', monospace; opacity: .75 }
-  .lab-actions { display: flex; gap: 8px; margin-top: auto; padding-top: 16px }
-  .lab-actions a { position: relative; z-index: 1; transition: background .15s, border-color .15s, color .15s; height: 48px; display: flex; align-items: center; padding: 0 16px; border: 1px solid currentColor; font: 400 13px 'Geist Mono', monospace; text-decoration: none }
-  .lab-actions a.open { flex: 1; justify-content: space-between; padding: 0 18px; border-width: 1.5px; font: 600 15px 'Geist', sans-serif }
+  .arr { display: inline-block; transition: transform .2s }
+  .lab:hover .arr { transform: translateX(5px) }
 
-  /* Next lab */
-  .next {
-    display: flex; flex-wrap: wrap; align-items: center; gap: 8px 32px; padding-block: 24px;
-    border-bottom: 1px solid var(--i);
-    background-image: repeating-linear-gradient(135deg, var(--dot) 0 1px, transparent 1px 10px);
-  }
-  .next span { font: 400 12px 'Geist Mono', monospace; color: var(--mu) }
-  .next p { margin: 0; font-size: 15px; line-height: 1.5; text-wrap: pretty }
-  .next a, footer .by a { text-underline-offset: 3px }
+  .next { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; padding: 22px 24px; border: 1.5px dashed var(--line); border-radius: 18px; text-decoration: none; transition: border-color .2s, background .2s }
+  .next:hover { border-color: var(--i); background: var(--soft) }
+  .next-plus { width: 44px; height: 44px; display: grid; place-items: center; border: 1px solid var(--line); border-radius: 12px; background: var(--card); font: 400 22px/1 'Geist', sans-serif }
+  .next-text { flex: 1 1 280px; display: flex; flex-direction: column; gap: 4px; font-size: 16px; line-height: 1.5 }
+  .next-cta { font: 600 14px 'Geist', sans-serif; white-space: nowrap }
 
-  /* About */
-  #about { border-bottom: 1px solid var(--i) }
-  #about-h { margin: 0; padding-top: 32px; font: 400 12px 'Geist Mono', monospace; color: var(--mu) }
-  .notes { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)) }
-  .note { display: flex; flex-direction: column; gap: 8px; padding: 20px clamp(20px, 3vw, 40px) 40px; border-inline-end: 1px solid var(--line) }
-  .note h3 { margin: 0; font: 600 18px/1.3 'Geist', sans-serif }
-  .note p { margin: 0; font-size: 15px; line-height: 1.55; color: var(--mu2); text-wrap: pretty }
-  .about-foot { margin: 0; padding-bottom: 32px; font-size: 14px; color: var(--mu2) }
+  /* Why web */
+  #why { border-top: 1px solid var(--line); background: var(--soft) }
+  #why > .wrap { display: flex; flex-wrap: wrap; gap: 40px 56px; padding-top: 80px; padding-bottom: 88px }
+  .why-side { flex: 1 1 360px; min-width: 0; display: flex; flex-direction: column; gap: 24px }
+  .why-side h2 { margin: 10px 0 0; font: 600 40px/1.05 'Geist', sans-serif; letter-spacing: -.04em; text-wrap: balance }
+  .feats { display: flex; flex-direction: column; gap: 6px }
+  .feat { display: flex; gap: 16px; align-items: flex-start; width: 100%; padding: 16px 18px; border: 1px solid transparent; border-radius: 14px; background: transparent; color: inherit; font: inherit; text-align: start; cursor: pointer; transition: background .2s, box-shadow .2s, border-color .2s }
+  .feat:hover { background: var(--soft) }
+  .feat[aria-selected=true] { background: var(--card); border-color: var(--line); box-shadow: var(--sh) }
+  .feat-n { font: 400 12px/22px 'Geist Mono', monospace; color: var(--mu) }
+  .feat[aria-selected=true] .feat-n { color: var(--i) }
+  .feat b { display: block; font: 600 17px/22px 'Geist', sans-serif }
+  .feat-d { display: block; margin-top: 4px; font-size: 14px; line-height: 1.5; color: var(--mu2) }
+  .why-note { margin: 0; padding-inline-start: 18px; font-size: 14px; color: var(--mu2) }
+  .demo-col { flex: 1.3 1 480px; min-width: 0; align-self: center }
+  .demo { position: relative; min-height: 400px; padding: 28px; background: var(--card); border: 1px solid var(--line); border-radius: 18px; box-shadow: var(--sh-lg) }
+  .demo-tag { position: absolute; top: 14px; right: 16px; font: 400 11px 'Geist Mono', monospace; color: var(--mu) }
+  .dpanel { display: flex; flex-direction: column; gap: 16px; animation: fade .45s cubic-bezier(.2,.7,.3,1) }
+  .dnote { margin: 0; font-size: 14px; line-height: 1.55; color: var(--mu2) }
+  .dsearch { display: flex; align-items: center; gap: 10px; height: 52px; padding: 0 16px; border: 1px solid var(--i); border-radius: 12px; font: 400 15px 'Geist Mono', monospace }
+  .dsearch svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round }
+  .dsearch .caret { height: 18px; width: 2px }
+  .dsearch small { margin-inline-start: auto; font-size: 12px; color: var(--mu) }
+  .dresults { border: 1px solid var(--line); border-radius: 12px; overflow: hidden }
+  .dresults div { padding: 14px 16px; border-bottom: 1px solid var(--line) }
+  .dresults div:first-child { background: var(--soft) }
+  .dresults div:last-child { border-bottom: 0 }
+  .dresults small { display: block; font: 400 12px 'Geist Mono', monospace; color: var(--mu) }
+  .dresults p { margin: 4px 0 0; font-size: 14px; line-height: 1.5 }
+  mark { padding: 0 2px; border-radius: 3px; background: rgba(250,204,21,.45); color: inherit }
+  .codeblock.lg pre { padding: 18px 16px; font-size: 13px; line-height: 1.7 }
+  .log { margin: 0; padding: 0; list-style: none }
+  .log li { display: flex; gap: 16px }
+  .log-rail { display: flex; flex-direction: column; align-items: center; width: 14px }
+  .log-rail::before { content: ''; flex: none; width: 12px; height: 12px; margin-top: 3px; border: 2px solid var(--line); border-radius: 50%; background: var(--card) }
+  .log li:first-child .log-rail::before { border-color: var(--ok); background: var(--ok) }
+  .log-rail::after { content: ''; flex: 1; width: 1px; background: var(--line) }
+  .log-body { flex: 1; display: flex; flex-direction: column; gap: 4px; padding-bottom: 22px }
+  .log-body small { font: 400 12px 'Geist Mono', monospace; color: var(--mu) }
+  .log-body span:not(.badge) { font-size: 15px; line-height: 1.45 }
+  .badge { align-self: flex-start; margin-top: 2px; padding: 3px 8px; border-radius: 999px; background: color-mix(in srgb, var(--ok) 14%, transparent); color: var(--ok); font: 400 11px 'Geist Mono', monospace }
+  .badge.wip { background: var(--soft); color: var(--mu2) }
 
   /* Footer */
-  footer { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 32px; padding-block: 24px; font-size: 13px }
+  footer { border-top: 1px solid var(--line) }
+  footer .wrap { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 32px; padding-block: 24px; font-size: 13px }
   footer .dept { font-weight: 600 }
   footer .by { color: var(--mu2) }
+  footer .by a { text-underline-offset: 3px }
   footer .end { margin-inline-start: auto; display: flex; flex-wrap: wrap; gap: 24px; font-family: 'Geist Mono', monospace }
   footer .end a { text-decoration: none }
+  footer .end a:hover { text-decoration: underline; text-underline-offset: 3px }
   footer .end span { color: var(--mu) }
 
-  @media (prefers-reduced-motion: reduce) { * { transition: none !important } }
+  @keyframes blink { 50% { opacity: 0 } }
+  @keyframes prog { from { transform: scaleX(0) } to { transform: scaleX(1) } }
+  @keyframes fade { from { opacity: 0; transform: translateY(8px) } to { opacity: 1; transform: none } }
+  /* No motion also means no auto-cycling: the preview advances on each progress-bar loop */
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important } }
 </style>
 </head>
 <body>
 <a class="skip" href="#labs">Skip to labs</a>
 
-<header class="pad-x">
-  <a class="brand" href="#top"><b>ECE Labs</b><span>Birzeit University</span></a>
-  <nav aria-label="Primary">
-    <a href="#labs">Labs</a>
-    <a href="#about">About</a>
-    <a href="https://github.com/ECE-Birzeit" target="_blank" rel="noopener">GitHub ↗</a>
-  </nav>
-  <button type="button" class="theme" role="switch" aria-checked="false" aria-label="Dark theme" title="Toggle dark theme">
-    <span class="theme-knob" aria-hidden="true">
-      <svg class="sun" viewBox="0 0 16 16"><circle cx="8" cy="8" r="3"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3 3l1.4 1.4M11.6 11.6L13 13M3 13l1.4-1.4M11.6 4.4L13 3"/></svg>
-      <svg class="moon" viewBox="0 0 16 16"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z"/></svg>
-    </span>
-  </button>
+<header>
+  <div class="wrap">
+    <a class="brand" href="#top"><b>ECE Labs</b><span>Birzeit University</span></a>
+    <nav aria-label="Primary">
+      <a class="btn" href="#labs">Labs</a>
+      <a class="btn" href="#why">Why web</a>
+      <a class="btn" href="https://github.com/ECE-Birzeit" target="_blank" rel="noopener">GitHub ↗</a>
+    </nav>
+    <button type="button" class="theme btn" role="switch" aria-checked="false" aria-label="Dark theme" title="Toggle dark theme">
+      <svg class="sun" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3 3l1.4 1.4M11.6 11.6L13 13M3 13l1.4-1.4M11.6 4.4L13 3"/></svg>
+      <svg class="moon" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z"/></svg>
+    </button>
+  </div>
 </header>
 
 <main id="top">
-  <div class="hero pad-x">
-    <div class="hero-main">
-      <div class="eyebrow">Department of Electrical &amp; Computer Engineering</div>
-      <h1>Every ECE lab, in one place.</h1>
+  <section class="hero">
+    <div class="wrap">
+      <div class="hero-main" data-lab="encs4110">
+        <div class="eyebrow">Department of Electrical &amp; Computer Engineering</div>
+        <h1>Every ECE lab, in one place.<span class="caret" aria-hidden="true"></span></h1>
+        <p class="lede">The department's lab manuals as a searchable web platform, with setup guides and printable PDFs.</p>
+        <form role="search" id="find">
+          <label class="search">
+            <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.5"/><path d="M13 13l4 4"/></svg>
+            <span class="sr">Find a lab</span>
+            <input type="search" id="q" placeholder="Find a lab by code, board or topic" aria-describedby="find-status" autocomplete="off">
+            <button type="button" class="clear btn" hidden>Clear</button>
+            <button type="submit" class="go" hidden>Open</button>
+          </label>
+          <div class="tries">
+            <span class="kicker">Try</span>
+            <button type="button" class="chip" data-q="stm32" aria-pressed="false">STM32</button>
+            <button type="button" class="chip" data-q="arm assembly" aria-pressed="false">ARM assembly</button>
+            <button type="button" class="chip" data-q="android" aria-pressed="false">Android</button>
+            <button type="button" class="chip" data-q="uart" aria-pressed="false">UART</button>
+            <button type="button" class="chip" data-q="interrupts" aria-pressed="false">Interrupts</button>
+            <button type="button" class="chip" data-q="pwm" aria-pressed="false">PWM</button>
+          </div>
+          <span id="find-status" aria-live="polite"></span>
+        </form>
+      </div>
+
+      <div class="stage" data-lab="encs4110">
+        <div class="plate plate-1" aria-hidden="true"></div>
+        <div class="plate plate-2" aria-hidden="true"></div>
+        <div class="win">
+          <div class="win-bar">
+            <span class="win-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="win-url">encs4110.birzeit.me</span>
+          </div>
+          <div class="ptabs" role="tablist" aria-label="Preview a lab manual">
+            <button type="button" class="ptab" role="tab" id="pt-encs4110" aria-controls="pv-encs4110" aria-selected="true" data-lab="encs4110">ENCS4110</button>
+            <button type="button" class="ptab" role="tab" id="pt-encs4101" aria-controls="pv-encs4101" aria-selected="false" tabindex="-1" data-lab="encs4101">ENCS4101</button>
+            <button type="button" class="ptab" role="tab" id="pt-encs5150" aria-controls="pv-encs5150" aria-selected="false" tabindex="-1" data-lab="encs5150">ENCS5150</button>
+            <span class="ind" aria-hidden="true"></span>
+            <span class="prog" aria-hidden="true"></span>
+          </div>
+
+          <div class="pane" role="tabpanel" id="pv-encs4110" aria-labelledby="pt-encs4110" data-code="ENCS4110" data-url="encs4110.birzeit.me">
+            <ul class="pside" aria-label="Topics">
+              <li class="kicker">ENCS4110</li>
+              <li>Cortex-M4</li><li>ARM assembly</li><li>Stack &amp; procedures</li><li class="on">GPIO</li><li>Interrupts</li><li>ADC · UART</li>
+            </ul>
+            <div class="pmain">
+              <span class="kicker">ENCS4110 / GPIO</span>
+              <h3>Driving the on-board LED</h3>
+              <p>Set the pin direction, then flip a bit in the data register. Every block copies cleanly into your IDE.</p>
+              <div class="codeblock">
+                <div class="codeblock-bar"><span>blink.s</span><button type="button" class="copy">Copy</button></div>
+<pre><code>; Toggle the red LED on PF1
+        LDR     R0, =GPIO_PORTF_DATA_R
+        LDR     R1, [R0]
+        EOR     R1, R1, #0x02
+        STR     R1, [R0]</code></pre>
+              </div>
+              <a class="open-link" href="https://encs4110.birzeit.me/" target="_blank" rel="noopener" data-kind="preview">Open the ENCS4110 manual →</a>
+            </div>
+          </div>
+
+          <div class="pane" role="tabpanel" id="pv-encs4101" aria-labelledby="pt-encs4101" data-code="ENCS4101" data-url="encs4101.birzeit.me" hidden>
+            <ul class="pside" aria-label="Topics">
+              <li class="kicker">ENCS4101</li>
+              <li>Clocks &amp; GPIO</li><li>Interrupts</li><li class="on">Timers &amp; PWM</li><li>DC &amp; stepper motors</li><li>ADC</li><li>I²C · UART</li>
+            </ul>
+            <div class="pmain">
+              <span class="kicker">ENCS4101 / Timers &amp; PWM</span>
+              <h3>Dimming an LED with PWM</h3>
+              <p>Start a timer channel in PWM mode, then change the duty cycle while the program runs.</p>
+              <div class="codeblock">
+                <div class="codeblock-bar"><span>main.c</span><button type="button" class="copy">Copy</button></div>
+<pre><code>/* Start PWM on TIM2, channel 1 */
+HAL_TIM_PWM_Start(&amp;htim2, TIM_CHANNEL_1);
+
+/* duty: 0..999 maps to 0..100 % */
+__HAL_TIM_SET_COMPARE(&amp;htim2, TIM_CHANNEL_1, duty);</code></pre>
+              </div>
+              <a class="open-link" href="https://encs4101.birzeit.me/" target="_blank" rel="noopener" data-kind="preview">Open the ENCS4101 manual →</a>
+            </div>
+          </div>
+
+          <div class="pane" role="tabpanel" id="pv-encs5150" aria-labelledby="pt-encs5150" data-code="ENCS5150" data-url="encs5150.birzeit.me" hidden>
+            <ul class="pside" aria-label="Topics">
+              <li class="kicker">ENCS5150</li>
+              <li>Activities &amp; Intents</li><li>Fragments</li><li class="on">SQLite</li><li>SharedPreferences</li><li>REST / JSON</li><li>Spring Boot</li>
+            </ul>
+            <div class="pmain">
+              <span class="kicker">ENCS5150 / SQLite</span>
+              <h3>Saving a record with SQLite</h3>
+              <p>Open a writable database, fill a ContentValues row, insert it. The manual builds the helper class first.</p>
+              <div class="codeblock">
+                <div class="codeblock-bar"><span>StudentRepo.java</span><button type="button" class="copy">Copy</button></div>
+<pre><code>SQLiteDatabase db = helper.getWritableDatabase();
+ContentValues row = new ContentValues();
+row.put("name", name);
+row.put("year", year);
+db.insert("students", null, row);</code></pre>
+              </div>
+              <a class="open-link" href="https://encs5150.birzeit.me/" target="_blank" rel="noopener" data-kind="preview">Open the ENCS5150 manual →</a>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="hero-side">
-      <p class="lede">The department's lab manuals as a searchable web platform, with setup guides and printable PDFs.</p>
-      <form role="search" id="find">
-        <label><span>Find a lab</span><input type="search" id="q" placeholder="code, board or topic" aria-describedby="find-status" autocomplete="off"></label>
-        <span id="find-status" aria-live="polite"></span>
-      </form>
-    </div>
-  </div>
-
-  <section id="labs" aria-label="Labs">
-    <article class="lab" data-lab="encs4110"
-      data-code="ENCS4110" data-url="https://encs4110.birzeit.me/"
-      data-search="encs4110 computer design laboratory tm4c123 arm cortex-m4 hardware lab cortex-m4 arm assembly stack procedures gpio interrupts adc uart tiva launchpad tm4c ek-tm4c123gxl arm cortex assembly computer design">
-      <div class="lab-meta"><span>Lab 01</span><span>Hardware lab</span></div>
-      <span class="lab-code">ENCS4110</span>
-      <h2><a href="https://encs4110.birzeit.me/" target="_blank" rel="noopener">Computer Design Laboratory</a></h2>
-      <span class="lab-platform">TM4C123 · ARM Cortex-M4</span>
-      <p class="lab-desc">Understand the ARM Cortex-M4 from the inside: registers, instruction set, and assembly, then put it to work on the Tiva C LaunchPad with real sensors and displays.</p>
-      <p class="lab-chips">Cortex-M4  /  ARM assembly  /  Stack &amp; procedures  /  GPIO  /  Interrupts  /  ADC · UART</p>
-      <div class="lab-actions">
-        <a class="open" href="https://encs4110.birzeit.me/" aria-label="Open the ENCS4110 manual" target="_blank" rel="noopener">Open manual <span aria-hidden="true">→</span></a>
-        <a href="https://encs4110.birzeit.me/manual/encs4110_manual.pdf" aria-label="ENCS4110 manual PDF" target="_blank" rel="noopener">PDF</a>
-        <a href="https://encs4110.birzeit.me/setup" aria-label="ENCS4110 setup guide" target="_blank" rel="noopener">Setup</a>
-      </div>
-    </article>
-
-    <article class="lab" data-lab="encs4101"
-      data-code="ENCS4101" data-url="https://encs4101.birzeit.me/"
-      data-search="encs4101 embedded systems laboratory stm32 cubeide hal hardware lab clocks gpio interrupts timers pwm dc stepper motors adc i²c i2c uart embedded hal cubeide motors pwm encoder lcd keypad">
-      <div class="lab-meta"><span>Lab 02</span><span>Hardware lab</span></div>
-      <span class="lab-code">ENCS4101</span>
-      <h2><a href="https://encs4101.birzeit.me/" target="_blank" rel="noopener">Embedded Systems Laboratory</a></h2>
-      <span class="lab-platform">STM32 · CubeIDE · HAL</span>
-      <p class="lab-desc">Build real embedded systems on STM32: clocks, interrupts, timers and PWM, motors, ADC, I²C and UART, ending with register-level programming.</p>
-      <p class="lab-chips">Clocks &amp; GPIO  /  Interrupts  /  Timers &amp; PWM  /  DC &amp; stepper motors  /  ADC  /  I²C · UART</p>
-      <div class="lab-actions">
-        <a class="open" href="https://encs4101.birzeit.me/" aria-label="Open the ENCS4101 manual" target="_blank" rel="noopener">Open manual <span aria-hidden="true">→</span></a>
-        <a href="https://encs4101.birzeit.me/ENCS4101-Manual.pdf" aria-label="ENCS4101 manual PDF" target="_blank" rel="noopener">PDF</a>
-        <a href="https://encs4101.birzeit.me/setup" aria-label="ENCS4101 setup guide" target="_blank" rel="noopener">Setup</a>
-      </div>
-    </article>
-
-    <article class="lab" data-lab="encs5150"
-      data-code="ENCS5150" data-url="https://encs5150.birzeit.me/"
-      data-search="encs5150 advanced computer systems engineering laboratory android (java) spring boot software lab activities intents fragments sqlite sharedpreferences rest json spring boot android java android studio jdk spring boot mvc encs515 mobile app">
-      <div class="lab-meta"><span>Lab 03</span><span>Software lab</span></div>
-      <span class="lab-code">ENCS5150</span>
-      <h2><a href="https://encs5150.birzeit.me/" target="_blank" rel="noopener">Advanced Computer Systems Engineering Laboratory</a></h2>
-      <span class="lab-platform">Android (Java) · Spring Boot</span>
-      <p class="lab-desc">Build Android apps in Java, persist data with SQLite, call REST APIs, and write the Spring Boot backend that serves them.</p>
-      <p class="lab-chips">Activities &amp; Intents  /  Fragments  /  SQLite  /  SharedPreferences  /  REST / JSON  /  Spring Boot</p>
-      <div class="lab-actions">
-        <a class="open" href="https://encs5150.birzeit.me/" aria-label="Open the ENCS5150 manual" target="_blank" rel="noopener">Open manual <span aria-hidden="true">→</span></a>
-        <a href="https://encs5150.birzeit.me/ENCS515-Manual.pdf" aria-label="ENCS5150 manual PDF" target="_blank" rel="noopener">PDF</a>
-        <a href="https://encs5150.birzeit.me/setup" aria-label="ENCS5150 setup guide" target="_blank" rel="noopener">Setup</a>
-      </div>
-    </article>
   </section>
 
-  <div class="next pad-x">
-    <span>Next lab</span>
-    <p>More labs will be added here. Teaching one? <a href="https://mabushelbaia.com" target="_blank" rel="noopener">Get in touch</a>.</p>
-  </div>
+  <section id="labs" aria-labelledby="labs-h">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <span class="kicker">03 manuals · more coming</span>
+          <h2 id="labs-h">Pick a lab</h2>
+        </div>
+        <div class="segs" role="group" aria-label="Filter by type">
+          <button type="button" class="seg" data-kind="all" aria-pressed="true">All</button>
+          <button type="button" class="seg" data-kind="hardware" aria-pressed="false">Hardware</button>
+          <button type="button" class="seg" data-kind="software" aria-pressed="false">Software</button>
+        </div>
+      </div>
 
-  <section id="about" aria-labelledby="about-h">
-    <h2 id="about-h" class="pad-x">Why web, not just PDF</h2>
-    <div class="notes">
-      <div class="note"><h3>Searchable</h3><p>Find a register, function or step without scrolling a PDF.</p></div>
-      <div class="note"><h3>Copy-paste code</h3><p>Code blocks paste cleanly into your IDE.</p></div>
-      <div class="note"><h3>Always current</h3><p>Fixes go live as soon as they are merged.</p></div>
-      <div class="note"><h3>Open source</h3><p>Spot a mistake? Open an issue or send a pull request.</p></div>
+      <div class="grid">
+        <article class="lab" data-lab="encs4110" data-kind="hardware"
+          data-code="ENCS4110" data-url="https://encs4110.birzeit.me/"
+          data-search="encs4110 computer design laboratory tm4c123 arm cortex-m4 hardware lab cortex-m4 arm assembly stack procedures gpio interrupts adc uart tiva launchpad tm4c ek-tm4c123gxl arm cortex assembly computer design">
+          <div class="lab-art">
+            <span class="lab-no">Lab 01</span><span class="lab-kind">Hardware lab</span>
+            <svg viewBox="0 0 160 110" aria-hidden="true"><rect x="50" y="25" width="60" height="60" rx="5"/><rect x="60" y="35" width="40" height="40" rx="2" stroke-dasharray="3 3"/><path d="M60 14v11M70 14v11M80 14v11M90 14v11M100 14v11M60 85v11M70 85v11M80 85v11M90 85v11M100 85v11M39 35h11M39 45h11M39 55h11M39 65h11M39 75h11M110 35h11M110 45h11M110 55h11M110 65h11M110 75h11"/><path d="M10 45h29M121 65h29M80 96v10M80 4v10" stroke-dasharray="2 4"/><text x="80" y="59" text-anchor="middle" font-size="12" font-weight="500">M4</text></svg>
+          </div>
+          <div class="lab-body">
+            <span class="lab-code">ENCS4110</span>
+            <h3><a href="https://encs4110.birzeit.me/" target="_blank" rel="noopener">Computer Design Laboratory</a></h3>
+            <span class="lab-platform">TM4C123 · ARM Cortex-M4</span>
+            <p class="lab-desc">Understand the ARM Cortex-M4 from the inside: registers, instruction set, and assembly, then put it to work on the Tiva C LaunchPad with real sensors and displays.</p>
+            <div class="pills">
+              <button type="button" class="pill" data-q="cortex-m4">Cortex-M4</button>
+              <button type="button" class="pill" data-q="arm assembly">ARM assembly</button>
+              <button type="button" class="pill" data-q="stack">Stack &amp; procedures</button>
+              <button type="button" class="pill" data-q="gpio">GPIO</button>
+              <button type="button" class="pill" data-q="interrupts">Interrupts</button>
+              <button type="button" class="pill" data-q="uart">ADC · UART</button>
+            </div>
+            <div class="lab-actions">
+              <a class="open" href="https://encs4110.birzeit.me/" aria-label="Open the ENCS4110 manual" target="_blank" rel="noopener">Open manual <span class="arr" aria-hidden="true">→</span></a>
+              <a href="https://encs4110.birzeit.me/manual/encs4110_manual.pdf" aria-label="ENCS4110 manual PDF" target="_blank" rel="noopener">PDF</a>
+              <a href="https://encs4110.birzeit.me/setup" aria-label="ENCS4110 setup guide" target="_blank" rel="noopener">Setup</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="lab" data-lab="encs4101" data-kind="hardware"
+          data-code="ENCS4101" data-url="https://encs4101.birzeit.me/"
+          data-search="encs4101 embedded systems laboratory stm32 cubeide hal hardware lab clocks gpio interrupts timers pwm dc stepper motors adc i²c i2c uart embedded hal cubeide motors pwm encoder lcd keypad">
+          <div class="lab-art">
+            <span class="lab-no">Lab 02</span><span class="lab-kind">Hardware lab</span>
+            <svg viewBox="0 0 160 110" aria-hidden="true"><rect x="12" y="15" width="128" height="80" rx="6"/><circle cx="20" cy="23" r="2.5"/><circle cx="132" cy="23" r="2.5"/><circle cx="20" cy="87" r="2.5"/><circle cx="132" cy="87" r="2.5"/><path d="M32 25h0M40 25h0M48 25h0M56 25h0M64 25h0M72 25h0M80 25h0M88 25h0M96 25h0M104 25h0M112 25h0M120 25h0M32 85h0M40 85h0M48 85h0M56 85h0M64 85h0M72 85h0M80 85h0M88 85h0M96 85h0M104 85h0M112 85h0M120 85h0" stroke-width="3.2"/><rect x="74" y="39" width="32" height="32" rx="3"/><path d="M22 66h6v-14h7v14h7v-14h7v14h6"/><rect x="134" y="47" width="16" height="16" rx="2"/><path d="M106 55h28"/></svg>
+          </div>
+          <div class="lab-body">
+            <span class="lab-code">ENCS4101</span>
+            <h3><a href="https://encs4101.birzeit.me/" target="_blank" rel="noopener">Embedded Systems Laboratory</a></h3>
+            <span class="lab-platform">STM32 · CubeIDE · HAL</span>
+            <p class="lab-desc">Build real embedded systems on STM32: clocks, interrupts, timers and PWM, motors, ADC, I²C and UART, ending with register-level programming.</p>
+            <div class="pills">
+              <button type="button" class="pill" data-q="clocks">Clocks &amp; GPIO</button>
+              <button type="button" class="pill" data-q="interrupts">Interrupts</button>
+              <button type="button" class="pill" data-q="pwm">Timers &amp; PWM</button>
+              <button type="button" class="pill" data-q="stepper">DC &amp; stepper motors</button>
+              <button type="button" class="pill" data-q="adc">ADC</button>
+              <button type="button" class="pill" data-q="i2c">I²C · UART</button>
+            </div>
+            <div class="lab-actions">
+              <a class="open" href="https://encs4101.birzeit.me/" aria-label="Open the ENCS4101 manual" target="_blank" rel="noopener">Open manual <span class="arr" aria-hidden="true">→</span></a>
+              <a href="https://encs4101.birzeit.me/ENCS4101-Manual.pdf" aria-label="ENCS4101 manual PDF" target="_blank" rel="noopener">PDF</a>
+              <a href="https://encs4101.birzeit.me/setup" aria-label="ENCS4101 setup guide" target="_blank" rel="noopener">Setup</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="lab" data-lab="encs5150" data-kind="software"
+          data-code="ENCS5150" data-url="https://encs5150.birzeit.me/"
+          data-search="encs5150 advanced computer systems engineering laboratory android (java) spring boot software lab activities intents fragments sqlite sharedpreferences rest json spring boot android java android studio jdk spring boot mvc encs515 mobile app">
+          <div class="lab-art">
+            <span class="lab-no">Lab 03</span><span class="lab-kind">Software lab</span>
+            <svg viewBox="0 0 160 110" aria-hidden="true"><rect x="20" y="6" width="52" height="98" rx="9"/><path d="M39 14h14"/><rect x="28" y="24" width="36" height="10" rx="2.5"/><rect x="28" y="40" width="36" height="10" rx="2.5"/><rect x="28" y="56" width="36" height="10" rx="2.5"/><rect x="28" y="72" width="22" height="10" rx="2.5"/><circle cx="46" cy="95" r="2.5"/><rect x="104" y="30" width="44" height="20" rx="3.5"/><rect x="104" y="58" width="44" height="20" rx="3.5"/><path d="M112 40h0M118 40h0M112 68h0M118 68h0" stroke-width="3.2"/><path d="M74 54h28" stroke-dasharray="3 4"/><path d="M97 50l5 4-5 4"/><text x="88" y="46" text-anchor="middle" font-size="8">REST</text></svg>
+          </div>
+          <div class="lab-body">
+            <span class="lab-code">ENCS5150</span>
+            <h3><a href="https://encs5150.birzeit.me/" target="_blank" rel="noopener">Advanced Computer Systems Engineering Laboratory</a></h3>
+            <span class="lab-platform">Android (Java) · Spring Boot</span>
+            <p class="lab-desc">Build Android apps in Java, persist data with SQLite, call REST APIs, and write the Spring Boot backend that serves them.</p>
+            <div class="pills">
+              <button type="button" class="pill" data-q="intents">Activities &amp; Intents</button>
+              <button type="button" class="pill" data-q="fragments">Fragments</button>
+              <button type="button" class="pill" data-q="sqlite">SQLite</button>
+              <button type="button" class="pill" data-q="sharedpreferences">SharedPreferences</button>
+              <button type="button" class="pill" data-q="rest">REST / JSON</button>
+              <button type="button" class="pill" data-q="spring boot">Spring Boot</button>
+            </div>
+            <div class="lab-actions">
+              <a class="open" href="https://encs5150.birzeit.me/" aria-label="Open the ENCS5150 manual" target="_blank" rel="noopener">Open manual <span class="arr" aria-hidden="true">→</span></a>
+              <a href="https://encs5150.birzeit.me/ENCS515-Manual.pdf" aria-label="ENCS5150 manual PDF" target="_blank" rel="noopener">PDF</a>
+              <a href="https://encs5150.birzeit.me/setup" aria-label="ENCS5150 setup guide" target="_blank" rel="noopener">Setup</a>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <a class="next" href="https://mabushelbaia.com" target="_blank" rel="noopener">
+        <span class="next-plus" aria-hidden="true">+</span>
+        <span class="next-text"><span class="kicker">Next lab</span>More labs will be added here. Teaching one? Bring your manual to the platform.</span>
+        <span class="next-cta">Get in touch →</span>
+      </a>
     </div>
-    <p class="about-foot pad-x">Every lab still has a PDF for printing and working offline.</p>
+  </section>
+
+  <section id="why" aria-labelledby="why-h">
+    <div class="wrap">
+      <div class="why-side">
+        <div>
+          <span class="kicker">Why web, not just PDF</span>
+          <h2 id="why-h">A manual you can actually work in.</h2>
+        </div>
+        <div class="feats" role="tablist" aria-label="Features" aria-orientation="vertical">
+          <button type="button" class="feat" role="tab" id="ft-search" aria-controls="dp-search" aria-selected="true">
+            <span class="feat-n">01</span><span><b>Searchable</b><span class="feat-d">Find a register, function or step without scrolling a PDF.</span></span>
+          </button>
+          <button type="button" class="feat" role="tab" id="ft-copy" aria-controls="dp-copy" aria-selected="false" tabindex="-1">
+            <span class="feat-n">02</span><span><b>Copy-paste code</b><span class="feat-d">Code blocks paste cleanly into your IDE.</span></span>
+          </button>
+          <button type="button" class="feat" role="tab" id="ft-current" aria-controls="dp-current" aria-selected="false" tabindex="-1">
+            <span class="feat-n">03</span><span><b>Always current</b><span class="feat-d">Fixes go live as soon as they are merged.</span></span>
+          </button>
+        </div>
+        <p class="why-note">Every lab still has a PDF for printing and working offline.</p>
+      </div>
+
+      <div class="demo-col">
+        <div class="demo">
+          <span class="demo-tag">Example</span>
+
+          <div class="dpanel" role="tabpanel" id="dp-search" aria-labelledby="ft-search">
+            <div class="dsearch" aria-hidden="true">
+              <svg viewBox="0 0 20 20"><circle cx="8.5" cy="8.5" r="5.5"/><path d="M13 13l4 4"/></svg>
+              <span>baud rate</span><span class="caret" data-lab="encs4101"></span>
+              <small>3 results</small>
+            </div>
+            <div class="dresults">
+              <div><small>ENCS4110 › UART</small><p>Compute the <mark>baud rate</mark> divisor from the system clock.</p></div>
+              <div><small>ENCS4101 › I²C · UART</small><p>Set the <mark>baud rate</mark> in CubeIDE before generating code.</p></div>
+              <div><small>ENCS4101 › Setup</small><p>Match the serial monitor's <mark>baud rate</mark> to the board.</p></div>
+            </div>
+          </div>
+
+          <div class="dpanel" role="tabpanel" id="dp-copy" aria-labelledby="ft-copy" hidden>
+            <div class="codeblock lg">
+              <div class="codeblock-bar"><span>main.c</span><button type="button" class="copy">Copy</button></div>
+<pre><code>/* Start PWM on TIM2, channel 1 */
+HAL_TIM_PWM_Start(&amp;htim2, TIM_CHANNEL_1);
+
+/* duty: 0..999 maps to 0..100 % */
+__HAL_TIM_SET_COMPARE(&amp;htim2, TIM_CHANNEL_1, duty);</code></pre>
+            </div>
+            <p class="dnote">No page numbers, no broken quotes, no line-wrap hyphens. Press Copy and paste straight into your IDE.</p>
+          </div>
+
+          <div class="dpanel" role="tabpanel" id="dp-current" aria-labelledby="ft-current" hidden>
+            <ol class="log">
+              <li><span class="log-rail" aria-hidden="true"></span><span class="log-body"><small>Pull request · merged</small><span>fix: correct the ADC sample-time table</span><span class="badge">Live on the site</span></span></li>
+              <li><span class="log-rail" aria-hidden="true"></span><span class="log-body"><small>Pull request · merged</small><span>docs: add a wiring photo to the stepper-motor lab</span><span class="badge">Live on the site</span></span></li>
+              <li><span class="log-rail" aria-hidden="true"></span><span class="log-body"><small>Issue · opened by a student</small><span>Setup guide: driver step missing on Windows</span><span class="badge wip">Being fixed</span></span></li>
+            </ol>
+            <p class="dnote">A fix merged in the morning is on the site before the afternoon lab. No reprinting, no outdated copies.</p>
+          </div>
+        </div>
+      </div>
+    </div>
   </section>
 </main>
 
-<footer class="pad-x">
-  <span class="dept">Electrical &amp; Computer Engineering, Birzeit University</span>
-  <span class="by">Developed by <a href="https://mabushelbaia.com" target="_blank" rel="noopener">Mohammad Abu-Shelbaia</a></span>
-  <span class="end"><a href="https://github.com/ECE-Birzeit" target="_blank" rel="noopener">GitHub ↗</a><span>Open source · Updated <time id="updated" datetime="2026-10-23">2026-10-23</time></span></span>
+<footer>
+  <div class="wrap">
+    <span class="dept">Electrical &amp; Computer Engineering, Birzeit University</span>
+    <span class="by">Developed by <a href="https://mabushelbaia.com" target="_blank" rel="noopener">Mohammad Abu-Shelbaia</a></span>
+    <span class="end"><a href="/v1/">Classic version</a><a href="https://github.com/ECE-Birzeit" target="_blank" rel="noopener">GitHub ↗</a><span>Updated <time id="updated" datetime="2026-10-23">2026-10-23</time></span></span>
+  </div>
 </footer>
 
 <script>
@@ -351,32 +678,129 @@
     });
     mq.addEventListener('change', function (e) { if (!chosen) apply(e.matches ? 'dark' : 'light'); });
 
+    function all(sel, scope) { return Array.prototype.slice.call((scope || document).querySelectorAll(sel)); }
+
     // Report which lab and which button was used; GA treats our subdomains as internal links.
-    document.getElementById('labs').addEventListener('click', function (e) {
+    function report(e) {
       var a = e.target.closest('a');
-      if (!a || typeof gtag !== 'function') return;
-      var kind = a.classList.contains('open') ? 'manual' : a.closest('h2') ? 'title' : a.textContent.trim().toLowerCase();
-      gtag('event', 'lab_click', { lab: a.closest('.lab').dataset.code, link_type: kind, link_url: a.href });
+      var lab = a && a.closest('[data-code]');
+      if (!lab || typeof gtag !== 'function') return;
+      var kind = a.dataset.kind || (a.classList.contains('open') ? 'manual' : a.closest('h3') ? 'title' : a.textContent.trim().toLowerCase());
+      gtag('event', 'lab_click', { lab: lab.dataset.code, link_type: kind, link_url: a.href });
+    }
+    document.getElementById('labs').addEventListener('click', report);
+    document.querySelector('.stage').addEventListener('click', report);
+
+    // Arrow keys move between tabs in a tablist.
+    function arrowKeys(list, tabs, select) {
+      list.addEventListener('keydown', function (e) {
+        var i = tabs.indexOf(document.activeElement);
+        var step = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[e.key];
+        if (i === -1 || !step) return;
+        e.preventDefault();
+        var n = (i + step + tabs.length) % tabs.length;
+        select(n);
+        tabs[n].focus();
+      });
+    }
+    function selectTab(tabs, panels, i) {
+      tabs.forEach(function (t, j) {
+        t.setAttribute('aria-selected', j === i ? 'true' : 'false');
+        t.tabIndex = j === i ? 0 : -1;
+      });
+      panels.forEach(function (p, j) { p.hidden = j !== i; });
+    }
+
+    // Hero preview: advances each time the progress bar loops, stops once a lab is picked.
+    var stage = document.querySelector('.stage');
+    var hero = document.querySelector('.hero-main');
+    var ptabs = all('.ptab', stage);
+    var panes = all('.pane', stage);
+    var url = stage.querySelector('.win-url');
+    var ind = stage.querySelector('.ind');
+    var active = 0;
+
+    function show(i) {
+      active = i;
+      selectTab(ptabs, panes, i);
+      stage.dataset.lab = hero.dataset.lab = ptabs[i].dataset.lab;
+      url.textContent = panes[i].dataset.url;
+      ind.style.transform = 'translateX(' + i * 100 + '%)';
+    }
+    function pick(i) { stage.classList.add('pinned'); show(i); }
+    function labIndex(id) { return ptabs.map(function (t) { return t.dataset.lab; }).indexOf(id); }
+
+    stage.querySelector('.prog').addEventListener('animationiteration', function () { show((active + 1) % ptabs.length); });
+    ptabs.forEach(function (t, i) { t.addEventListener('click', function () { pick(i); }); });
+    arrowKeys(stage.querySelector('.ptabs'), ptabs, pick);
+
+    // Why web
+    var feats = all('.feat');
+    var dpanels = all('.dpanel');
+    feats.forEach(function (f, i) { f.addEventListener('click', function () { selectTab(feats, dpanels, i); }); });
+    arrowKeys(document.querySelector('.feats'), feats, function (i) { selectTab(feats, dpanels, i); });
+
+    // Copy buttons
+    document.addEventListener('click', function (e) {
+      var b = e.target.closest('.copy');
+      if (!b || !navigator.clipboard) return;
+      navigator.clipboard.writeText(b.closest('.codeblock').querySelector('pre').textContent).then(function () {
+        b.textContent = 'Copied ✓';
+        clearTimeout(b.reset);
+        b.reset = setTimeout(function () { b.textContent = 'Copy'; }, 1600);
+      }, function () {});
     });
 
-    var labs = Array.prototype.slice.call(document.querySelectorAll('.lab'));
+    // Search and filters
+    var labs = all('.lab');
     var input = document.getElementById('q');
     var status = document.getElementById('find-status');
+    var clear = document.querySelector('.clear');
+    var go = document.querySelector('.go');
+    var chips = all('.chip');
+    var segs = all('.seg');
+    var kind = 'all';
     var matches = labs;
 
     function filter() {
       var q = input.value.trim().toLowerCase();
-      matches = labs.filter(function (l) { return !q || l.dataset.search.indexOf(q) !== -1; });
+      var filtered = !!q || kind !== 'all';
+      matches = labs.filter(function (l) {
+        return (!q || l.dataset.search.indexOf(q) !== -1) && (kind === 'all' || l.dataset.kind === kind);
+      });
       labs.forEach(function (l) { l.classList.toggle('dim', matches.indexOf(l) === -1); });
-      status.textContent = !q ? ''
+      status.textContent = !filtered ? ''
         : !matches.length ? 'No lab matches. Try a code like 4101 or a board like STM32.'
         : matches.length === 1 ? matches[0].dataset.code + ' · press Enter to open'
         : matches.length + ' labs match';
+      clear.hidden = !q;
+      go.hidden = !(filtered && matches.length === 1);
+      if (!go.hidden) go.textContent = 'Open ' + matches[0].dataset.code + ' ↵';
+      chips.forEach(function (c) { c.setAttribute('aria-pressed', c.dataset.q === q ? 'true' : 'false'); });
     }
+    function setKind(k) {
+      kind = k;
+      segs.forEach(function (s) { s.setAttribute('aria-pressed', s.dataset.kind === k ? 'true' : 'false'); });
+    }
+    function search(q) {
+      input.value = q;
+      setKind('all');
+      filter();
+      if (matches.length === 1 && q) pick(labIndex(matches[0].dataset.lab));
+    }
+
     input.addEventListener('input', filter);
+    clear.addEventListener('click', function () { input.value = ''; filter(); input.focus(); });
+    chips.forEach(function (c) {
+      c.addEventListener('click', function () { search(c.getAttribute('aria-pressed') === 'true' ? '' : c.dataset.q); });
+    });
+    all('.pill').forEach(function (p) {
+      p.addEventListener('click', function () { search(p.dataset.q); pick(labIndex(p.closest('.lab').dataset.lab)); });
+    });
+    segs.forEach(function (s) { s.addEventListener('click', function () { setKind(s.dataset.kind); filter(); }); });
     document.getElementById('find').addEventListener('submit', function (e) {
       e.preventDefault();
-      if (input.value.trim() && matches.length === 1) window.location.href = matches[0].dataset.url;
+      if ((input.value.trim() || kind !== 'all') && matches.length === 1) window.location.href = matches[0].dataset.url;
     });
   })();
 </script>
