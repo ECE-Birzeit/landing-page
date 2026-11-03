@@ -16,8 +16,8 @@
     <tspan x="58" y="320">Every ECE lab,</tspan>
     <tspan x="58" y="416">in one place.</tspan>
   </text>
-  <text y="581.5" font-family="Geist Mono" font-size="28.6" fill="#555555">
-    <tspan x="64" fill="#dc2626">ENCS4110</tspan><tspan x="236">/</tspan><tspan x="287" fill="#0369a1">ENCS4101</tspan><tspan x="459">/</tspan><tspan x="510" fill="#ea580c">ENCS5150</tspan>
+  <text y="581" font-family="Geist Mono" font-size="22" fill="#555555">
+    <tspan x="64" fill="#dc2626">ENCS4110</tspan><tspan x="190">/</tspan><tspan x="224" fill="#0369a1">ENCS4101</tspan><tspan x="350">/</tspan><tspan x="384" fill="#ea580c">ENCS5150</tspan><tspan x="510">/</tspan><tspan x="544" fill="#00878f">ENCS5101</tspan>
   </text>
   <text x="1136" y="582" text-anchor="end" font-family="Geist Mono" font-size="22" fill="#555555">Search · Offline · Always current</text>
 </svg>
