@@ -218,8 +218,8 @@
   .plate-2 { inset: 30px 30px 10px 0; background: var(--card); border: 1px solid var(--line); transform: rotate(-3deg) }
   .stage:hover .plate-1 { transform: rotate(6deg) translate(14px, -6px) }
   .stage:hover .plate-2 { transform: rotate(-5deg) translate(-14px, 8px) }
-  /* Explicit z-index: Safari otherwise paints the tilting plates over the window mid-transition */
-  .win { position: relative; z-index: 1; background: var(--card); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--sh-lg); overflow: hidden }
+  /* Own compositing layer: without it Safari paints the tilting plates over the window while they move */
+  .win { position: relative; z-index: 1; will-change: transform; background: var(--card); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--sh-lg); overflow: hidden }
   .win-bar { display: flex; align-items: center; gap: 14px; height: 44px; padding: 0 14px; border-bottom: 1px solid var(--line) }
   .win-dots { display: flex; gap: 6px }
   .win-dots i { width: 10px; height: 10px; border-radius: 50%; background: var(--line) }
