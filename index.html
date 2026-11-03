@@ -229,9 +229,11 @@
   .ptab[aria-selected=true] { color: var(--a) }
   .ind { position: absolute; z-index: 1; bottom: -1px; left: 0; width: 25%; height: 2px; background: var(--a); transition: transform .35s cubic-bezier(.2,.7,.3,1), background .35s }
   .prog { position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: var(--line); transform-origin: left; animation: prog 5s linear infinite }
-  .stage:hover .prog, .stage:focus-within .prog { animation-play-state: paused }
+  .stage:hover .prog, .stage:has(:focus-visible) .prog { animation-play-state: paused }
   .stage.pinned .prog { display: none }
-  .pane { display: flex; flex-wrap: wrap; min-height: 380px; animation: fade .45s cubic-bezier(.2,.7,.3,1) }
+  .pane { display: flex; flex-wrap: wrap; min-height: 380px }
+  /* Fade each piece rather than the pane: the code block scrolls, so it gets its own layer and can ignore an opacity animation on an ancestor */
+  .pside, .pmain > * { animation: fade .45s cubic-bezier(.2,.7,.3,1) }
   .pside { flex: 1 1 170px; max-width: 200px; margin: 0; padding: 18px 12px; border-inline-end: 1px solid var(--line); list-style: none; display: flex; flex-direction: column; gap: 2px }
   .pside .kicker { padding: 0 10px 10px; font-size: 11px; color: var(--mu) }
   .pside li { padding: 8px 10px; border-radius: 7px; font-size: 13px; line-height: 1.3; color: var(--mu2) }
