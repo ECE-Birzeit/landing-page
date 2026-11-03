@@ -4,7 +4,7 @@
 
 The landing page at [birzeit.me](https://birzeit.me) that lists every lab of the Department of Electrical & Computer Engineering at Birzeit University, with search across lab codes, boards and topics.
 
-**[Open birzeit.me](https://birzeit.me)** · [ENCS4110](https://encs4110.birzeit.me) · [ENCS4101](https://encs4101.birzeit.me) · [ENCS5150](https://encs5150.birzeit.me)
+**[Open birzeit.me](https://birzeit.me)** · [ENCS4110](https://encs4110.birzeit.me) · [ENCS4101](https://encs4101.birzeit.me) · [ENCS5150](https://encs5150.birzeit.me) · [ENCS5101](https://encs5101.birzeit.me)
 
 ## Run it locally
 
