@@ -368,6 +368,18 @@
   @keyframes fade { from { opacity: 0; transform: translateY(8px) } to { opacity: 1; transform: none } }
   /* No motion also means no auto-cycling: the preview advances on each progress-bar loop */
   @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important } }
+  #resume { display: flex; flex-direction: column; gap: 8px; max-width: 560px }
+  .resume-main { position: relative; display: grid; grid-template-columns: 1fr auto; column-gap: 16px; row-gap: 3px; padding: 14px 52px 14px 18px; border: 1px solid color-mix(in srgb, var(--a) 55%, var(--line)); border-radius: 14px; background: color-mix(in srgb, var(--a) 8%, var(--card)); text-decoration: none; box-shadow: var(--sh); transition: border-color .15s, transform .15s }
+  .resume-main:hover { border-color: var(--a); transform: translateY(-1px) }
+  .resume-kicker { font: 400 12px 'Geist Mono', monospace; color: var(--af) }
+  .resume-title { font: 600 17px/1.3 'Geist', sans-serif; letter-spacing: -.01em }
+  .resume-section { font: 400 13px 'Geist Mono', monospace; color: var(--mu) }
+  .resume-main .arr { grid-column: 2; grid-row: 1 / span 3; align-self: center; font-size: 20px; color: var(--af) }
+  .resume-forget { position: absolute; top: 8px; right: 8px; width: 36px; height: 36px; border: 0; border-radius: 8px; background: transparent; color: var(--mu); font-size: 18px; cursor: pointer }
+  .resume-forget:hover { background: var(--soft); color: var(--i) }
+  .resume-more { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; font: 400 12px 'Geist Mono', monospace; color: var(--mu) }
+  .resume-more a { display: inline-flex; align-items: center; min-height: 32px; padding: 0 10px; border: 1px solid var(--line); border-radius: 999px; color: var(--af); text-decoration: none }
+  .resume-more a:hover { border-color: var(--a) }
 </style>
 </head>
 <body>
@@ -395,6 +407,18 @@
         <div class="eyebrow">Department of Electrical &amp; Computer Engineering</div>
         <h1>Every ECE lab, in one place.<span class="caret" aria-hidden="true"></span></h1>
         <p class="lede">The department's lab manuals as a searchable web platform, with setup guides and printable PDFs.</p>
+        <div id="resume" hidden>
+          <div class="resume-wrap" style="position: relative">
+            <a class="resume-main" href="#">
+              <span class="resume-kicker">Continue where you left off</span>
+              <span class="resume-title"></span>
+              <span class="resume-section"></span>
+              <span class="arr" aria-hidden="true">→</span>
+            </a>
+            <button type="button" class="resume-forget" aria-label="Forget where I left off">×</button>
+          </div>
+          <div class="resume-more" hidden><span>Also reading</span></div>
+        </div>
         <form role="search" id="find">
           <label class="search">
             <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.5"/><path d="M13 13l4 4"/></svg>
@@ -874,6 +898,62 @@ __HAL_TIM_SET_COMPARE(&amp;htim2, TIM_CHANNEL_1, duty);</code></pre>
       e.preventDefault();
       if ((input.value.trim() || kind !== 'all') && matches.length === 1) window.location.href = matches[0].dataset.url;
     });
+  })();
+</script>
+<script>
+  // "Continue where you left off": each lab site saves its last experiment page in an
+  // ece-last-<lab> cookie on .birzeit.me (see ContinueReading.vue in the lab repos).
+  (function () {
+    var box = document.getElementById('resume');
+    if (!box) return;
+    var labs = {};
+    document.querySelectorAll('article.lab').forEach(function (a) { labs[a.dataset.lab] = a.dataset.code; });
+    function okUrl(u) {
+      try {
+        var x = new URL(u);
+        return (x.protocol === 'https:' && /(^|\.)birzeit\.me$/.test(x.hostname)) ||
+          (/^(localhost|127\.0\.0\.1)$/.test(x.hostname) && location.hostname === x.hostname);
+      } catch (e) { return false; }
+    }
+    function readAll() {
+      var out = [];
+      document.cookie.split('; ').forEach(function (c) {
+        var i = c.indexOf('='), k = c.slice(0, i), m = /^ece-last-(encs\d{4})$/.exec(k);
+        if (!m || !labs[m[1]]) return;
+        try {
+          var e = JSON.parse(decodeURIComponent(c.slice(i + 1)));
+          if (e && okUrl(e.url) && /^\d+$/.test(e.n)) { e.lab = m[1]; out.push(e); }
+        } catch (err) {}
+      });
+      return out.sort(function (a, b) { return (b.t || 0) - (a.t || 0); });
+    }
+    function forget(lab) {
+      var domain = /birzeit\.me$/.test(location.hostname) ? '; domain=.birzeit.me' : '';
+      document.cookie = 'ece-last-' + lab + '=; path=/; max-age=0' + domain;
+    }
+    function render() {
+      var all = readAll();
+      if (!all.length) { box.hidden = true; return; }
+      var e = all[0], link = box.querySelector('.resume-main');
+      box.querySelector('.resume-wrap').setAttribute('data-lab', e.lab);
+      link.href = e.url;
+      box.querySelector('.resume-title').textContent = labs[e.lab] + ' · Exp ' + e.n + ': ' + String(e.title || '').slice(0, 120);
+      var sec = box.querySelector('.resume-section');
+      sec.textContent = e.section ? String(e.section).slice(0, 120) : '';
+      sec.hidden = !e.section;
+      box.querySelector('.resume-forget').onclick = function () { forget(e.lab); render(); };
+      var more = box.querySelector('.resume-more');
+      more.querySelectorAll('a').forEach(function (a) { a.remove(); });
+      all.slice(1, 4).forEach(function (o) {
+        var a = document.createElement('a');
+        a.href = o.url; a.setAttribute('data-lab', o.lab);
+        a.textContent = labs[o.lab] + ' · Exp ' + o.n;
+        more.appendChild(a);
+      });
+      more.hidden = all.length < 2;
+      box.hidden = false;
+    }
+    render();
   })();
 </script>
 </body>
