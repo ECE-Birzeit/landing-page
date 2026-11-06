@@ -38,7 +38,7 @@ Each design lives in its own folder and is served as is. To freeze the current p
 
 Copy one of the `<article class="lab">` blocks in `index.html` and update:
 
-- `data-lab`, `data-kind` (`hardware` or `software`), `data-code` and `data-url`
+- `data-lab`, `data-code`, `data-url`, and `data-langs`, the languages students write in that lab, comma-separated (`Assembly,C`). They show on the card's title bar, and the search box matches them
 - `data-search`, the words the search box matches
 - the course number in `.lab-num`, the name, the platform line and the three links
 - the lab's accent colors, in the two `[data-lab=…]` rules (light and dark theme)

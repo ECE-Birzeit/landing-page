@@ -232,9 +232,6 @@
   .sec-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 20px }
   .sec-head h2, .why-side h2 { margin: 8px 0 0; font: 800 clamp(32px, 4vw, 44px)/1.02 var(--mono); letter-spacing: -.045em; text-wrap: balance }
   .tools { display: flex; flex-wrap: wrap; align-items: center; gap: 8px }
-  .seg { height: 40px; padding: 0 14px; border: 1px solid var(--line); border-radius: 8px; background: transparent; color: var(--mu2); font: 400 13px var(--mono); cursor: pointer; transition: border-color .15s, color .15s }
-  .seg:hover { color: var(--i) }
-  .seg[aria-pressed=true] { border-color: var(--i); color: var(--i) }
   .arrow { width: 44px; height: 40px; padding: 0; border: 1px solid var(--line); border-radius: 8px; background: transparent; color: var(--i); font: 400 15px var(--mono) }
   .arrow.prev { margin-inline-start: 10px }
   .arrow:disabled { color: var(--line2); cursor: default; background: transparent }
@@ -413,11 +410,6 @@
           <h2 id="labs-h">Pick a lab</h2>
         </div>
         <div class="tools">
-          <div role="group" aria-label="Filter by type" style="display: flex; gap: 8px">
-            <button type="button" class="seg" data-kind="all" aria-pressed="true">All</button>
-            <button type="button" class="seg" data-kind="hardware" aria-pressed="false">Hardware</button>
-            <button type="button" class="seg" data-kind="software" aria-pressed="false">Software</button>
-          </div>
           <button type="button" class="arrow btn prev" aria-label="Scroll labs left">←</button>
           <button type="button" class="arrow btn next" aria-label="Scroll labs right">→</button>
         </div>
@@ -425,10 +417,10 @@
 
       <div class="rail">
         <div class="track" role="list">
-          <article class="lab win" role="listitem" data-lab="encs4110" data-kind="hardware"
+          <article class="lab win" role="listitem" data-lab="encs4110" data-langs="Assembly,C"
             data-code="ENCS4110" data-url="https://encs4110.birzeit.me/"
             data-search="encs4110 computer design laboratory tm4c123 arm cortex-m4 hardware lab cortex-m4 arm assembly stack procedures gpio interrupts adc uart tiva launchpad tm4c ek-tm4c123gxl arm cortex assembly computer design">
-            <div class="bar"><i></i><i></i><i></i><span class="t">encs4110</span><span class="r lab-kind">Hardware</span></div>
+            <div class="bar"><i></i><i></i><i></i><span class="t">encs4110</span><span class="r lab-lang">Assembly · C</span></div>
             <div class="lab-body">
               <span class="lab-no">Lab 01</span>
               <span class="lab-ens">ENCS</span>
@@ -443,10 +435,10 @@
             </div>
           </article>
 
-          <article class="lab win" role="listitem" data-lab="encs4101" data-kind="hardware"
+          <article class="lab win" role="listitem" data-lab="encs4101" data-langs="C"
             data-code="ENCS4101" data-url="https://encs4101.birzeit.me/"
             data-search="encs4101 embedded systems laboratory stm32 cubeide hal hardware lab clocks gpio interrupts timers pwm dc stepper motors adc i²c i2c uart embedded hal cubeide motors pwm encoder lcd keypad">
-            <div class="bar"><i></i><i></i><i></i><span class="t">encs4101</span><span class="r lab-kind">Hardware</span></div>
+            <div class="bar"><i></i><i></i><i></i><span class="t">encs4101</span><span class="r lab-lang">C</span></div>
             <div class="lab-body">
               <span class="lab-no">Lab 02</span>
               <span class="lab-ens">ENCS</span>
@@ -461,10 +453,10 @@
             </div>
           </article>
 
-          <article class="lab win" role="listitem" data-lab="encs5150" data-kind="software"
+          <article class="lab win" role="listitem" data-lab="encs5150" data-langs="Java"
             data-code="ENCS5150" data-url="https://encs5150.birzeit.me/"
             data-search="encs5150 advanced computer systems engineering laboratory android (java) spring boot software lab activities intents fragments sqlite sharedpreferences rest json spring boot android java android studio jdk spring boot mvc encs515 mobile app">
-            <div class="bar"><i></i><i></i><i></i><span class="t">encs5150</span><span class="r lab-kind">Software</span></div>
+            <div class="bar"><i></i><i></i><i></i><span class="t">encs5150</span><span class="r lab-lang">Java</span></div>
             <div class="lab-body">
               <span class="lab-no">Lab 03</span>
               <span class="lab-ens">ENCS</span>
@@ -479,10 +471,10 @@
             </div>
           </article>
 
-          <article class="lab win" role="listitem" data-lab="encs5101" data-kind="hardware"
+          <article class="lab win" role="listitem" data-lab="encs5101" data-langs="Assembly,C++"
             data-code="ENCS5101" data-url="https://encs5101.birzeit.me/"
             data-search="encs5101 microprocessor and embedded systems laboratory arm cortex-m4 assembly keil uvision simulator arduino mega 2560 atmega2560 avr hardware lab flow control branches gpio leds push buttons keypad dc motor pwm timers interrupts adc serial uart spi i2c labview linx elevator raspberry pi">
-            <div class="bar"><i></i><i></i><i></i><span class="t">encs5101</span><span class="r lab-kind">Hardware</span></div>
+            <div class="bar"><i></i><i></i><i></i><span class="t">encs5101</span><span class="r lab-lang">Assembly · C++</span></div>
             <div class="lab-body">
               <span class="lab-no">Lab 04</span>
               <span class="lab-ens">ENCS</span>
@@ -742,15 +734,13 @@ __HAL_TIM_SET_COMPARE(&amp;htim2, TIM_CHANNEL_1, duty);</code></pre>
     var clear = document.querySelector('.clear');
     var go = document.querySelector('.go');
     var chips = all('.chip');
-    var segs = all('.seg');
-    var kind = 'all';
     var matches = labs;
 
     function filter() {
       var q = input.value.trim().toLowerCase();
-      var filtered = !!q || kind !== 'all';
+      var filtered = !!q;
       matches = labs.filter(function (l) {
-        return (!q || l.dataset.search.indexOf(q) !== -1) && (kind === 'all' || l.dataset.kind === kind);
+        return !q || (l.dataset.search + ' ' + l.dataset.langs.toLowerCase()).indexOf(q) !== -1;
       });
       labs.forEach(function (l) { l.classList.toggle('off', matches.indexOf(l) === -1); });
       track.scrollLeft = 0;
@@ -764,13 +754,8 @@ __HAL_TIM_SET_COMPARE(&amp;htim2, TIM_CHANNEL_1, duty);</code></pre>
       if (!go.hidden) go.textContent = 'Open ' + matches[0].dataset.code + ' ↵';
       chips.forEach(function (c) { c.setAttribute('aria-pressed', c.dataset.q === q ? 'true' : 'false'); });
     }
-    function setKind(k) {
-      kind = k;
-      segs.forEach(function (s) { s.setAttribute('aria-pressed', s.dataset.kind === k ? 'true' : 'false'); });
-    }
     function search(q) {
       input.value = q;
-      setKind('all');
       filter();
     }
 
@@ -779,10 +764,9 @@ __HAL_TIM_SET_COMPARE(&amp;htim2, TIM_CHANNEL_1, duty);</code></pre>
     chips.forEach(function (c) {
       c.addEventListener('click', function () { search(c.getAttribute('aria-pressed') === 'true' ? '' : c.dataset.q); });
     });
-    segs.forEach(function (s) { s.addEventListener('click', function () { setKind(s.dataset.kind); filter(); }); });
     document.getElementById('find').addEventListener('submit', function (e) {
       e.preventDefault();
-      if ((input.value.trim() || kind !== 'all') && matches.length === 1) window.location.href = matches[0].dataset.url;
+      if (input.value.trim() && matches.length === 1) window.location.href = matches[0].dataset.url;
     });
   })();
 </script>
