@@ -20,7 +20,7 @@ python3 -m http.server 8000   # http://localhost:8000
 
 | Path | Contents |
 |:--|:--|
-| `index.html` | The current page at `/`: markup, styles, theme switch, search, lab preview, analytics |
+| `index.html` | The current page at `/`: markup, styles, theme switch, search, rolling lab counter, analytics |
 | `v1/index.html` | The first design, frozen at `/v1/` (not indexed by search engines) |
 | `legacy/index.html` | Redirects `/legacy/` to `/v1/` |
 | `og.png`, `og.svg` | Link-preview image and its source (render `og.svg` at 1200×630 in a browser engine, which loads Geist from Google Fonts) |
