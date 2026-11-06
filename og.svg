@@ -10,8 +10,9 @@
     <text x="64" y="74" font-size="26" font-weight="600" letter-spacing="-.26">ECE Labs</text>
     <text x="193" y="74" font-family="Geist Mono, monospace" font-size="19" fill="#a8a8a8">Birzeit University</text>
     <text x="1136" y="74" text-anchor="end" font-family="Geist Mono, monospace" font-size="19" fill="#d4d4d4">birzeit.me</text>
-    <text font-size="86" font-weight="600" letter-spacing="-4.3"><tspan x="60" y="236">Every ECE</tspan><tspan x="60" y="320">lab, in one</tspan><tspan x="60" y="404">place.</tspan></text>
-    <text font-family="Geist Mono, monospace" font-size="21" fill="#a8a8a8"><tspan x="64" y="470">Lab manuals as a web platform.</tspan><tspan x="64" y="502">Searchable, offline, with printable PDFs.</tspan></text>
+    <text x="64" y="176" font-family="Geist Mono, monospace" font-size="17" fill="#a8a8a8">Department of Electrical &amp; Computer Engineering</text>
+    <text font-size="104" font-weight="600" letter-spacing="-5.2"><tspan x="58" y="292">ECE Lab</tspan><tspan x="58" y="392">Manuals</tspan></text>
+    <text font-family="Geist Mono, monospace" font-size="20" fill="#a8a8a8"><tspan x="64" y="466">Setup guides and clean code listings,</tspan><tspan x="64" y="496">for every lab.</tspan></text>
     <text y="584" font-family="Geist Mono, monospace" font-size="19" font-weight="500"><tspan x="64" fill="#f87171">ENCS4110</tspan><tspan x="177" fill="#38bdf8">ENCS4101</tspan><tspan x="290" fill="#fb923c">ENCS5150</tspan><tspan x="403" fill="#3cc5cb">ENCS5101</tspan></text>
   </g>
   <g transform="translate(704 324) rotate(-18) translate(-88.0 -88.0) scale(2.7500)" filter="url(#shadow)"><rect width="64" height="64" rx="12" fill="#dc2626"/>
