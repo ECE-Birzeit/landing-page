@@ -28,7 +28,7 @@ jobs:
           sed -i -E "s|<lastmod>[^<]*</lastmod>|<lastmod>$d</lastmod>|" sitemap.xml
           mkdir _site
           cp index.html CNAME og.png favicon.svg favicon.png apple-touch-icon.png sitemap.xml robots.txt _site/
-          cp -r v1 legacy _site/
+          cp -r v1 v2 legacy assets _site/
       - uses: actions/upload-pages-artifact@v5
 
   deploy:

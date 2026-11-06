@@ -20,8 +20,9 @@ python3 -m http.server 8000   # http://localhost:8000
 
 | Path | Contents |
 |:--|:--|
-| `index.html` | The current page at `/`: markup, styles, theme switch, search, rolling lab counter, analytics |
+| `index.html` | The current page at `/`: markup, styles, theme switch, search, hero preview of a lab page, analytics |
 | `v1/index.html` | The first design, frozen at `/v1/` (not indexed by search engines) |
+| `v2/index.html` | The second design, frozen at `/v2/` (not indexed by search engines) |
 | `legacy/index.html` | Redirects `/legacy/` to `/v1/` |
 | `og.png`, `og.svg` | Link-preview image and its source (render `og.svg` at 1200×630 in a browser engine, which loads Geist from Google Fonts) |
 | `favicon.svg`, `favicon.png`, `apple-touch-icon.png` | Icons: the SVG source, a 32 px PNG fallback and the 180 px iOS icon |
@@ -39,10 +40,10 @@ Copy one of the `<article class="lab">` blocks in `index.html` and update:
 
 - `data-lab`, `data-kind` (`hardware` or `software`), `data-code` and `data-url`
 - `data-search`, the words the search box matches
-- the text, the links, the "Lab 0N" number, and the topic buttons (`data-q` is the search term each one sets)
+- the course number in `.lab-num`, the name, the platform line and the three links
 - the lab's accent colors, in the two `[data-lab=…]` rules (light and dark theme)
 
-To show it in the hero preview too, add a `.ptab` button and a matching `.pane`, and change the `.ind` width to one over the number of tabs.
+The labs sit in one row that scrolls sideways (on its own, one card at a time, until the visitor takes over), so a new card just extends the row, and the "Next lab" card always stays last. Every card has the same fixed layout: the name always takes three lines' worth of space, so a long title never pushes the rest out of line. The "Lab 0N" labels, the manual count and everything else that lists labs all come from the cards, so there is nothing else to update.
 
 Then add the lab to the structured data (`application/ld+json`) and its sitemap to `robots.txt`.
 
