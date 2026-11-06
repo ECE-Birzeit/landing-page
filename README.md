@@ -23,8 +23,8 @@ python3 -m http.server 8000   # http://localhost:8000
 | `index.html` | The current page at `/`: markup, styles, theme switch, search, lab preview, analytics |
 | `v1/index.html` | The first design, frozen at `/v1/` (not indexed by search engines) |
 | `legacy/index.html` | Redirects `/legacy/` to `/v1/` |
-| `og.png`, `og.svg` | Link-preview image and its source (render with Inkscape, Geist fonts installed) |
-| `favicon.png`, `apple-touch-icon.png` | Icons |
+| `og.png`, `og.svg` | Link-preview image and its source (render `og.svg` at 1200×630 in a browser engine, which loads Geist from Google Fonts) |
+| `favicon.svg`, `favicon.png`, `apple-touch-icon.png` | Icons: the SVG source, a 32 px PNG fallback and the 180 px iOS icon |
 | `sitemap.xml`, `robots.txt` | Search engine files, with sitemaps for all four sites |
 | `CNAME` | `birzeit.me` |
 | `.github/workflows/deploy.yml` | Stamps the last-updated date and deploys to GitHub Pages |
