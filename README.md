@@ -25,7 +25,7 @@ python3 -m http.server 8000   # http://localhost:8000
 | `v2/index.html` | The second design, frozen at `/v2/` (not indexed by search engines) |
 | `legacy/index.html` | Redirects `/legacy/` to `/v1/` |
 | `og.png`, `og.svg` | Link-preview image and its source (render `og.svg` at 1200×630 in a browser engine, which loads Geist from Google Fonts) |
-| `favicon.svg`, `favicon.png`, `apple-touch-icon.png` | Icons: the SVG source, a 32 px PNG fallback and the 180 px iOS icon |
+| `favicon.svg`, `favicon.ico`, `favicon.png`, `apple-touch-icon.png` | Icons: the SVG source, a 16/32/48 px `.ico` (Safari looks for it), a 32 px PNG and the 180 px iOS icon |
 | `sitemap.xml`, `robots.txt` | Search engine files, with sitemaps for all four sites |
 | `CNAME` | `birzeit.me` |
 | `.github/workflows/deploy.yml` | Stamps the last-updated date and deploys to GitHub Pages |
