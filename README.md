@@ -21,6 +21,7 @@ python3 -m http.server 8000   # http://localhost:8000
 | Path | Contents |
 |:--|:--|
 | `index.html` | The current page at `/`: markup, styles, theme switch, search, hero preview of a lab page, analytics |
+| `schedules/index.html` | The ECE weekly schedules at `/schedules/`: browse by instructor, course or room, with a sortable sections table. Reads the live JSON from [bzu-course-catalog](https://github.com/mabushelbaia/bzu-course-catalog) in the browser, so it stays current without redeploys |
 | `v1/index.html` | The first design, frozen at `/v1/` (not indexed by search engines) |
 | `v2/index.html` | The second design, frozen at `/v2/` (not indexed by search engines) |
 | `legacy/index.html` | Redirects `/legacy/` to `/v1/` |

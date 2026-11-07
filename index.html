@@ -272,6 +272,17 @@
   .lab:hover .lab-links .open, .lab:focus-within .lab-links .open { background: var(--a); border-color: var(--a); color: var(--p) }
   .lab.off { display: none }
 
+  /* Find a schedule: ECE only; numbers come from the live catalog */
+  #schedules { border-top: 1px solid var(--line) }
+  #schedules > .wrap { display: flex; flex-direction: column; gap: 22px; padding-top: 68px; padding-bottom: 76px }
+  .entries { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 18px }
+  .entry { display: flex; flex-direction: column; gap: 12px; padding: 22px; border: 1px solid var(--line); border-radius: 12px; background: var(--card); text-decoration: none; transition: border-color .3s, transform .35s cubic-bezier(.2,.75,.2,1) }
+  .entry:hover, .entry:focus-visible { border-color: var(--i); transform: translateY(-4px) }
+  .entry .n { font: 800 52px/.9 var(--mono); letter-spacing: -.05em }
+  .entry .l { font: 700 15px var(--mono) }
+  .entry .d { font-size: 14.5px; line-height: 1.5; color: var(--mu2) }
+  .entry .more { margin-top: auto; padding-top: 6px; font: 400 12.5px var(--mono); color: var(--ok) }
+
   /* Why web */
   #why { border-top: 1px solid var(--line); background: var(--bar) }
   #why > .wrap { display: flex; flex-wrap: wrap; gap: 40px 56px; padding-top: 76px; padding-bottom: 84px }
@@ -342,6 +353,7 @@
     <a class="brand" href="#top"><b>ECE Labs</b><span>Birzeit University</span></a>
     <nav aria-label="Primary">
       <a class="btn" href="#labs">Labs</a>
+      <a class="btn" href="/schedules/">Schedules</a>
       <a class="btn" href="#why">Why web</a>
       <a class="btn" href="https://github.com/ECE-Birzeit" target="_blank" rel="noopener">GitHub ↗</a>
     </nav>
@@ -493,6 +505,22 @@
       <div class="rail-foot">
         <div class="swiper-pagination"></div>
         <a class="invite" href="mailto:support@birzeit.me?subject=New%20lab%20manual">Teaching a lab? <b>Get in touch →</b></a>
+      </div>
+    </div>
+  </section>
+
+  <section id="schedules" aria-labelledby="sched-h">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <span class="kicker" id="sched-kicker">// Electrical &amp; Computer Engineering · updated daily from Ritaj</span>
+          <h2 id="sched-h">Find a schedule</h2>
+        </div>
+      </div>
+      <div class="entries">
+        <a class="entry" href="/schedules/?view=instructor"><span class="n" data-count="instructor">··</span><span class="l">Instructors</span><span class="d">Any ECE instructor's teaching week: courses, sections and rooms.</span><span class="more">Browse instructors →</span></a>
+        <a class="entry" href="/schedules/?view=course"><span class="n" data-count="course">··</span><span class="l">Courses</span><span class="d">Every section of an ECE course: when it meets, where, and who teaches it.</span><span class="more">Browse courses →</span></a>
+        <a class="entry" href="/schedules/?view=room"><span class="n" data-count="room">··</span><span class="l">Rooms</span><span class="d">What's booked in each lab and classroom across the week.</span><span class="more">Browse rooms →</span></a>
       </div>
     </div>
   </section>
@@ -699,6 +727,29 @@ __HAL_TIM_SET_COMPARE(&amp;htim2, TIM_CHANNEL_1, duty);</code></pre>
       if (railOn) sw.autoplay.start(); else sw.autoplay.stop();
     }).observe(railEl);
     build(labs);
+
+    // Find a schedule: live counts from bzu-course-catalog (the same data the schedules page uses)
+    (function () {
+      var base = 'https://raw.githubusercontent.com/mabushelbaia/bzu-course-catalog/main/data/';
+      fetch(base + 'index.json').then(function (r) { return r.json(); }).then(function (idx) {
+        var term = (idx.published_terms || Object.keys(idx.terms))[0];
+        return fetch(base + term + '/ENCS.json').then(function (r) { return r.json(); });
+      }).then(function (d) {
+        var sets = { instructor: {}, course: {}, room: {} };
+        d.courses.forEach(function (c) {
+          c.sections.forEach(function (s) {
+            s.meetings.forEach(function (m) {
+              if (!m.start) return;
+              sets.course[c.code] = 1;
+              if (s.instructor) sets.instructor[s.instructor] = 1;
+              if (m.room) sets.room[m.room] = 1;
+            });
+          });
+        });
+        all('[data-count]').forEach(function (el) { el.textContent = Object.keys(sets[el.dataset.count]).length; });
+        document.getElementById('sched-kicker').textContent = '// ' + d.name + ' · Electrical & Computer Engineering · updated daily from Ritaj';
+      }).catch(function () {});
+    })();
 
     // Why web: tabs with arrow-key support.
     var feats = all('.feat');
