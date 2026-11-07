@@ -107,6 +107,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700;800&display=swap">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/11.1.14/swiper-bundle.min.css" integrity="sha512-BhnxuF0ce44V9aI3+IZvRMcxTI/GHY7h9ahE6uI3SUCjhGYV+XfF+3hELKXtJtvrNGObN17nxZ/Reoawm77HOw==" crossorigin="anonymous" referrerpolicy="no-referrer">
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-K834Q72PP9"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -240,18 +241,19 @@
 
   /* Labs: one row that scrolls sideways, so any number of labs fits */
   #labs > .wrap { display: flex; flex-direction: column; gap: 20px; padding-top: 68px; padding-bottom: 76px }
-  .rail { position: relative; margin-inline: calc(-1 * var(--g)) }
-  .track { display: flex; gap: 18px; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scroll-padding-inline: var(--g); padding: 16px var(--g) 30px; scrollbar-width: none }
-  .track::-webkit-scrollbar { display: none }
-  .rail.more-r { -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 90px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 90px), transparent) }
-  .rail.more-l { -webkit-mask-image: linear-gradient(90deg, transparent, #000 90px); mask-image: linear-gradient(90deg, transparent, #000 90px) }
-  .rail.more-l.more-r { -webkit-mask-image: linear-gradient(90deg, transparent, #000 90px, #000 calc(100% - 90px), transparent); mask-image: linear-gradient(90deg, transparent, #000 90px, #000 calc(100% - 90px), transparent) }
-  .rail-foot { display: flex; align-items: center; gap: 16px }
-  .progress { position: relative; flex: 1; height: 2px; background: var(--line) }
-  .progress i { position: absolute; top: 0; bottom: 0; left: 0; background: var(--i); transition: left .15s, width .15s }
+  /* Labs: a Swiper carousel (loop, autoplay, Swiper's default dots). 1 card with a peek on phones, 2 on tablets, 3 on wide screens */
+  .rail { margin: -16px calc(-1 * var(--g)) 0; padding: 16px var(--g) 30px;
+    --swiper-theme-color: var(--i); --swiper-pagination-bullet-inactive-color: var(--mu); --swiper-pagination-bullet-inactive-opacity: .45;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 var(--g), #000 calc(100% - var(--g)), transparent); mask-image: linear-gradient(90deg, transparent, #000 var(--g), #000 calc(100% - var(--g)), transparent) }
+  .rail .swiper-slide.lab { height: 412px }
+  .rail-foot { display: flex; align-items: center; gap: 20px; --swiper-theme-color: var(--i); --swiper-pagination-bullet-inactive-color: var(--mu); --swiper-pagination-bullet-inactive-opacity: .45 }
+  .rail-foot .swiper-pagination { position: static; width: auto; text-align: start }
+  .invite { margin-inline-start: auto; font: 400 12.5px var(--mono); color: var(--mu2); text-decoration: none; white-space: nowrap }
+  .invite b { color: var(--ok); font-weight: 500 }
+  .invite:hover b { text-decoration: underline; text-underline-offset: 3px }
 
   /* A lab card: a terminal window with fixed rows, so a long title never pushes anything out of line */
-  .lab { position: relative; flex: none; width: min(290px, 80vw); height: 412px; scroll-snap-align: start; display: flex; flex-direction: column; text-decoration: none; transition: border-color .3s, transform .35s cubic-bezier(.2,.75,.2,1), box-shadow .35s }
+  .lab { position: relative; flex: none; height: 412px; display: flex; flex-direction: column; text-decoration: none; transition: border-color .3s, transform .35s cubic-bezier(.2,.75,.2,1), box-shadow .35s }
   .lab:hover, .lab:focus-within { border-color: var(--a); transform: translateY(-6px); box-shadow: 0 0 0 1px var(--a), 0 26px 50px -28px var(--a) }
   .lab .bar .r { text-transform: none }
   .lab-body { flex: 1; display: flex; flex-direction: column; padding: 16px 18px 16px }
@@ -269,10 +271,6 @@
   .lab-links .open { flex: 1; justify-content: space-between; padding: 0 14px; border-color: transparent; background: var(--soft); color: var(--i); font-weight: 700 }
   .lab:hover .lab-links .open, .lab:focus-within .lab-links .open { background: var(--a); border-color: var(--a); color: var(--p) }
   .lab.off { display: none }
-  .lab-next { border-style: dashed; background: transparent; box-shadow: none; --a: var(--ok) }
-  .lab-next .lab-num { color: var(--line2) }
-  .lab-next p { margin: 14px 0 0; height: calc(3 * 1.3 * 16.5px + 4px + 15px); font-size: 15px; line-height: 1.5; color: var(--mu2) }
-  .lab-next .lab-links > span { flex: 1; justify-content: flex-start; border-color: transparent; padding: 0; color: var(--a); font-weight: 700 }
 
   /* Why web */
   #why { border-top: 1px solid var(--line); background: var(--bar) }
@@ -325,14 +323,13 @@
 
   /* Footer */
   footer { border-top: 1px solid var(--line) }
-  footer .wrap { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 32px; padding-block: 22px; font: 400 12.5px var(--mono) }
-  footer .dept { font-weight: 700 }
-  footer .by { color: var(--mu2) }
-  footer .by a { text-underline-offset: 3px }
-  footer .end { margin-inline-start: auto; display: flex; flex-wrap: wrap; gap: 22px }
-  footer .end a { text-decoration: none; color: var(--mu2) }
-  footer .end a:hover { color: var(--i); text-decoration: underline; text-underline-offset: 3px }
-  footer .end span { color: var(--mu) }
+  /* Two groups on one baseline: who and where on the left, links and date on the right; they stack, left-aligned, on narrow screens */
+  footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 10px 32px; padding-block: 22px; font: 400 12.5px/1.6 var(--mono); color: var(--mu2) }
+  footer .grp { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 24px }
+  footer .dept { color: var(--i); font-weight: 700 }
+  footer a { color: var(--mu2); text-decoration: none }
+  footer a:hover { color: var(--i); text-decoration: underline; text-underline-offset: 3px }
+  footer .date { color: var(--mu) }
 
   @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important } }
 </style>
@@ -416,9 +413,9 @@
         </div>
       </div>
 
-      <div class="rail">
-        <div class="track" role="list">
-          <article class="lab win" role="listitem" data-lab="encs4110" data-langs="Assembly,C"
+      <div class="rail swiper">
+        <div class="swiper-wrapper">
+          <article class="lab win swiper-slide" data-lab="encs4110" data-langs="Assembly,C"
             data-code="ENCS4110" data-url="https://encs4110.birzeit.me/"
             data-search="encs4110 computer design laboratory tm4c123 arm cortex-m4 hardware lab cortex-m4 arm assembly stack procedures gpio interrupts adc uart tiva launchpad tm4c ek-tm4c123gxl arm cortex assembly computer design">
             <div class="bar"><i></i><i></i><i></i><span class="t">encs4110</span><span class="r lab-lang">Assembly · C</span></div>
@@ -436,7 +433,7 @@
             </div>
           </article>
 
-          <article class="lab win" role="listitem" data-lab="encs4101" data-langs="C"
+          <article class="lab win swiper-slide" data-lab="encs4101" data-langs="C"
             data-code="ENCS4101" data-url="https://encs4101.birzeit.me/"
             data-search="encs4101 embedded systems laboratory stm32 cubeide hal hardware lab clocks gpio interrupts timers pwm dc stepper motors adc i²c i2c uart embedded hal cubeide motors pwm encoder lcd keypad">
             <div class="bar"><i></i><i></i><i></i><span class="t">encs4101</span><span class="r lab-lang">C</span></div>
@@ -454,7 +451,7 @@
             </div>
           </article>
 
-          <article class="lab win" role="listitem" data-lab="encs5150" data-langs="Java"
+          <article class="lab win swiper-slide" data-lab="encs5150" data-langs="Java"
             data-code="ENCS5150" data-url="https://encs5150.birzeit.me/"
             data-search="encs5150 advanced computer systems engineering laboratory android (java) spring boot software lab activities intents fragments sqlite sharedpreferences rest json spring boot android java android studio jdk spring boot mvc encs515 mobile app">
             <div class="bar"><i></i><i></i><i></i><span class="t">encs5150</span><span class="r lab-lang">Java</span></div>
@@ -472,7 +469,7 @@
             </div>
           </article>
 
-          <article class="lab win" role="listitem" data-lab="encs5101" data-langs="Assembly,C++"
+          <article class="lab win swiper-slide" data-lab="encs5101" data-langs="Assembly,C++"
             data-code="ENCS5101" data-url="https://encs5101.birzeit.me/"
             data-search="encs5101 microprocessor and embedded systems laboratory arm cortex-m4 assembly keil uvision simulator arduino mega 2560 atmega2560 avr hardware lab flow control branches gpio leds push buttons keypad dc motor pwm timers interrupts adc serial uart spi i2c labview linx elevator raspberry pi">
             <div class="bar"><i></i><i></i><i></i><span class="t">encs5101</span><span class="r lab-lang">Assembly · C++</span></div>
@@ -490,22 +487,12 @@
             </div>
           </article>
 
-          <a class="lab lab-next win" role="listitem" href="mailto:support@birzeit.me?subject=New%20lab%20manual">
-            <div class="bar"><i></i><i></i><i></i><span class="t">new lab</span><span class="r">Coming next</span></div>
-            <div class="lab-body">
-              <span class="lab-no">Lab 05</span>
-              <span class="lab-ens">ENCS</span>
-              <span class="lab-num" aria-hidden="true">····</span>
-              <p>More labs will be added here. Teaching one? Bring your manual to the platform.</p>
-              <div class="lab-links"><span>Get in touch →</span></div>
-            </div>
-          </a>
         </div>
       </div>
 
       <div class="rail-foot">
-        <div class="progress" aria-hidden="true"><i></i></div>
-        <span class="kicker">Swipe, scroll or use the arrows</span>
+        <div class="swiper-pagination"></div>
+        <a class="invite" href="mailto:support@birzeit.me?subject=New%20lab%20manual">Teaching a lab? <b>Get in touch →</b></a>
       </div>
     </div>
   </section>
@@ -587,12 +574,18 @@ __HAL_TIM_SET_COMPARE(&amp;htim2, TIM_CHANNEL_1, duty);</code></pre>
 
 <footer>
   <div class="wrap">
-    <span class="dept">Electrical &amp; Computer Engineering, Birzeit University</span>
-    <span class="by">Developed by <a href="https://mabushelbaia.com" target="_blank" rel="noopener">Mohammad Abu-Shelbaia</a></span>
-    <span class="end"><a href="/v2/">Previous design</a><a href="/v1/">Classic version</a><a href="https://github.com/ECE-Birzeit" target="_blank" rel="noopener">GitHub ↗</a><span>Updated <time id="updated" datetime="2026-10-23">2026-10-23</time></span></span>
+    <span class="grp">
+      <span class="dept">Electrical &amp; Computer Engineering, Birzeit University</span>
+      <span>Developed by <a href="https://mabushelbaia.com" target="_blank" rel="noopener">Mohammad Abu-Shelbaia</a></span>
+    </span>
+    <span class="grp">
+      <a href="https://github.com/ECE-Birzeit" target="_blank" rel="noopener">GitHub ↗</a>
+      <span class="date">Updated <time id="updated" datetime="2026-10-23">2026-10-23</time></span>
+    </span>
   </div>
 </footer>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/11.1.14/swiper-bundle.min.js" integrity="sha512-mNgFElWNPcchY3tb+tENYLBl4oIum5eHvK9mn9ldsgAGdi+zsM26RHIggQIMyvrhRW4EOwWJz33zeB5nOxU1Ag==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
   (function () {
     var root = document.documentElement;
@@ -639,7 +632,6 @@ __HAL_TIM_SET_COMPARE(&amp;htim2, TIM_CHANNEL_1, duty);</code></pre>
       };
     });
     labs.forEach(function (l, i) { l.querySelector('.lab-no').textContent = 'Lab ' + pad(i + 1); });
-    document.querySelector('.lab-next .lab-no').textContent = 'Lab ' + pad(labs.length + 1);
     document.getElementById('labs-count').textContent = '// ' + pad(labs.length) + ' manuals · more coming';
 
     // Hero: the front screenshot moves to the back every few seconds; pointing at the stack holds it.
@@ -657,49 +649,56 @@ __HAL_TIM_SET_COMPARE(&amp;htim2, TIM_CHANNEL_1, duty);</code></pre>
     document.querySelector('.hero').addEventListener('click', report);
 
 
-    // The lab rail: arrows, edge fades and the progress bar follow the scroll position.
-    var rail = document.querySelector('.rail');
-    var track = rail.querySelector('.track');
-    var prev = document.querySelector('.arrow.prev');
-    var next = document.querySelector('.arrow.next');
-    var bar = document.querySelector('.progress i');
-    function sync() {
-      var max = track.scrollWidth - track.clientWidth;
-      var x = track.scrollLeft;
-      prev.disabled = x <= 2;
-      next.disabled = x >= max - 2;
-      rail.classList.toggle('more-l', x > 2);
-      rail.classList.toggle('more-r', x < max - 2);
-      bar.style.width = (track.clientWidth / track.scrollWidth * 100) + '%';
-      bar.style.left = (max > 0 ? x / track.scrollWidth * 100 : 0) + '%';
+    // The lab row is a Swiper carousel: it loops, plays on its own (pausing under the pointer) and uses
+    // Swiper's default dots. Search rebuilds it with only the matching labs.
+    var railEl = document.querySelector('.rail');
+    var wrapper = railEl.querySelector('.swiper-wrapper');
+    var sw = null, railOn = true;
+    function build(cards) {
+      if (sw) { sw.destroy(true, true); sw = null; }
+      var n = cards.length;
+      // Swiper's loop needs at least twice as many slides as fit on screen (3 on wide screens), so with
+      // only a few labs it gets a hidden second copy of the cards. One dot per lab either way.
+      var loop = n > 3;
+      var copies = loop ? cards.map(function (c) {
+        var d = c.cloneNode(true);
+        d.setAttribute('aria-hidden', 'true');
+        all('a', d).forEach(function (a) { a.tabIndex = -1; });
+        return d;
+      }) : [];
+      wrapper.replaceChildren.apply(wrapper, cards.concat(copies));
+      sw = new Swiper(railEl, {
+        slidesPerView: 1.16, spaceBetween: 18, speed: 700, loop: loop, grabCursor: true, watchOverflow: true,
+        breakpoints: { 560: { slidesPerView: 2 }, 860: { slidesPerView: 3 } },
+        autoplay: loop && !still ? { delay: 4500, pauseOnMouseEnter: true, disableOnInteraction: false } : false,
+        pagination: {
+          el: '.rail-foot .swiper-pagination', clickable: true,
+          renderBullet: function (i, cls) { return '<span class="' + cls + '"' + (i >= n ? ' hidden' : '') + '></span>'; }
+        },
+        navigation: { prevEl: '.arrow.prev', nextEl: '.arrow.next' },
+        // Sideways two-finger scrolling on a trackpad moves the row; vertical scrolling still scrolls the page
+        mousewheel: { forceToAxis: true, thresholdDelta: 12 },
+        a11y: { enabled: true },
+        on: {
+          // The copies share dots with the originals: light the dot of the real lab
+          slideChange: function (s) { dot(s, n); },
+          paginationUpdate: function (s) { dot(s, n); }
+        }
+      });
+      if (!railOn && sw.autoplay && sw.autoplay.running) sw.autoplay.stop();
     }
-    function step(dir, one) {
-      var card = track.querySelector('.lab:not(.off)');
-      var w = card ? card.getBoundingClientRect().width + 18 : 310;
-      track.scrollBy({ left: dir * (one ? w : Math.max(w, Math.floor(track.clientWidth / w) * w - w)), behavior: still ? 'auto' : 'smooth' });
+    function dot(s, n) {
+      all('.swiper-pagination-bullet', s.pagination.el).forEach(function (b, j) {
+        b.classList.toggle('swiper-pagination-bullet-active', j === s.realIndex % n);
+      });
     }
-    // The row moves on by itself, one card every few seconds, and loops back to the start.
-    // It holds still while the visitor points at, focuses or touches it, and for a while after they scroll it themselves.
-    var lastTouch = 0, overRail = false, railOn = true;
-    function touched() { lastTouch = Date.now(); }
-    prev.addEventListener('click', function () { touched(); step(-1); });
-    next.addEventListener('click', function () { touched(); step(1); });
-    ['wheel', 'pointerdown', 'touchstart', 'keydown'].forEach(function (t) { track.addEventListener(t, touched, { passive: true }); });
-    rail.addEventListener('mouseenter', function () { overRail = true; });
-    rail.addEventListener('mouseleave', function () { overRail = false; });
-    rail.addEventListener('focusin', function () { overRail = true; });
-    rail.addEventListener('focusout', function () { overRail = false; });
-    new IntersectionObserver(function (e) { railOn = e[0].isIntersecting; }).observe(rail);
-    if (!still) setInterval(function () {
-      if (overRail || !railOn || document.hidden || Date.now() - lastTouch < 6000) return;
-      var max = track.scrollWidth - track.clientWidth;
-      if (max <= 2) return;
-      if (track.scrollLeft >= max - 2) track.scrollTo({ left: 0, behavior: 'smooth' });
-      else step(1, true);
-    }, 3200);
-    track.addEventListener('scroll', sync, { passive: true });
-    window.addEventListener('resize', sync);
-    sync();
+    // Don't spin while it's off-screen
+    new IntersectionObserver(function (e) {
+      railOn = e[0].isIntersecting;
+      if (!sw || !sw.params.autoplay || !sw.params.autoplay.enabled) return;
+      if (railOn) sw.autoplay.start(); else sw.autoplay.stop();
+    }).observe(railEl);
+    build(labs);
 
     // Why web: tabs with arrow-key support.
     var feats = all('.feat');
@@ -729,7 +728,7 @@ __HAL_TIM_SET_COMPARE(&amp;htim2, TIM_CHANNEL_1, duty);</code></pre>
       }, function () {});
     });
 
-    // Search and filters: labs that don't match leave the rail, and the rail scrolls back to the start.
+    // Search: labs that don't match leave the carousel, which is rebuilt with the ones left.
     var input = document.getElementById('q');
     var status = document.getElementById('find-status');
     var clear = document.querySelector('.clear');
@@ -744,8 +743,7 @@ __HAL_TIM_SET_COMPARE(&amp;htim2, TIM_CHANNEL_1, duty);</code></pre>
         return !q || (l.dataset.search + ' ' + l.dataset.langs.toLowerCase()).indexOf(q) !== -1;
       });
       labs.forEach(function (l) { l.classList.toggle('off', matches.indexOf(l) === -1); });
-      track.scrollLeft = 0;
-      sync();
+      build(matches);
       status.textContent = !filtered ? ''
         : !matches.length ? 'No lab matches. Try a code like 4101 or a board like STM32.'
         : matches.length === 1 ? matches[0].dataset.code + ' · press Enter to open'
