@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ECE weekly schedules · ECE Labs</title>
+<meta name="description" content="Weekly schedules for the Department of Electrical &amp; Computer Engineering at Birzeit University: browse by instructor, course or room. Updated daily from Ritaj.">
+<meta property="og:title" content="ECE weekly schedules · ECE Labs">
+<meta property="og:description" content="Browse ECE schedules at Birzeit University by instructor, course or room. Updated daily from Ritaj.">
+<meta property="og:url" content="https://birzeit.me/schedules/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ECE Labs">
+<meta property="og:image" content="https://birzeit.me/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://birzeit.me/schedules/">
+<link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700;800&display=swap">
+<link rel="preconnect" href="https://raw.githubusercontent.com" crossorigin>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-K834Q72PP9"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-K834Q72PP9');
+</script>
+<script>
+  (function () {
+    var saved = null;
+    try { saved = { paper: 'light', ink: 'dark' }[localStorage.getItem('ece-labs-theme')] || localStorage.getItem('ece-labs-theme'); } catch (e) {}
+    var mode = saved || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', mode);
+  })();
+</script>
+<style>
+  html, body { margin: 0 }
+  * { box-sizing: border-box }
+  a { color: inherit }
+  [hidden] { display: none !important }
+  :root { --g: clamp(20px, 4vw, 48px); --mono: 'JetBrains Mono', ui-monospace, monospace; --sans: 'Geist', system-ui, sans-serif }
+  [data-theme=dark] { --p: #0b0c0b; --card: #121312; --bar: #171816; --i: #e8e6e1; --mu: #8d8f89; --mu2: #b9bab5; --line: #2a2b29; --line2: #3a3b39; --soft: #181917; --ok: #4ade80 }
+  [data-theme=light] { --p: #f3f2ec; --card: #fff; --bar: #f7f6f1; --i: #1a1b19; --mu: #64655e; --mu2: #45463f; --line: #dddbd2; --line2: #c9c7bd; --soft: #ebe9e1; --ok: #15803d }
+  body { min-height: 100vh; background: var(--p); color: var(--i); font-family: var(--sans); transition: background .25s, color .25s }
+  :focus-visible { outline: 2px solid currentColor; outline-offset: 3px }
+  .wrap { max-width: 1280px; margin: 0 auto; padding-inline: var(--g) }
+  .kicker { font: 400 12.5px var(--mono); color: var(--mu) }
+  .skip { position: absolute; inset-inline-start: -9999px }
+  .skip:focus { inset-inline-start: 16px; top: 16px; z-index: 10; padding: 10px 14px; background: var(--i); color: var(--p) }
+  .btn { cursor: pointer; transition: background .15s, border-color .15s, color .15s }
+  .btn:hover { background: var(--soft) }
+
+  /* Header (same as the landing page) */
+  header { border-bottom: 1px solid var(--line) }
+  header .wrap { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 28px; min-height: 64px; padding-block: 10px }
+  .brand { flex: none; display: flex; align-items: baseline; gap: 12px; text-decoration: none; white-space: nowrap }
+  .brand b { font: 700 16px var(--mono); letter-spacing: -.02em }
+  .brand b::before { content: '>'; margin-inline-end: 8px; color: var(--ok) }
+  .brand span { font: 400 12px var(--mono); color: var(--mu) }
+  nav { display: flex; gap: 2px; margin-inline-start: auto; font: 400 13.5px var(--mono) }
+  nav a { padding: 10px 14px; border-radius: 8px; text-decoration: none; color: var(--mu2) }
+  nav a:hover { color: var(--i) }
+  nav a[aria-current=page] { color: var(--i); box-shadow: inset 0 -2px 0 var(--ok); border-radius: 0 }
+  .theme { flex: none; width: 44px; height: 44px; display: grid; place-items: center; padding: 0; border: 1px solid var(--line); border-radius: 10px; background: var(--card); color: inherit }
+  .theme svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round }
+  [data-theme=light] .theme .moon, [data-theme=dark] .theme .sun { display: none }
+  @media (max-width: 560px) {
+    header .wrap { gap: 6px 12px }
+    header .theme { order: 2; margin-inline-start: auto }
+    nav { order: 3; flex-basis: 100%; margin: 0 -14px; justify-content: space-between }
+  }
+
+  /* Terminal window */
+  .win { border: 1px solid var(--line); border-radius: 12px; background: var(--card); overflow: hidden }
+  .bar { display: flex; align-items: center; gap: 6px; height: 36px; padding: 0 14px; border-bottom: 1px solid var(--line); background: var(--bar); font: 400 12px var(--mono); color: var(--mu) }
+  .bar i { flex: none; width: 9px; height: 9px; border-radius: 50%; background: var(--line2) }
+  .bar .t { margin-inline-start: 8px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis }
+  .bar .r { margin-inline-start: auto; white-space: nowrap }
+
+  /* Page */
+  main .wrap { display: flex; flex-direction: column; gap: 20px; padding-top: 44px; padding-bottom: 72px }
+  /* Let wide children (the sections table) scroll inside their own box instead of widening the page */
+  main .wrap > * { min-width: 0; max-width: 100% }
+  .head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 18px }
+  h1 { margin: 8px 0 0; font: 800 clamp(32px, 4.4vw, 48px)/1.02 var(--mono); letter-spacing: -.045em }
+  .views { display: flex; gap: 8px }
+  .seg { height: 40px; padding: 0 14px; border: 1px solid var(--line); border-radius: 8px; background: transparent; color: var(--mu2); font: 400 13px var(--mono); cursor: pointer; transition: border-color .15s, color .15s }
+  .seg:hover { color: var(--i) }
+  .seg[aria-pressed=true] { border-color: var(--i); color: var(--i) }
+  .tools { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px }
+  /* The native select covers the whole box, so clicking anywhere on it (the › and the count too) opens the list */
+  .pick { position: relative; display: block; overflow: hidden; width: min(460px, 100%); height: 48px; border: 1px solid var(--line2); border-radius: 10px; background: var(--card); cursor: pointer }
+  .pick:hover, .pick:focus-within { border-color: var(--i) }
+  .pick select { position: absolute; inset: 0; width: 100%; height: 100%; padding: 0 var(--caret-w, 130px) 0 38px; border: 0; border-radius: inherit; outline: 0; background: transparent; color: var(--i); font: 400 14px var(--mono); text-overflow: ellipsis; appearance: none; -webkit-appearance: none; cursor: pointer }
+  .pick select option { background: var(--card); color: var(--i) }
+  .pick b, .pick .caret { position: absolute; top: 50%; transform: translateY(-50%); pointer-events: none }
+  .pick b { left: 15px; font: 700 15px var(--mono); color: var(--ok) }
+  .pick .caret { right: 14px; font: 400 12px var(--mono); color: var(--mu); white-space: nowrap }
+  .meta-right { margin-inline-start: auto }
+  .status { padding: 28px; font: 400 13px var(--mono); color: var(--mu) }
+
+  /* Week: days are the rows, time runs across */
+  .gantt { display: grid; grid-template-columns: 72px minmax(0, 1fr) }
+  .hhead { position: relative; height: 36px; border-bottom: 1px solid var(--line) }
+  .hhead span { position: absolute; top: 50%; transform: translate(-50%, -50%); font: 400 11px var(--mono); color: var(--mu) }
+  .hhead span:first-child { transform: translate(0, -50%) }
+  .hhead span:last-child { transform: translate(-100%, -50%) }
+  .dayl { height: 76px; display: flex; align-items: center; padding: 0 14px; border-bottom: 1px solid var(--line); font: 500 12px var(--mono); color: var(--mu2) }
+  .lane { position: relative; height: 76px; border-bottom: 1px solid var(--line); border-inline-start: 1px solid var(--line); background-image: linear-gradient(90deg, var(--line) 1px, transparent 1px); background-size: calc(100% / 9) 100% }
+  .gantt > :nth-last-child(-n+2) { border-bottom: 0 }
+  .blk { position: absolute; top: 8px; bottom: 8px; padding: 6px 8px; border-radius: 7px; border: 1px solid var(--c); background: color-mix(in srgb, var(--c) 14%, var(--card)); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font: 400 11px/1.35 var(--mono); color: var(--mu2) }
+  .blk b { display: block; overflow: hidden; text-overflow: ellipsis; font-size: 12px; font-weight: 700; color: var(--c) }
+  .blk.low { top: 40px; bottom: 6px }
+  .blk.high { bottom: 40px }
+
+  /* Phone: day tabs and a list instead of the grid */
+  .days { display: none; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px }
+  .dtab { height: 46px; border: 1px solid var(--line); border-radius: 8px; background: transparent; color: var(--mu2); font: 500 12.5px var(--mono); cursor: pointer }
+  .dtab small { display: block; font-size: 10px; color: var(--mu) }
+  .dtab[aria-pressed=true] { border-color: var(--i); color: var(--i) }
+  .agenda { display: none }
+  .item { display: grid; grid-template-columns: 58px minmax(0, 1fr); gap: 12px; padding: 12px 14px; border-bottom: 1px solid var(--line) }
+  .item:last-child { border-bottom: 0 }
+  .item .tm { font: 500 12.5px/1.45 var(--mono); color: var(--mu2) }
+  .item b { display: block; font: 700 14px var(--mono); color: var(--c) }
+  .item span { display: block; margin-top: 2px; font-size: 13.5px }
+  .item small { display: block; margin-top: 2px; font: 400 11.5px var(--mono); color: var(--mu) }
+  @media (max-width: 720px) {
+    .week { display: none }
+    .days { display: grid }
+    .agenda { display: block }
+    .views { width: 100% }
+    .views .seg { flex: 1 }
+    .meta-right { margin-inline-start: 0 }
+  }
+
+  /* Sections table; click a header to sort, again to reverse */
+  .tbl { overflow-x: auto }
+  table { width: 100%; border-collapse: collapse; font: 400 12.5px var(--mono) }
+  th { height: 38px; padding: 0; border-bottom: 1px solid var(--line); background: var(--bar); text-align: start; white-space: nowrap }
+  th button { width: 100%; height: 100%; display: flex; align-items: center; gap: 6px; padding: 0 14px; border: 0; background: transparent; color: var(--mu); font: 500 12.5px var(--mono); text-align: start; cursor: pointer }
+  th button:hover { color: var(--i) }
+  th button::after { content: '↕'; opacity: .35 }
+  th[aria-sort=ascending] button, th[aria-sort=descending] button { color: var(--i) }
+  th[aria-sort=ascending] button::after { content: '↑'; opacity: 1 }
+  th[aria-sort=descending] button::after { content: '↓'; opacity: 1 }
+  th.num button { justify-content: flex-end }
+  td { height: 42px; padding: 0 14px; border-bottom: 1px solid var(--line); color: var(--mu2); white-space: nowrap }
+  tr:last-child td { border-bottom: 0 }
+  td.num { text-align: end }
+  td.c { color: var(--i); font-weight: 700 }
+  td .sw { display: inline-block; width: 8px; height: 8px; margin-inline-end: 8px; border-radius: 2px; background: var(--c) }
+
+  /* Footer (same as the landing page) */
+  footer { border-top: 1px solid var(--line) }
+  footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 10px 32px; padding-block: 22px; font: 400 12.5px/1.6 var(--mono); color: var(--mu2) }
+  footer .grp { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 24px }
+  footer .dept { color: var(--i); font-weight: 700 }
+  footer a { color: var(--mu2); text-decoration: none }
+  footer a:hover { color: var(--i); text-decoration: underline; text-underline-offset: 3px }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important } }
+</style>
+</head>
+<body>
+<a class="skip" href="#week">Skip to the schedule</a>
+
+<header>
+  <div class="wrap">
+    <a class="brand" href="/"><b>ECE Labs</b><span>Birzeit University</span></a>
+    <nav aria-label="Primary">
+      <a class="btn" href="/#labs">Labs</a>
+      <a class="btn" href="/schedules/" aria-current="page">Schedules</a>
+      <a class="btn" href="/#why">Why web</a>
+      <a class="btn" href="https://github.com/ECE-Birzeit" target="_blank" rel="noopener">GitHub ↗</a>
+    </nav>
+    <button type="button" class="theme btn" role="switch" aria-checked="false" aria-label="Dark theme" title="Toggle dark theme">
+      <svg class="sun" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3 3l1.4 1.4M11.6 11.6L13 13M3 13l1.4-1.4M11.6 4.4L13 3"/></svg>
+      <svg class="moon" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z"/></svg>
+    </button>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="head">
+      <div>
+        <span class="kicker" id="kicker">// Electrical &amp; Computer Engineering · loading…</span>
+        <h1>Weekly schedules</h1>
+      </div>
+      <div class="views" role="group" aria-label="Browse by">
+        <button type="button" class="seg" data-view="instructor" aria-pressed="true">Instructors</button>
+        <button type="button" class="seg" data-view="course" aria-pressed="false">Courses</button>
+        <button type="button" class="seg" data-view="room" aria-pressed="false">Rooms</button>
+      </div>
+    </div>
+
+    <div class="tools">
+      <label class="pick"><b aria-hidden="true">›</b><select id="pick" disabled><option>Loading…</option></select><span class="caret" id="optcount">▾</span></label>
+      <span class="kicker" id="summary"></span>
+      <span class="kicker meta-right" id="updated"></span>
+    </div>
+
+    <div class="win week" id="week">
+      <div class="bar"><i></i><i></i><i></i><span class="t" id="file">schedule</span><span class="r">08:00 – 17:00 · Sat – Thu</span></div>
+      <div class="gantt" id="gantt"><div class="status">Loading the schedule…</div></div>
+    </div>
+
+    <div class="days" id="days" role="group" aria-label="Day"></div>
+    <div class="win agenda">
+      <div class="bar"><i></i><i></i><i></i><span class="t" id="dayname"></span><span class="r" id="daycount"></span></div>
+      <div id="agenda"></div>
+    </div>
+
+    <div class="win tbl">
+      <table>
+        <thead><tr id="thead"></tr></thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span class="grp">
+      <span class="dept">Electrical &amp; Computer Engineering, Birzeit University</span>
+      <span>Developed by <a href="https://mabushelbaia.com" target="_blank" rel="noopener">Mohammad Abu-Shelbaia</a></span>
+    </span>
+    <span class="grp">
+      <a href="https://github.com/mabushelbaia/bzu-course-catalog" target="_blank" rel="noopener">Data: bzu-course-catalog ↗</a>
+      <a href="https://github.com/ECE-Birzeit" target="_blank" rel="noopener">GitHub ↗</a>
+    </span>
+  </div>
+</footer>
+
+<script>
+  (function () {
+    // Theme switch (same as the landing page)
+    var root = document.documentElement;
+    var mq = window.matchMedia('(prefers-color-scheme: dark)');
+    var toggle = document.querySelector('.theme');
+    var chosen = false;
+    try { chosen = !!localStorage.getItem('ece-labs-theme'); } catch (e) {}
+    function apply(mode) { root.setAttribute('data-theme', mode); toggle.setAttribute('aria-checked', mode === 'dark' ? 'true' : 'false'); }
+    apply(root.getAttribute('data-theme'));
+    toggle.addEventListener('click', function () {
+      var mode = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      chosen = true;
+      try { localStorage.setItem('ece-labs-theme', mode); } catch (e) {}
+      apply(mode);
+      render();
+    });
+    mq.addEventListener('change', function (e) { if (!chosen) { apply(e.matches ? 'dark' : 'light'); render(); } });
+
+    // Live data from bzu-course-catalog, scraped daily from Ritaj
+    var DATA = 'https://raw.githubusercontent.com/mabushelbaia/bzu-course-catalog/main/data/';
+    var PREFIX = 'ENCS';
+    var DAYS = [['S', 'Sat'], ['M', 'Mon'], ['T', 'Tue'], ['W', 'Wed'], ['R', 'Thu']];
+    var KEY = { instructor: 'inst', course: 'code', room: 'room' };
+    var NOUN = { instructor: ['instructor', 'instructors'], course: ['course', 'courses'], room: ['room', 'rooms'] };
+    var $ = function (id) { return document.getElementById(id); };
+    var rows = [], names = {}, lists = {}, codes = [];
+    var state = { view: 'instructor', sel: {}, day: null, sort: null };
+
+    function mins(t) { var p = t.split(':'); return +p[0] * 60 + +p[1]; }
+    function short(n) { var p = n.split(' '); return p.length > 2 ? p[0] + ' ' + p[p.length - 1] : n; }
+    function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+    function color(code) {
+      var dark = root.getAttribute('data-theme') === 'dark';
+      var pal = dark ? ['#4ade80', '#38bdf8', '#fb923c', '#f87171', '#c084fc', '#facc15', '#3cc5cb', '#f472b6'] : ['#15803d', '#0369a1', '#c2410c', '#dc2626', '#7e22ce', '#a16207', '#00787f', '#be185d'];
+      return pal[codes.indexOf(code) % pal.length];
+    }
+    function label(view, x) { return view === 'course' ? x + '  ' + (names[x] || '') : x; }
+
+    // ?view=room&q=Masri107 makes a choice shareable
+    function readUrl() {
+      var u = new URLSearchParams(location.search);
+      if (KEY[u.get('view')]) state.view = u.get('view');
+      if (u.get('q')) state.sel[state.view] = u.get('q');
+    }
+    function writeUrl() {
+      var u = new URLSearchParams({ view: state.view, q: state.sel[state.view] || '' });
+      history.replaceState(null, '', '?' + u.toString());
+    }
+
+    function load() {
+      fetch(DATA + 'index.json').then(function (r) { return r.json(); }).then(function (idx) {
+        var term = (idx.published_terms || Object.keys(idx.terms))[0];
+        return fetch(DATA + term + '/' + PREFIX + '.json').then(function (r) { return r.json(); });
+      }).then(function (d) {
+        d.courses.forEach(function (c) {
+          names[c.code] = c.name.replace(/\w\S*/g, function (w) { return w[0] + w.slice(1).toLowerCase(); });
+          c.sections.forEach(function (s) {
+            s.meetings.forEach(function (m) {
+              if (m.start && m.end && DAYS.some(function (x) { return x[0] === m.day; }))
+                rows.push({ code: c.code, sec: s.number, inst: s.instructor || 'TBA', day: m.day, start: m.start, end: m.end, room: m.room || 'TBA', enr: s.enrolled });
+            });
+          });
+        });
+        codes = Object.keys(names).sort();
+        Object.keys(KEY).forEach(function (v) {
+          var count = {};
+          rows.forEach(function (r) { var x = r[KEY[v]]; if (x && x !== 'TBA') count[x] = (count[x] || 0) + 1; });
+          lists[v] = Object.keys(count).sort(function (a, b) { return a.localeCompare(b); });
+          lists[v].busiest = Object.keys(count).sort(function (a, b) { return count[b] - count[a]; })[0];
+        });
+        $('kicker').textContent = '// ' + d.name + ' · Electrical & Computer Engineering · ' + lists.course.length + ' courses · ' + lists.instructor.length + ' instructors · ' + lists.room.length + ' rooms';
+        $('updated').textContent = 'Updated ' + d.updated_at.slice(0, 10) + ' from Ritaj';
+        $('pick').disabled = false;
+        render();
+      }).catch(function () {
+        $('gantt').innerHTML = '<div class="status">Couldn’t load the schedule. Check your connection and reload.</div>';
+      });
+    }
+
+    var COLS = [
+      { key: 'code', label: 'Course', val: function (g) { return g.code; } },
+      { key: 'name', label: 'Title', val: function (g) { return names[g.code] || ''; } },
+      { key: 'sec', label: 'Section', val: function (g) { return +g.sec || 0; } },
+      { key: 'days', label: 'Days', val: function (g) { return 'SMTWR'.indexOf(g.dayCodes[0]) * 1e4 + mins(g.start); } },
+      { key: 'time', label: 'Time', val: function (g) { return mins(g.start) * 10 + 'SMTWR'.indexOf(g.dayCodes[0]); } },
+      { key: 'other', label: '', val: function (g) { return g.other; } },
+      { key: 'enr', label: 'Enrolled', num: true, val: function (g) { return +g.enr || 0; } }
+    ];
+
+    function render() {
+      if (!rows.length) return;
+      var view = state.view;
+      var sel = state.sel[view] && lists[view].indexOf(state.sel[view]) !== -1 ? state.sel[view] : lists[view].busiest;
+      state.sel[view] = sel;
+      writeUrl();
+      document.querySelectorAll('.views .seg').forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.view === view ? 'true' : 'false'); });
+
+      var pick = $('pick');
+      pick.setAttribute('aria-label', 'Choose ' + NOUN[view][0]);
+      pick.innerHTML = lists[view].map(function (x) { return '<option value="' + esc(x) + '">' + esc(label(view, x)) + '</option>'; }).join('');
+      pick.value = sel;
+      $('optcount').textContent = lists[view].length + ' ' + NOUN[view][1] + ' ▾';
+      pick.style.setProperty('--caret-w', ($('optcount').offsetWidth + 28) + 'px');
+
+      var mine = rows.filter(function (r) { return r[KEY[view]] === sel; }).sort(function (a, b) {
+        return 'SMTWR'.indexOf(a.day) - 'SMTWR'.indexOf(b.day) || mins(a.start) - mins(b.start);
+      });
+      var line = function (r) { return view === 'room' ? short(r.inst) : view === 'course' ? 'Sec ' + r.sec + ' · ' + r.room : r.room; };
+      $('file').textContent = NOUN[view][0] + ' · ' + label(view, sel);
+
+      // Week grid
+      var hours = '';
+      for (var h = 8; h <= 17; h++) hours += '<span style="left:' + ((h - 8) / 9 * 100) + '%">' + (h < 10 ? '0' : '') + h + ':00</span>';
+      var html = '<div class="hhead"></div><div class="hhead">' + hours + '</div>';
+      DAYS.forEach(function (d) {
+        var dm = mine.filter(function (r) { return r.day === d[0]; });
+        html += '<div class="dayl">' + d[1] + '</div><div class="lane">';
+        dm.forEach(function (r, k) {
+          var left = (mins(r.start) - 480) / 540 * 100, w = (mins(r.end) - mins(r.start)) / 540 * 100;
+          // Meetings that overlap in time (two sections at once, in the course view) share the lane height
+          var overlap = dm.filter(function (o) { return mins(o.start) < mins(r.end) && mins(r.start) < mins(o.end); });
+          var cls = overlap.length > 1 ? (overlap.indexOf(r) === 0 ? ' high' : ' low') : '';
+          html += '<div class="blk' + cls + '" style="--c:' + color(r.code) + ';left:calc(' + left + '% + 3px);width:calc(' + w + '% - 6px)" title="' +
+            esc(r.code + ' · ' + r.start + '–' + r.end + ' · ' + r.room + ' · ' + r.inst) + '"><b>' + esc(r.code) + '</b>' + esc(line(r)) + '</div>';
+        });
+        html += '</div>';
+      });
+      $('gantt').innerHTML = html;
+
+      // Phone: day tabs and agenda
+      if (!state.day || !mine.some(function (r) { return r.day === state.day; })) state.day = (mine[0] && mine[0].day) || 'M';
+      $('days').innerHTML = DAYS.map(function (d) {
+        var n = mine.filter(function (r) { return r.day === d[0]; }).length;
+        return '<button type="button" class="dtab" data-day="' + d[0] + '" aria-pressed="' + (d[0] === state.day) + '">' + d[1] + '<small>' + (n || '·') + '</small></button>';
+      }).join('');
+      var today = mine.filter(function (r) { return r.day === state.day; });
+      $('dayname').textContent = DAYS.filter(function (d) { return d[0] === state.day; })[0][1];
+      $('daycount').textContent = today.length + (today.length === 1 ? ' class' : ' classes');
+      $('agenda').innerHTML = today.length ? today.map(function (r) {
+        return '<div class="item" style="--c:' + color(r.code) + '"><div class="tm">' + r.start + '<br>' + r.end + '</div><div><b>' + esc(r.code) + '</b><span>' + esc(names[r.code] || '') +
+          '</span><small>' + esc(line(r) + (view === 'course' ? '' : ' · Sec ' + r.sec)) + '</small></div></div>';
+      }).join('') : '<div class="status">No classes on this day.</div>';
+
+      // Sections table: one row per section and time, days merged
+      var groups = {}, order = [];
+      mine.forEach(function (r) {
+        var k = [r.code, r.sec, r.start, r.end, r.room].join('|');
+        if (!groups[k]) { groups[k] = Object.assign({ dayCodes: [] }, r); order.push(k); }
+        groups[k].dayCodes.push(r.day);
+      });
+      var table = order.map(function (k) {
+        var g = groups[k];
+        g.other = view === 'room' ? g.inst : view === 'course' ? short(g.inst) + ' · ' + g.room : g.room;
+        return g;
+      });
+      COLS[5].label = view === 'room' ? 'Instructor' : view === 'course' ? 'Instructor · Room' : 'Room';
+      if (state.sort) {
+        var col = COLS.filter(function (c) { return c.key === state.sort.key; })[0];
+        table.sort(function (a, b) {
+          var x = col.val(a), y = col.val(b);
+          var c = typeof x === 'number' ? x - y : String(x).localeCompare(String(y), undefined, { numeric: true });
+          return state.sort.dir * (c || ('SMTWR'.indexOf(a.dayCodes[0]) - 'SMTWR'.indexOf(b.dayCodes[0])) || mins(a.start) - mins(b.start));
+        });
+      }
+      $('thead').innerHTML = COLS.map(function (c) {
+        var s = state.sort && state.sort.key === c.key ? (state.sort.dir > 0 ? 'ascending' : 'descending') : 'none';
+        return '<th class="' + (c.num ? 'num' : '') + '" aria-sort="' + s + '"><button type="button" data-sort="' + c.key + '">' + c.label + '</button></th>';
+      }).join('');
+      $('tbody').innerHTML = table.map(function (g) {
+        var days = g.dayCodes.map(function (x) { return DAYS.filter(function (d) { return d[0] === x; })[0][1]; }).join(' ');
+        return '<tr style="--c:' + color(g.code) + '"><td class="c"><span class="sw"></span>' + esc(g.code) + '</td><td>' + esc(names[g.code] || '') + '</td><td>Sec ' + esc(g.sec) +
+          '</td><td>' + days + '</td><td>' + g.start + '–' + g.end + '</td><td>' + esc(g.other) + '</td><td class="num">' + esc(g.enr) + '</td></tr>';
+      }).join('');
+      $('summary').textContent = table.length + (table.length === 1 ? ' section · ' : ' sections · ') + mine.length + (mine.length === 1 ? ' meeting a week' : ' meetings a week');
+    }
+
+    // Controls
+    document.querySelector('.views').addEventListener('click', function (e) {
+      var b = e.target.closest('.seg');
+      if (!b) return;
+      state.view = b.dataset.view;
+      state.sort = null;
+      render();
+    });
+    $('pick').addEventListener('change', function () { state.sel[state.view] = this.value; render(); });
+    $('days').addEventListener('click', function (e) { var b = e.target.closest('.dtab'); if (b) { state.day = b.dataset.day; render(); } });
+    // Sorting: first click sorts by that column, the next click on the same column reverses it
+    $('thead').addEventListener('click', function (e) {
+      var b = e.target.closest('button[data-sort]');
+      if (!b) return;
+      var key = b.dataset.sort;
+      state.sort = state.sort && state.sort.key === key ? { key: key, dir: -state.sort.dir } : { key: key, dir: 1 };
+      render();
+      var again = document.querySelector('button[data-sort="' + key + '"]');
+      if (again) again.focus();
+    });
+
+    readUrl();
+    load();
+  })();
+</script>
+</body>
+</html>
