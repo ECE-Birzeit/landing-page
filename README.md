@@ -32,7 +32,7 @@ python3 -m http.server 8000   # http://localhost:8000
 
 ### Versions
 
-Each design lives in its own folder and is served as is. To freeze the current page before a redesign, copy `index.html` to `vN/index.html`, add `<meta name="robots" content="noindex">`, add the folder to the `cp` line in the deploy workflow, and link it from the footer.
+Each design lives in its own folder and is served as is. To freeze the current page before a redesign, copy `index.html` to `vN/index.html`, add `<meta name="robots" content="noindex">` and add the folder to the `cp` line in the deploy workflow. Old designs stay reachable at their folder but are not linked from the page.
 
 ### Adding a lab
 
@@ -43,7 +43,7 @@ Copy one of the `<article class="lab">` blocks in `index.html` and update:
 - the course number in `.lab-num`, the name, the platform line and the three links
 - the lab's accent colors, in the two `[data-lab=…]` rules (light and dark theme)
 
-The labs sit in one row that scrolls sideways (on its own, one card at a time, until the visitor takes over), so a new card just extends the row, and the "Next lab" card always stays last. Every card has the same fixed layout: the name always takes three lines' worth of space, so a long title never pushes the rest out of line. The "Lab 0N" labels, the manual count and everything else that lists labs all come from the cards, so there is nothing else to update.
+The labs sit in a [Swiper](https://swiperjs.com) carousel (3 across on wide screens, 2 on tablets, 1 on phones) that loops and plays on its own, with Swiper's default dots; a new card just joins the loop. Swiper is loaded from cdnjs with an integrity hash. Every card has the same fixed layout: the name always takes three lines' worth of space, so a long title never pushes the rest out of line. The "Lab 0N" labels, the manual count and everything else that lists labs all come from the cards, so there is nothing else to update.
 
 Then add the lab to the structured data (`application/ld+json`) and its sitemap to `robots.txt`.
 
