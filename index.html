@@ -191,7 +191,7 @@
   /* Hero */
   .hero { border-bottom: 1px solid var(--line) }
   .hero .wrap { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 48px 56px; align-items: center; padding-top: clamp(44px, 6vw, 84px); padding-bottom: clamp(48px, 6vw, 84px) }
-  @media (max-width: 960px) { .hero .wrap { grid-template-columns: minmax(0, 1fr) } }
+  @media (max-width: 960px) { .hero .wrap { grid-template-columns: minmax(0, 1fr) } .deck { width: min(100%, 600px) } }
   .hero-main { min-width: 0; display: flex; flex-direction: column; gap: 24px }
   h1 { margin: 0; font: 800 clamp(46px, 6.6vw, 84px)/.95 var(--mono); letter-spacing: -.055em; text-wrap: balance }
   .lede { margin: 0; max-width: 500px; font-size: 18px; line-height: 1.6; color: var(--mu2); text-wrap: pretty }
@@ -245,7 +245,7 @@
   .rail { margin: -16px calc(-1 * var(--g)) 0; padding: 16px var(--g) 30px;
     --swiper-theme-color: var(--i); --swiper-pagination-bullet-inactive-color: var(--mu); --swiper-pagination-bullet-inactive-opacity: .45;
     -webkit-mask-image: linear-gradient(90deg, transparent, #000 var(--g), #000 calc(100% - var(--g)), transparent); mask-image: linear-gradient(90deg, transparent, #000 var(--g), #000 calc(100% - var(--g)), transparent) }
-  .rail .swiper-slide.lab { height: 412px }
+  .rail .swiper-slide.lab { height: 356px }
   .rail-foot { display: flex; align-items: center; gap: 20px; --swiper-theme-color: var(--i); --swiper-pagination-bullet-inactive-color: var(--mu); --swiper-pagination-bullet-inactive-opacity: .45 }
   .rail-foot .swiper-pagination { position: static; width: auto; text-align: start }
   .invite { margin-inline-start: auto; font: 400 12.5px var(--mono); color: var(--mu2); text-decoration: none; white-space: nowrap }
@@ -253,7 +253,7 @@
   .invite:hover b { text-decoration: underline; text-underline-offset: 3px }
 
   /* A lab card: a terminal window with fixed rows, so a long title never pushes anything out of line */
-  .lab { position: relative; flex: none; height: 412px; display: flex; flex-direction: column; text-decoration: none; transition: border-color .3s, transform .35s cubic-bezier(.2,.75,.2,1), box-shadow .35s }
+  .lab { position: relative; flex: none; height: 356px; display: flex; flex-direction: column; text-decoration: none; transition: border-color .3s, transform .35s cubic-bezier(.2,.75,.2,1), box-shadow .35s }
   .lab:hover, .lab:focus-within { border-color: var(--a); transform: translateY(-6px); box-shadow: 0 0 0 1px var(--a), 0 26px 50px -28px var(--a) }
   .lab .bar .r { text-transform: none }
   .lab-body { flex: 1; display: flex; flex-direction: column; padding: 16px 18px 16px }
@@ -275,17 +275,34 @@
   /* Find a schedule: ECE only; numbers come from the live catalog */
   #schedules { border-top: 1px solid var(--line) }
   #schedules > .wrap { display: flex; flex-direction: column; gap: 22px; padding-top: 68px; padding-bottom: 76px }
-  .entries { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 18px }
-  .entry { display: flex; flex-direction: column; gap: 12px; padding: 22px; border: 1px solid var(--line); border-radius: 12px; background: var(--card); text-decoration: none; transition: border-color .3s, transform .35s cubic-bezier(.2,.75,.2,1) }
+  .entries { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px }
+  @media (max-width: 720px) { .entries { grid-template-columns: minmax(0, 1fr) } }
+  .entry { display: flex; flex-direction: column; text-decoration: none; transition: border-color .3s, transform .35s cubic-bezier(.2,.75,.2,1) }
   .entry:hover, .entry:focus-visible { border-color: var(--i); transform: translateY(-4px) }
+  .entry-body { flex: 1; display: flex; flex-direction: column; gap: 12px; padding: 20px 18px 18px }
   .entry .n { font: 800 52px/.9 var(--mono); letter-spacing: -.05em }
   .entry .l { font: 700 15px var(--mono) }
   .entry .d { font-size: 14.5px; line-height: 1.5; color: var(--mu2) }
   .entry .more { margin-top: auto; padding-top: 6px; font: 400 12.5px var(--mono); color: var(--ok) }
 
+  /* Impact strip: what's on the platform, counted daily from the lab repos (stats.json, written by the deploy) */
+  #impact { border-top: 1px solid var(--line) }
+  #impact > .wrap { display: flex; flex-direction: column; gap: 22px; padding-top: 68px; padding-bottom: 76px }
+  .stats-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)) }
+  .stats-grid.visits { grid-template-columns: repeat(5, minmax(0, 1fr)) }
+  /* 5 numbers on a tablet or phone: visitors on one row, the counts on the next */
+  @media (max-width: 900px) { .stats-grid.visits { grid-template-columns: repeat(6, minmax(0, 1fr)) } .stats-grid.visits .stat { grid-column: span 2 } .stats-grid.visits .stat.v { grid-column: span 3 } }
+  .stat { display: flex; flex-direction: column; gap: 10px; padding: 26px 24px; border-inline-end: 1px solid var(--line); border-bottom: 1px solid var(--line); margin: 0 -1px -1px 0 }
+  .stat b { font: 800 46px/.95 var(--mono); letter-spacing: -.05em }
+  .stat span { font: 500 13px var(--mono); color: var(--mu2) }
+  .per-lab { display: flex; flex-wrap: wrap; gap: 8px 22px; padding: 14px 18px; border-top: 1px solid var(--line); margin-top: 1px; font: 400 12.5px var(--mono); color: var(--mu) }
+  .per-lab i { font-style: normal; color: var(--a) }
+  .per-lab > span { white-space: nowrap }
+    @media (max-width: 560px) { .stat { padding: 20px 14px; gap: 8px } .stat b { font-size: 34px } .stat span { font-size: 12px } }
+
   /* Why web */
   #why { border-top: 1px solid var(--line); background: var(--bar) }
-  #why > .wrap { display: flex; flex-wrap: wrap; gap: 40px 56px; padding-top: 76px; padding-bottom: 84px }
+  #why > .wrap { display: flex; flex-wrap: wrap; gap: 40px 56px; padding-top: 68px; padding-bottom: 76px }
   .why-side { flex: 1 1 360px; min-width: 0; display: flex; flex-direction: column; gap: 22px }
   .feats { display: flex; flex-direction: column; border-top: 1px solid var(--line) }
   .feat { display: flex; gap: 18px; align-items: flex-start; width: 100%; padding: 16px 6px; border: 0; border-bottom: 1px solid var(--line); background: transparent; color: inherit; font: inherit; text-align: start; cursor: pointer; transition: background .15s }
@@ -300,7 +317,7 @@
   .demo-body { min-height: 360px; padding: 24px }
   .dpanel { display: flex; flex-direction: column; gap: 16px; animation: fade .4s cubic-bezier(.2,.7,.3,1) }
   .dnote { margin: 0; font-size: 14.5px; line-height: 1.55; color: var(--mu2) }
-  .dstatus { display: flex; align-items: center; gap: 10px; min-height: 50px; padding: 0 16px; border: 1px solid var(--line); border-radius: 10px; font: 400 14px var(--mono) }
+  .dstatus { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; min-height: 50px; padding: 10px 16px; white-space: nowrap; border: 1px solid var(--line); border-radius: 10px; font: 400 14px var(--mono) }
   .dstatus .dot { flex: none; width: 8px; height: 8px; border-radius: 50%; background: var(--mu) }
   .dstatus small { margin-inline-start: auto; font-size: 12px; color: var(--mu); text-align: end }
   .dresume { display: grid; grid-template-columns: 1fr auto; row-gap: 4px; column-gap: 16px; padding: 18px 20px; border: 1px solid var(--a); border-radius: 10px; background: color-mix(in srgb, var(--a) 8%, var(--card)) }
@@ -513,14 +530,41 @@
     <div class="wrap">
       <div class="sec-head">
         <div>
-          <span class="kicker" id="sched-kicker">// Electrical &amp; Computer Engineering · updated daily from Ritaj</span>
+          <span class="kicker" id="sched-kicker">// This semester · from Ritaj, daily</span>
           <h2 id="sched-h">Find a schedule</h2>
         </div>
       </div>
       <div class="entries">
-        <a class="entry" href="/schedules/?view=instructor"><span class="n" data-count="instructor">··</span><span class="l">Instructors</span><span class="d">Any ECE instructor's teaching week: courses, sections and rooms.</span><span class="more">Browse instructors →</span></a>
-        <a class="entry" href="/schedules/?view=course"><span class="n" data-count="course">··</span><span class="l">Courses</span><span class="d">Every section of an ECE course: when it meets, where, and who teaches it.</span><span class="more">Browse courses →</span></a>
-        <a class="entry" href="/schedules/?view=room"><span class="n" data-count="room">··</span><span class="l">Rooms</span><span class="d">What's booked in each lab and classroom across the week.</span><span class="more">Browse rooms →</span></a>
+        <a class="entry win" href="/schedules/?view=instructor"><span class="bar" aria-hidden="true"><i></i><i></i><i></i><span class="t">schedules/instructors</span></span><span class="entry-body"><span class="n" data-count="instructor">··</span><span class="l">Instructors</span><span class="d">Any ECE instructor's teaching week: courses, sections and rooms.</span><span class="more">Browse instructors →</span></span></a>
+        <a class="entry win" href="/schedules/?view=course"><span class="bar" aria-hidden="true"><i></i><i></i><i></i><span class="t">schedules/courses</span></span><span class="entry-body"><span class="n" data-count="course">··</span><span class="l">Courses</span><span class="d">Every section of an ENCS, ENEE or MSCE course: when it meets, where, and who teaches it.</span><span class="more">Browse courses →</span></span></a>
+        <a class="entry win" href="/schedules/?view=room"><span class="bar" aria-hidden="true"><i></i><i></i><i></i><span class="t">schedules/rooms</span></span><span class="entry-body"><span class="n" data-count="room">··</span><span class="l">Rooms</span><span class="d">What's booked in each lab and classroom across the week.</span><span class="more">Browse rooms →</span></span></a>
+      </div>
+    </div>
+  </section>
+
+  <section id="impact" aria-labelledby="impact-h">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <span class="kicker" id="impact-kicker">// The four lab sites · counted daily</span>
+          <h2 id="impact-h">Used across ECE</h2>
+        </div>
+      </div>
+      <div class="stats win">
+        <div class="bar" aria-hidden="true"><i></i><i></i><i></i><span class="t">stats.json</span><span class="r" id="stats-when">updated daily</span></div>
+        <div class="stats-grid" id="stats-grid">
+        <div class="stat v" hidden><b data-visit="students">0</b><span>students this semester</span></div>
+        <div class="stat v" hidden><b data-visit="experiment_views">0</b><span>experiment pages opened</span></div>
+        <div class="stat"><b data-stat="manuals">4</b><span>lab manuals</span></div>
+        <div class="stat"><b data-stat="experiments">21</b><span>experiments online</span></div>
+        <div class="stat"><b data-stat="code_listings">75</b><span>code listings</span></div>
+        </div>
+      <div class="per-lab" id="per-lab">
+        <span data-lab="encs4110"><i>■</i> ENCS4110 · <span data-lab-visit="encs4110" hidden></span><span data-lab-exp="encs4110">10</span> experiments</span>
+        <span data-lab="encs4101"><i>■</i> ENCS4101 · <span data-lab-visit="encs4101" hidden></span><span data-lab-exp="encs4101">3</span> experiments</span>
+        <span data-lab="encs5150"><i>■</i> ENCS5150 · <span data-lab-visit="encs5150" hidden></span><span data-lab-exp="encs5150">5</span> experiments</span>
+        <span data-lab="encs5101"><i>■</i> ENCS5101 · <span data-lab-visit="encs5101" hidden></span><span data-lab-exp="encs5101">3</span> experiments</span>
+      </div>
       </div>
     </div>
   </section>
@@ -733,10 +777,15 @@ __HAL_TIM_SET_COMPARE(&amp;htim2, TIM_CHANNEL_1, duty);</code></pre>
       var base = 'https://raw.githubusercontent.com/mabushelbaia/bzu-course-catalog/main/data/';
       fetch(base + 'index.json').then(function (r) { return r.json(); }).then(function (idx) {
         var term = (idx.published_terms || Object.keys(idx.terms))[0];
-        return fetch(base + term + '/ENCS.json').then(function (r) { return r.json(); });
-      }).then(function (d) {
+        // The department's programs: ENCS, ENEE and the MSCE master's
+        return Promise.all(['ENCS', 'ENEE', 'MSCE'].map(function (p) {
+          return fetch(base + term + '/' + p + '.json').then(function (r) { return r.ok ? r.json() : null; });
+        }));
+      }).then(function (files) {
+        files = files.filter(Boolean);
+        var d = files[0];
         var sets = { instructor: {}, course: {}, room: {} };
-        d.courses.forEach(function (c) {
+        files.forEach(function (f) { f.courses.forEach(function (c) {
           c.sections.forEach(function (s) {
             s.meetings.forEach(function (m) {
               if (!m.start) return;
@@ -745,11 +794,28 @@ __HAL_TIM_SET_COMPARE(&amp;htim2, TIM_CHANNEL_1, duty);</code></pre>
               if (m.room) sets.room[m.room] = 1;
             });
           });
-        });
+        }); });
         all('[data-count]').forEach(function (el) { el.textContent = Object.keys(sets[el.dataset.count]).length; });
-        document.getElementById('sched-kicker').textContent = '// ' + d.name + ' · Electrical & Computer Engineering · updated daily from Ritaj';
+        document.getElementById('sched-kicker').textContent = '// ' + d.name + ' · from Ritaj, daily';
       }).catch(function () {});
     })();
+
+    // Impact strip: the deploy writes /stats.json daily; the numbers in the HTML are a fallback
+    fetch('/stats.json').then(function (r) { return r.ok ? r.json() : null; }).then(function (s) {
+      if (!s) return;
+      all('[data-stat]').forEach(function (el) { if (s[el.dataset.stat] != null) el.textContent = s[el.dataset.stat]; });
+      all('[data-lab-exp]').forEach(function (el) { var l = s.labs && s.labs[el.dataset.labExp]; if (l) el.textContent = l.experiments; });
+      if (s.generated_at) document.getElementById('stats-when').textContent = 'counted ' + s.generated_at.slice(0, 10);
+      // Visitors only appear once the deploy has Analytics access
+      var v = s.visitors;
+      if (v && v.students) {
+        var fmt = function (n) { return Number(n).toLocaleString('en-US'); };
+        all('[data-visit]').forEach(function (el) { el.textContent = fmt(v[el.dataset.visit] || 0); el.parentNode.hidden = false; });
+        document.getElementById('stats-grid').classList.add('visits');
+        all('[data-lab-visit]').forEach(function (el) { var l = s.labs && s.labs[el.dataset.labVisit]; if (l && l.students != null) { el.textContent = fmt(l.students) + ' students · '; el.hidden = false; } });
+        document.getElementById('impact-kicker').textContent = '// The four lab sites · since ' + v.since + ', from their analytics';
+      }
+    }).catch(function () {});
 
     // Why web: tabs with arrow-key support.
     var feats = all('.feat');

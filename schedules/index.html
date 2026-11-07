@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ECE weekly schedules · ECE Labs</title>
-<meta name="description" content="Weekly schedules for the Department of Electrical &amp; Computer Engineering at Birzeit University: browse by instructor, course or room. Updated daily from Ritaj.">
+<meta name="description" content="Weekly schedules for the Department of Electrical &amp; Computer Engineering at Birzeit University (ENCS, ENEE and MSCE courses): browse by instructor, course or room. Updated daily from Ritaj.">
 <meta property="og:title" content="ECE weekly schedules · ECE Labs">
 <meta property="og:description" content="Browse ECE schedules at Birzeit University by instructor, course or room. Updated daily from Ritaj.">
 <meta property="og:url" content="https://birzeit.me/schedules/">
@@ -92,7 +92,7 @@
   .seg[aria-pressed=true] { border-color: var(--i); color: var(--i) }
   .tools { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px }
   /* The native select covers the whole box, so clicking anywhere on it (the › and the count too) opens the list */
-  .pick { position: relative; display: block; overflow: hidden; width: min(460px, 100%); height: 48px; border: 1px solid var(--line2); border-radius: 10px; background: var(--card); cursor: pointer }
+  .pick { position: relative; display: block; overflow: hidden; width: min(600px, 100%); height: 48px; border: 1px solid var(--line2); border-radius: 10px; background: var(--card); cursor: pointer }
   .pick:hover, .pick:focus-within { border-color: var(--i) }
   .pick select { position: absolute; inset: 0; width: 100%; height: 100%; padding: 0 var(--caret-w, 130px) 0 38px; border: 0; border-radius: inherit; outline: 0; background: transparent; color: var(--i); font: 400 14px var(--mono); text-overflow: ellipsis; appearance: none; -webkit-appearance: none; cursor: pointer }
   .pick select option { background: var(--card); color: var(--i) }
@@ -187,7 +187,7 @@
   <div class="wrap">
     <div class="head">
       <div>
-        <span class="kicker" id="kicker">// Electrical &amp; Computer Engineering · loading…</span>
+        <span class="kicker" id="kicker">// Loading this semester…</span>
         <h1>Weekly schedules</h1>
       </div>
       <div class="views" role="group" aria-label="Browse by">
@@ -257,7 +257,8 @@
 
     // Live data from bzu-course-catalog, scraped daily from Ritaj
     var DATA = 'https://raw.githubusercontent.com/mabushelbaia/bzu-course-catalog/main/data/';
-    var PREFIX = 'ENCS';
+    // The department's programs: computer engineering, electrical engineering, and the master's in computer engineering
+    var PROGRAMS = [['ENCS', 'Computer Engineering'], ['ENEE', 'Electrical Engineering'], ['MSCE', "Master's in Computer Engineering"]];
     var DAYS = [['S', 'Sat'], ['M', 'Mon'], ['T', 'Tue'], ['W', 'Wed'], ['R', 'Thu']];
     var KEY = { instructor: 'inst', course: 'code', room: 'room' };
     var NOUN = { instructor: ['instructor', 'instructors'], course: ['course', 'courses'], room: ['room', 'rooms'] };
@@ -291,9 +292,14 @@
       fetch(DATA + 'index.json').then(function (r) { return r.json(); }).then(function (idx) {
         checked = idx.checked_at || null;
         var term = (idx.published_terms || Object.keys(idx.terms))[0];
-        return fetch(DATA + term + '/' + PREFIX + '.json').then(function (r) { return r.json(); });
-      }).then(function (d) {
-        d.courses.forEach(function (c) {
+        return Promise.all(PROGRAMS.map(function (p) {
+          // A program with no courses this semester has no file; skip it rather than fail
+          return fetch(DATA + term + '/' + p[0] + '.json').then(function (r) { return r.ok ? r.json() : null; });
+        }));
+      }).then(function (files) {
+        files = files.filter(Boolean);
+        var d = files[0];
+        files.forEach(function (f) { f.courses.forEach(function (c) {
           names[c.code] = c.name.replace(/\w\S*/g, function (w) { return w[0] + w.slice(1).toLowerCase(); });
           c.sections.forEach(function (s) {
             s.meetings.forEach(function (m) {
@@ -301,7 +307,8 @@
                 rows.push({ code: c.code, sec: s.number, inst: s.instructor || 'TBA', day: m.day, start: m.start, end: m.end, room: m.room || 'TBA', enr: s.enrolled });
             });
           });
-        });
+        }); });
+        d.updated_at = files.map(function (f) { return f.updated_at; }).sort().pop();
         codes = Object.keys(names).sort();
         Object.keys(KEY).forEach(function (v) {
           var count = {};
@@ -309,7 +316,7 @@
           lists[v] = Object.keys(count).sort(function (a, b) { return a.localeCompare(b); });
           lists[v].busiest = Object.keys(count).sort(function (a, b) { return count[b] - count[a]; })[0];
         });
-        $('kicker').textContent = '// ' + d.name + ' · Electrical & Computer Engineering · ' + lists.course.length + ' courses · ' + lists.instructor.length + ' instructors · ' + lists.room.length + ' rooms';
+        $('kicker').textContent = '// ' + d.name + ' · ' + lists.course.length + ' courses · ' + lists.instructor.length + ' instructors · ' + lists.room.length + ' rooms';
         // checked_at: when Ritaj was last scraped (daily); updated_at: when this semester's data last changed
         var c = (checked || d.updated_at).slice(0, 10), u = d.updated_at.slice(0, 10);
         $('updated').textContent = 'Checked ' + c + ' from Ritaj' + (u !== c ? ' · last change ' + u : '');
@@ -340,7 +347,12 @@
 
       var pick = $('pick');
       pick.setAttribute('aria-label', 'Choose ' + NOUN[view][0]);
-      pick.innerHTML = lists[view].map(function (x) { return '<option value="' + esc(x) + '">' + esc(label(view, x)) + '</option>'; }).join('');
+      var opt = function (x) { return '<option value="' + esc(x) + '">' + esc(label(view, x)) + '</option>'; };
+      // Courses are grouped by program; instructors and rooms are shared across programs
+      pick.innerHTML = view !== 'course' ? lists[view].map(opt).join('') : PROGRAMS.map(function (p) {
+        var cs = lists.course.filter(function (x) { return x.indexOf(p[0]) === 0; });
+        return cs.length ? '<optgroup label="' + p[0] + ' · ' + esc(p[1]) + '">' + cs.map(opt).join('') + '</optgroup>' : '';
+      }).join('');
       pick.value = sel;
       $('optcount').textContent = lists[view].length + ' ' + NOUN[view][1] + ' ▾';
       pick.style.setProperty('--caret-w', ($('optcount').offsetWidth + 28) + 'px');

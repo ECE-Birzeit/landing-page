@@ -3,6 +3,9 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main]
+  # Daily, so the impact strip's counts follow the lab sites
+  schedule:
+    - cron: "40 3 * * *"
   workflow_dispatch:
 
 permissions:
@@ -29,6 +32,25 @@ jobs:
           mkdir _site
           cp index.html CNAME og.png favicon.svg favicon.png favicon.ico apple-touch-icon.png sitemap.xml robots.txt _site/
           cp -r v1 v2 legacy assets schedules _site/
+      - name: Sign in to Google Analytics
+        # Keyless: GitHub's OIDC token is exchanged for the ga-reader service account
+        # (project birzeit-me-stats). Skipped until the GA_PROPERTY_ID variable is set.
+        if: vars.GA_PROPERTY_ID != ''
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: projects/697216577318/locations/global/workloadIdentityPools/github/providers/landing-page
+          service_account: ga-reader@birzeit-me-stats.iam.gserviceaccount.com
+      - name: Count what's on the platform
+        # Manuals, experiments and code listings from the four lab repos, plus visitors from Analytics
+        run: |
+          if [ -n "$GA_PROPERTY_ID" ]; then pip install --quiet google-auth requests; fi
+          python3 scripts/stats.py > _site/stats.json
+          cat _site/stats.json
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          GA_PROPERTY_ID: ${{ vars.GA_PROPERTY_ID }}
+          # First day of the semester the visitor numbers count from
+          SEMESTER_START: "2026-09-01"
       - uses: actions/upload-pages-artifact@v5
 
   deploy:
