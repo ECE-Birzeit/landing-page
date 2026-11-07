@@ -287,7 +287,9 @@
     }
 
     function load() {
+      var checked = null;
       fetch(DATA + 'index.json').then(function (r) { return r.json(); }).then(function (idx) {
+        checked = idx.checked_at || null;
         var term = (idx.published_terms || Object.keys(idx.terms))[0];
         return fetch(DATA + term + '/' + PREFIX + '.json').then(function (r) { return r.json(); });
       }).then(function (d) {
@@ -308,7 +310,9 @@
           lists[v].busiest = Object.keys(count).sort(function (a, b) { return count[b] - count[a]; })[0];
         });
         $('kicker').textContent = '// ' + d.name + ' · Electrical & Computer Engineering · ' + lists.course.length + ' courses · ' + lists.instructor.length + ' instructors · ' + lists.room.length + ' rooms';
-        $('updated').textContent = 'Updated ' + d.updated_at.slice(0, 10) + ' from Ritaj';
+        // checked_at: when Ritaj was last scraped (daily); updated_at: when this semester's data last changed
+        var c = (checked || d.updated_at).slice(0, 10), u = d.updated_at.slice(0, 10);
+        $('updated').textContent = 'Checked ' + c + ' from Ritaj' + (u !== c ? ' · last change ' + u : '');
         $('pick').disabled = false;
         render();
       }).catch(function () {
