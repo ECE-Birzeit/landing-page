@@ -115,6 +115,10 @@
   .gantt > :nth-last-child(-n+2) { border-bottom: 0 }
   .blk { position: absolute; top: 8px; bottom: 8px; padding: 6px 8px; border-radius: 7px; border: 1px solid var(--c); background: color-mix(in srgb, var(--c) 14%, var(--card)); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font: 400 11px/1.35 var(--mono); color: var(--mu2) }
   .blk b { display: block; overflow: hidden; text-overflow: ellipsis; font-size: 12px; font-weight: 700; color: var(--c) }
+  .blk.ext { border-style: dashed; border-color: var(--line2); background: var(--soft); color: var(--mu) }
+  .blk.ext b { color: var(--mu2) }
+  .item.ext b, tr.ext td.c { color: var(--mu2) }
+  tr.ext td { color: var(--mu) }
   .blk.low { top: 40px; bottom: 6px }
   .blk.high { bottom: 40px }
 
@@ -176,8 +180,8 @@
     [data-anim=all] .blk { transform-origin: left center; animation: blk-in .6s var(--spring) backwards; animation-delay: var(--k, 0ms) }
     [data-anim=all] .item { animation: row-in .5s var(--spring) backwards; animation-delay: var(--k, 0ms) }
     [data-anim=all] #tbody tr, [data-anim=rows] #tbody tr { animation: row-in .45s var(--ease-out) backwards; animation-delay: var(--k, 0ms) }
-    .blk { transition: transform .35s var(--spring), box-shadow .2s }
-    .blk:hover { transform: translateY(-2px); box-shadow: 0 8px 18px -10px var(--c); z-index: 1 }
+    .blk { transition: transform .35s var(--spring) }
+    .blk:hover { transform: translateY(-2px); z-index: 1 }
     .seg, .dtab { transition: border-color .15s, color .15s, background .15s, transform .35s var(--spring) }
     .seg:active, .dtab:active { transform: scale(.96) }
     .seg[aria-pressed=true], .dtab[aria-pressed=true] { background: var(--soft) }
@@ -286,6 +290,24 @@
     var NOUN = { instructor: ['instructor', 'instructors'], course: ['course', 'courses'], room: ['room', 'rooms'] };
     var $ = function (id) { return document.getElementById(id); };
     var rows = [], names = {}, lists = {}, codes = [];
+    // Rooms are shared with other departments: their classes come from rooms.json, loaded on first use
+    var term = null, roomRows = null, roomsLoading = false;
+    var ECE = /^(ENCS|ENEE|MSCE)/;
+    function loadRooms() {
+      if (roomRows || roomsLoading || !term) return;
+      roomsLoading = true;
+      fetch(DATA + term + '/rooms.json').then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
+        if (!d) return;
+        roomRows = {};
+        Object.keys(d.rooms).forEach(function (room) {
+          roomRows[room] = d.rooms[room].filter(function (m) { return DAYS.some(function (x) { return x[0] === m[3]; }); }).map(function (m) {
+            var mine = rows.filter(function (x) { return x.code === m[0] && x.sec === m[1] && x.day === m[3] && x.start === m[4]; })[0];
+            return { code: m[0], sec: m[1], inst: m[2] || 'TBA', day: m[3], start: m[4], end: m[5], room: room, enr: mine ? mine.enr : '', ext: !ECE.test(m[0]) };
+          });
+        });
+        if (state.view === 'room') render('rooms');
+      }).catch(function () {}).then(function () { roomsLoading = false; });
+    }
     var state = { view: 'instructor', sel: {}, day: null, sort: null };
 
     function mins(t) { var p = t.split(':'); return +p[0] * 60 + +p[1]; }
@@ -313,7 +335,7 @@
       var checked = null;
       fetch(DATA + 'index.json').then(function (r) { return r.json(); }).then(function (idx) {
         checked = idx.checked_at || null;
-        var term = (idx.published_terms || Object.keys(idx.terms))[0];
+        term = (idx.published_terms || Object.keys(idx.terms))[0];
         return Promise.all(PROGRAMS.map(function (p) {
           // A program with no courses this semester has no file; skip it rather than fail
           return fetch(DATA + term + '/' + p[0] + '.json').then(function (r) { return r.ok ? r.json() : null; });
@@ -336,7 +358,6 @@
           var count = {};
           rows.forEach(function (r) { var x = r[KEY[v]]; if (x && x !== 'TBA') count[x] = (count[x] || 0) + 1; });
           lists[v] = Object.keys(count).sort(function (a, b) { return a.localeCompare(b); });
-          lists[v].busiest = Object.keys(count).sort(function (a, b) { return count[b] - count[a]; })[0];
         });
         $('kicker').textContent = '// ' + d.name + ' · ' + lists.course.length + ' courses · ' + lists.instructor.length + ' instructors · ' + lists.room.length + ' rooms';
         // checked_at: when Ritaj was last scraped (daily); updated_at: when this semester's data last changed
@@ -363,7 +384,7 @@
       if (!rows.length) return;
       $('main').dataset.anim = mode === 'theme' ? 'none' : mode === 'sort' ? 'rows' : 'all';
       var view = state.view;
-      var sel = state.sel[view] && lists[view].indexOf(state.sel[view]) !== -1 ? state.sel[view] : lists[view].busiest;
+      var sel = state.sel[view] && lists[view].indexOf(state.sel[view]) !== -1 ? state.sel[view] : lists[view][0];
       state.sel[view] = sel;
       writeUrl();
       document.querySelectorAll('.views .seg').forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.view === view ? 'true' : 'false'); });
@@ -380,10 +401,12 @@
       $('optcount').textContent = lists[view].length + ' ' + NOUN[view][1] + ' ▾';
       pick.style.setProperty('--caret-w', ($('optcount').offsetWidth + 28) + 'px');
 
-      var mine = rows.filter(function (r) { return r[KEY[view]] === sel; }).sort(function (a, b) {
+      if (view === 'room') loadRooms();
+      var src = view === 'room' && roomRows && roomRows[sel] ? roomRows[sel] : rows.filter(function (r) { return r[KEY[view]] === sel; });
+      var mine = src.slice().sort(function (a, b) {
         return 'SMTWR'.indexOf(a.day) - 'SMTWR'.indexOf(b.day) || mins(a.start) - mins(b.start);
       });
-      var line = function (r) { return view === 'room' ? short(r.inst) : view === 'course' ? 'Sec ' + r.sec + ' · ' + r.room : r.room; };
+      var line = function (r) { return view === 'room' ? (r.ext ? 'Sec ' + r.sec + ' · ' : '') + short(r.inst) : view === 'course' ? 'Sec ' + r.sec + ' · ' + r.room : r.room; };
       $('file').textContent = NOUN[view][0] + ' · ' + label(view, sel);
 
       // Week grid
@@ -398,7 +421,7 @@
           // Meetings that overlap in time (two sections at once, in the course view) share the lane height
           var overlap = dm.filter(function (o) { return mins(o.start) < mins(r.end) && mins(r.start) < mins(o.end); });
           var cls = overlap.length > 1 ? (overlap.indexOf(r) === 0 ? ' high' : ' low') : '';
-          html += '<div class="blk' + cls + '" style="--k:' + (di * 55 + k * 45) + 'ms;--c:' + color(r.code) + ';left:calc(' + left + '% + 3px);width:calc(' + w + '% - 6px)" title="' +
+          html += '<div class="blk' + cls + (r.ext ? ' ext' : '') + '" style="--k:' + (di * 55 + k * 45) + 'ms;--c:' + color(r.code) + ';left:calc(' + left + '% + 3px);width:calc(' + w + '% - 6px)" title="' +
             esc(r.code + ' · ' + r.start + '–' + r.end + ' · ' + r.room + ' · ' + r.inst) + '"><b>' + esc(r.code) + '</b>' + esc(line(r)) + '</div>';
         });
         html += '</div>';
@@ -415,7 +438,7 @@
       $('dayname').textContent = DAYS.filter(function (d) { return d[0] === state.day; })[0][1];
       $('daycount').textContent = today.length + (today.length === 1 ? ' class' : ' classes');
       $('agenda').innerHTML = today.length ? today.map(function (r, k) {
-        return '<div class="item" style="--k:' + k * 50 + 'ms;--c:' + color(r.code) + '"><div class="tm">' + r.start + '<br>' + r.end + '</div><div><b>' + esc(r.code) + '</b><span>' + esc(names[r.code] || '') +
+        return '<div class="item' + (r.ext ? ' ext' : '') + '" style="--k:' + k * 50 + 'ms;--c:' + color(r.code) + '"><div class="tm">' + r.start + '<br>' + r.end + '</div><div><b>' + esc(r.code) + '</b><span>' + esc(names[r.code] || '') +
           '</span><small>' + esc(line(r) + (view === 'course' ? '' : ' · Sec ' + r.sec)) + '</small></div></div>';
       }).join('') : '<div class="status">No classes on this day.</div>';
 
@@ -446,10 +469,12 @@
       }).join('');
       $('tbody').innerHTML = table.map(function (g, k) {
         var days = g.dayCodes.map(function (x) { return DAYS.filter(function (d) { return d[0] === x; })[0][1]; }).join(' ');
-        return '<tr style="--k:' + Math.min(k * 22, 330) + 'ms;--c:' + color(g.code) + '"><td class="c"><span class="sw"></span>' + esc(g.code) + '</td><td>' + esc(names[g.code] || '') + '</td><td>Sec ' + esc(g.sec) +
+        return '<tr' + (g.ext ? ' class="ext"' : '') + ' style="--k:' + Math.min(k * 22, 330) + 'ms;--c:' + (g.ext ? 'var(--line2)' : color(g.code)) + '"><td class="c"><span class="sw"></span>' + esc(g.code) + '</td><td>' + esc(names[g.code] || (g.ext ? 'Another department' : '')) + '</td><td>Sec ' + esc(g.sec) +
           '</td><td>' + days + '</td><td>' + g.start + '–' + g.end + '</td><td>' + esc(g.other) + '</td><td class="num">' + esc(g.enr) + '</td></tr>';
       }).join('');
-      $('summary').textContent = table.length + (table.length === 1 ? ' section · ' : ' sections · ') + mine.length + (mine.length === 1 ? ' meeting a week' : ' meetings a week');
+      var others = mine.filter(function (r) { return r.ext; }).length;
+      $('summary').textContent = table.length + (table.length === 1 ? ' section · ' : ' sections · ') + mine.length + (mine.length === 1 ? ' meeting a week' : ' meetings a week') +
+        (view !== 'room' ? '' : roomRows ? (others ? ' · ' + others + ' from other departments' : ' · ECE only') : ' · loading other departments…');
     }
 
     // Controls
