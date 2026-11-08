@@ -269,7 +269,7 @@
 
   /* A lab card: a terminal window with fixed rows, so a long title never pushes anything out of line */
   .lab { position: relative; flex: none; height: 100%; display: flex; flex-direction: column; text-decoration: none; transition: border-color .3s, transform .6s var(--spring), box-shadow .35s }
-  .lab:hover, .lab:focus-within { border-color: var(--a); transform: translateY(-6px); box-shadow: 0 0 0 1px var(--a), 0 26px 50px -28px var(--a) }
+  .lab:hover, .lab:focus-within { border-color: var(--a); transform: translateY(-6px) }
   .lab .bar .r { text-transform: none }
   .lab-body { flex: 1; display: flex; flex-direction: column; padding: 16px 18px 16px }
   .lab-no { font: 400 12px var(--mono); color: var(--mu) }
@@ -330,9 +330,12 @@
   .feats { display: flex; flex-direction: column; border-top: 1px solid var(--line) }
   .feat { display: flex; gap: 18px; align-items: flex-start; width: 100%; padding: 16px 6px; border: 0; border-bottom: 1px solid var(--line); background: transparent; color: inherit; font: inherit; text-align: start; cursor: pointer; transition: background .15s }
   .feat:hover { background: var(--soft) }
-  .feat-n { flex: none; font: 800 15px/22px var(--mono); color: var(--mu) }
+  /* The ">" sits in its own fixed slot before the number, so selecting a row never moves its text;
+     it slides in on the selected row and out of the one left behind */
+  .feat-n { flex: none; display: flex; font: 800 15px/22px var(--mono); color: var(--mu); transition: color .25s var(--ease-out) }
+  .feat-n::before { content: '>'; width: 1.6ch; opacity: 0; transform: translateX(-8px); transition: opacity .25s var(--ease-out), transform .45s var(--spring) }
   .feat[aria-selected=true] .feat-n { color: var(--ok) }
-  .feat[aria-selected=true] .feat-n::before { content: '> ' }
+  .feat[aria-selected=true] .feat-n::before { opacity: 1; transform: none }
   .feat b { display: block; font: 700 15.5px/22px var(--mono); letter-spacing: -.01em }
   .feat-d { display: block; margin-top: 4px; font-size: 14.5px; line-height: 1.5; color: var(--mu2) }
   .why-note { margin: 0; font-size: 14.5px; color: var(--mu2) }
