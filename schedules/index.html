@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ECE weekly schedules · ECE Labs</title>
-<meta name="description" content="Weekly schedules for the Department of Electrical &amp; Computer Engineering at Birzeit University (ENCS, ENEE and MSCE courses): browse by instructor, course or room. Updated daily from Ritaj.">
+<meta name="description" content="Weekly schedules for the Department of Electrical &amp; Computer Engineering at Birzeit University (ENCS, ENEE, MSCE, MSAI and JMEE courses): browse by instructor, course or room. Updated daily from Ritaj.">
 <meta property="og:title" content="ECE weekly schedules · ECE Labs">
 <meta property="og:description" content="Browse ECE schedules at Birzeit University by instructor, course or room. Updated daily from Ritaj.">
 <meta property="og:url" content="https://birzeit.me/schedules/">
@@ -283,8 +283,8 @@
 
     // Live data from bzu-course-catalog, scraped daily from Ritaj
     var DATA = 'https://raw.githubusercontent.com/mabushelbaia/bzu-course-catalog/main/data/';
-    // The department's programs: computer engineering, electrical engineering, and the master's in computer engineering
-    var PROGRAMS = [['ENCS', 'Computer Engineering'], ['ENEE', 'Electrical Engineering'], ['MSCE', "Master's in Computer Engineering"]];
+    // The department's programs: computer engineering, electrical engineering, and the master's programs (MSCE, MSAI, JMEE); a program with no classes this semester has no file and is skipped
+    var PROGRAMS = [['ENCS', 'Computer Engineering'], ['ENEE', 'Electrical Engineering'], ['MSCE', "Master's in Computer Engineering"], ['MSAI', "Master's in Artificial Intelligence"], ['JMEE', "Master's in Electrical Engineering"]];
     var DAYS = [['S', 'Sat'], ['M', 'Mon'], ['T', 'Tue'], ['W', 'Wed'], ['R', 'Thu']];
     var KEY = { instructor: 'inst', course: 'code', room: 'room' };
     var NOUN = { instructor: ['instructor', 'instructors'], course: ['course', 'courses'], room: ['room', 'rooms'] };
@@ -292,7 +292,7 @@
     var rows = [], names = {}, lists = {}, codes = [];
     // Rooms are shared with other departments: their classes come from rooms.json, loaded on first use
     var term = null, roomRows = null, roomsLoading = false;
-    var ECE = /^(ENCS|ENEE|MSCE)/;
+    var ECE = /^(ENCS|ENEE|MSCE|MSAI|JMEE)/;
     function loadRooms() {
       if (roomRows || roomsLoading || !term) return;
       roomsLoading = true;

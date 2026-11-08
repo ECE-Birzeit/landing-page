@@ -570,7 +570,7 @@
       </div>
       <div class="entries">
         <a class="entry win" href="/schedules/?view=instructor"><span class="bar" aria-hidden="true"><i></i><i></i><i></i><span class="t">schedules/instructors</span></span><span class="entry-body"><span class="n" data-count="instructor">··</span><h3 class="l">Instructors</h3><span class="d">Any ECE instructor's teaching week: courses, sections and rooms.</span><span class="more">Browse instructors →</span></span></a>
-        <a class="entry win" href="/schedules/?view=course"><span class="bar" aria-hidden="true"><i></i><i></i><i></i><span class="t">schedules/courses</span></span><span class="entry-body"><span class="n" data-count="course">··</span><h3 class="l">Courses</h3><span class="d">Every section of an ENCS, ENEE or MSCE course: when it meets, where, and who teaches it.</span><span class="more">Browse courses →</span></span></a>
+        <a class="entry win" href="/schedules/?view=course"><span class="bar" aria-hidden="true"><i></i><i></i><i></i><span class="t">schedules/courses</span></span><span class="entry-body"><span class="n" data-count="course">··</span><h3 class="l">Courses</h3><span class="d">Every section of the department's courses (ENCS, ENEE and the MSCE, MSAI and JMEE master's): when it meets, where, and who teaches it.</span><span class="more">Browse courses →</span></span></a>
         <a class="entry win" href="/schedules/?view=room"><span class="bar" aria-hidden="true"><i></i><i></i><i></i><span class="t">schedules/rooms</span></span><span class="entry-body"><span class="n" data-count="room">··</span><h3 class="l">Rooms</h3><span class="d">What's booked in each lab and classroom across the week.</span><span class="more">Browse rooms →</span></span></a>
       </div>
     </div>
@@ -827,8 +827,8 @@ __HAL_TIM_SET_COMPARE(&amp;htim2, TIM_CHANNEL_1, duty);</code></pre>
           el.hidden = false;
         }
         var term = (idx.published_terms || Object.keys(idx.terms))[0];
-        // The department's programs: ENCS, ENEE and the MSCE master's
-        return Promise.all(['ENCS', 'ENEE', 'MSCE'].map(function (p) {
+        // The department's programs: ENCS, ENEE, and the MSCE, MSAI and JMEE master's
+        return Promise.all(['ENCS', 'ENEE', 'MSCE', 'MSAI', 'JMEE'].map(function (p) {
           return fetch(base + term + '/' + p + '.json').then(function (r) { return r.ok ? r.json() : null; });
         }));
       }).then(function (files) {
