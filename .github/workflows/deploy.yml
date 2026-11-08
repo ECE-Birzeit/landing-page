@@ -49,8 +49,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
           GA_PROPERTY_ID: ${{ vars.GA_PROPERTY_ID }}
-          # First day of the semester the visitor numbers count from
-          SEMESTER_START: "2026-09-01"
+          # Visitors count from the semester's first teaching day, read from bzu-course-catalog
       - uses: actions/upload-pages-artifact@v5
 
   deploy:

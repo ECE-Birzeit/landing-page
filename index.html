@@ -813,7 +813,7 @@ __HAL_TIM_SET_COMPARE(&amp;htim2, TIM_CHANNEL_1, duty);</code></pre>
         all('[data-visit]').forEach(function (el) { el.textContent = fmt(v[el.dataset.visit] || 0); el.parentNode.hidden = false; });
         document.getElementById('stats-grid').classList.add('visits');
         all('[data-lab-visit]').forEach(function (el) { var l = s.labs && s.labs[el.dataset.labVisit]; if (l && l.students != null) { el.textContent = fmt(l.students) + ' students · '; el.hidden = false; } });
-        document.getElementById('impact-kicker').textContent = '// The four lab sites · since ' + v.since + ', from their analytics';
+        document.getElementById('impact-kicker').textContent = '// ' + (v.term || 'This semester') + ' · since ' + new Date(v.since + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) + ', from the sites\' analytics';
       }
     }).catch(function () {});
 
