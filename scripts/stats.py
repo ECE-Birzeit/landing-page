@@ -121,10 +121,29 @@ def analytics() -> dict | None:
     daily = sorted((r["dims"][0], r["users"], r["views"]) for r in report(["date"], False))
     when = [[r["dims"][0], r["dims"][1], r["views"]] for r in report(["dayOfWeek", "hour"], False)]
     devices = {r["dims"][0]: r["users"] for r in report(["deviceCategory"], False)}
+    # encs4110's experiments moved from /experiments/N to /experiments/expN-slug on 2026-11-08; Analytics
+    # still has visits under the old paths, so they're added to the new pages (views add up exactly;
+    # students take the larger of the two, since the same student may have visited both)
+    MOVED = {"encs4110": dict(zip(map(str, range(1, 11)), ["assembly-basics", "data-processing", "branching-loops", "procedures-stack",
+             "gpio-output", "gpio-interrupts", "timers", "lcd", "adc", "uart"]))}
+
+    def normalise(lab: str, path: str) -> str:
+        m = re.fullmatch(r"/experiments/(\d+)/?", path)
+        if m and lab in MOVED and m[1] in MOVED[lab]:
+            return f"/experiments/exp{m[1]}-{MOVED[lab][m[1]]}"
+        return path
+
     # The experiments list pages ("/experiments/") aren't experiments; leave them out
-    top = [{"lab": r["dims"][0].split(".")[0], "path": r["dims"][1], "title": r["dims"][2].split(" | ")[0], "views": r["views"], "students": r["users"]}
-           for r in report(["hostName", "pagePath", "pageTitle"], True, order="screenPageViews", limit=16)
-           if not r["dims"][1].rstrip("/").endswith("/experiments")][:10]
+    merged: dict[tuple, dict] = {}
+    for r in report(["hostName", "pagePath", "pageTitle"], True, order="screenPageViews", limit=40):
+        lab, path = r["dims"][0].split(".")[0], r["dims"][1]
+        if path.rstrip("/").endswith("/experiments") or r["dims"][2] == "This page moved":
+            continue
+        key = (lab, normalise(lab, path))
+        t = merged.setdefault(key, {"lab": lab, "path": key[1], "title": r["dims"][2].split(" | ")[0], "views": 0, "students": 0})
+        t["views"] += r["views"]
+        t["students"] = max(t["students"], r["users"])
+    top = sorted(merged.values(), key=lambda t: -t["views"])[:10]
     return {
         "since": since,
         "term": term["name"],
