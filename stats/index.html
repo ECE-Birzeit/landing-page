@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dashboard · ECE Labs</title>
+<meta name="description" content="How Birzeit University ECE students use the lab sites this semester: students, experiment pages opened, busiest hours, devices and the most-opened experiments. Updated daily.">
+<meta property="og:title" content="Dashboard · ECE Labs">
+<meta property="og:description" content="How ECE students use the lab sites this semester. Updated daily.">
+<meta property="og:url" content="https://birzeit.me/stats/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ECE Labs">
+<meta property="og:image" content="https://birzeit.me/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://birzeit.me/stats/">
+<link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700;800&display=swap">
+<link rel="preconnect" href="https://raw.githubusercontent.com" crossorigin>
+<link rel="stylesheet" href="/assets/widgets.css">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-K834Q72PP9"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-K834Q72PP9');
+</script>
+<script>
+  (function () {
+    var saved = null;
+    try { saved = { paper: 'light', ink: 'dark' }[localStorage.getItem('ece-labs-theme')] || localStorage.getItem('ece-labs-theme'); } catch (e) {}
+    var mode = saved || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', mode);
+  })();
+</script>
+<style>
+  html, body { margin: 0 }
+  * { box-sizing: border-box }
+  a { color: inherit }
+  [hidden] { display: none !important }
+  :root { --g: clamp(20px, 4vw, 48px); --mono: 'JetBrains Mono', ui-monospace, monospace; --sans: 'Geist', system-ui, sans-serif }
+  [data-theme=dark] { --p: #0b0c0b; --card: #121312; --bar: #171816; --i: #e8e6e1; --mu: #8d8f89; --mu2: #b9bab5; --line: #2a2b29; --line2: #3a3b39; --soft: #181917; --ok: #4ade80 }
+  [data-theme=light] { --p: #f3f2ec; --card: #fff; --bar: #f7f6f1; --i: #1a1b19; --mu: #64655e; --mu2: #45463f; --line: #dddbd2; --line2: #c9c7bd; --soft: #ebe9e1; --ok: #15803d }
+  body { min-height: 100vh; background: var(--p); color: var(--i); font-family: var(--sans); transition: background .25s, color .25s }
+  :focus-visible { outline: 2px solid currentColor; outline-offset: 3px }
+  .wrap { max-width: 1280px; margin: 0 auto; padding-inline: var(--g) }
+  .kicker { font: 400 12.5px var(--mono); color: var(--mu) }
+  .skip { position: absolute; inset-inline-start: -9999px }
+  .skip:focus { inset-inline-start: 16px; top: 16px; z-index: 10; padding: 10px 14px; background: var(--i); color: var(--p) }
+  .btn { cursor: pointer; transition: background .15s, border-color .15s, color .15s }
+  .btn:hover { background: var(--soft) }
+
+  /* Header (same as the landing page) */
+  header { border-bottom: 1px solid var(--line) }
+  header .wrap { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 28px; min-height: 64px; padding-block: 10px }
+  .brand { flex: none; display: flex; align-items: baseline; gap: 12px; text-decoration: none; white-space: nowrap }
+  .brand b { font: 700 16px var(--mono); letter-spacing: -.02em }
+  .brand b::before { content: '>'; margin-inline-end: 8px; color: var(--ok) }
+  .brand span { font: 400 12px var(--mono); color: var(--mu) }
+  nav { display: flex; gap: 2px; margin-inline-start: auto; font: 400 13.5px var(--mono) }
+  nav a { padding: 10px 14px; border-radius: 8px; text-decoration: none; color: var(--mu2) }
+  nav a:hover { color: var(--i) }
+  nav a[aria-current=page] { color: var(--i); box-shadow: inset 0 -2px 0 var(--ok); border-radius: 0 }
+  .theme { flex: none; width: 44px; height: 44px; display: grid; place-items: center; padding: 0; border: 1px solid var(--line); border-radius: 10px; background: var(--card); color: inherit }
+  .theme svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round }
+  [data-theme=light] .theme .moon, [data-theme=dark] .theme .sun { display: none }
+  @media (max-width: 560px) {
+    header .wrap { gap: 6px 12px }
+    header .theme { order: 2; margin-inline-start: auto }
+    nav { order: 3; flex-basis: 100%; margin: 0 -10px; justify-content: space-between; font-size: 13px }
+    nav a { padding-inline: 10px }
+    nav .gh { display: none }
+  }
+
+  /* Each lab borrows its site's accent */
+  [data-theme=light] [data-lab=encs4110] { --a: #dc2626 } [data-theme=light] [data-lab=encs4101] { --a: #0369a1 }
+  [data-theme=light] [data-lab=encs5150] { --a: #c2410c } [data-theme=light] [data-lab=encs5101] { --a: #00787f }
+  [data-theme=dark] [data-lab=encs4110] { --a: #f87171 } [data-theme=dark] [data-lab=encs4101] { --a: #38bdf8 }
+  [data-theme=dark] [data-lab=encs5150] { --a: #fb923c } [data-theme=dark] [data-lab=encs5101] { --a: #3cc5cb }
+
+  /* A terminal window: title bar with three dots, then content */
+  .win { border: 1px solid var(--line); border-radius: 12px; background: var(--card); overflow: hidden; min-width: 0; display: flex; flex-direction: column }
+  .bar { display: flex; align-items: center; gap: 6px; height: 36px; padding: 0 14px; border-bottom: 1px solid var(--line); background: var(--bar); font: 400 12px var(--mono); color: var(--mu) }
+  .bar i { flex: none; width: 9px; height: 9px; border-radius: 50%; background: var(--line2) }
+  .bar .t { margin-inline-start: 8px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis }
+  .bar .r { margin-inline-start: auto; white-space: nowrap }
+
+  /* Dashboard */
+  main .wrap { display: flex; flex-direction: column; gap: 18px; padding-top: 52px; padding-bottom: 76px }
+  .head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px 20px; margin-bottom: 8px }
+  .head > div { display: flex; flex-direction: column; gap: 8px }
+  h1 { margin: 0; font: 800 clamp(36px, 5vw, 56px)/1 var(--mono); letter-spacing: -.05em; text-wrap: balance }
+  #body { display: flex; flex-direction: column; gap: 18px }
+  .row2 { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 18px }
+  .row11 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 18px }
+  @media (max-width: 900px) { .row2, .row11 { grid-template-columns: minmax(0, 1fr) } }
+  .pad { display: flex; flex-direction: column; gap: 18px; padding: 22px }
+  .kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)) }
+  @media (max-width: 900px) { .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)) } }
+  .kpi { display: flex; flex-direction: column; gap: 8px; padding: 24px 22px 22px; border-inline-end: 1px solid var(--line); border-bottom: 1px solid var(--line); margin: 0 -1px -1px 0; min-width: 0 }
+  .kpi b { font: 800 clamp(34px, 4vw, 52px)/.95 var(--mono); letter-spacing: -.05em }
+  .kpi span { font: 500 13px var(--mono); color: var(--mu2) }
+  .kpi small { font: 400 12px var(--mono); color: var(--mu) }
+  .big { display: flex; align-items: baseline; gap: 10px }
+  .big b { font: 800 52px/.9 var(--mono); letter-spacing: -.05em }
+  .big span { font: 400 13px var(--mono); color: var(--mu) }
+  .facts { display: flex; flex-direction: column; gap: 8px; font: 400 12.5px var(--mono); color: var(--mu2) }
+  .facts span:last-child { color: var(--mu) }
+  .sep { padding-top: 18px; border-top: 1px solid var(--line); display: flex; flex-direction: column; gap: 14px }
+  .tbl { width: 100%; border-collapse: collapse; font: 400 13px var(--mono) }
+  .tbl th { padding: 0 22px 10px; font-weight: 400; font-size: 11.5px; color: var(--mu); text-align: end }
+  .tbl td { padding: 13px 22px; border-top: 1px solid var(--line); text-align: end; white-space: nowrap }
+  .tbl th:first-child, .tbl td:first-child { text-align: start }
+  .tbl td:first-child { white-space: normal }
+  .tbl td em { font-style: normal; color: var(--a) }
+  .tbl td small { color: var(--mu) }
+  .tbl tfoot td { background: var(--soft); font-weight: 700 }
+  .tbl-box { overflow-x: auto }
+  @media (max-width: 560px) { .tbl th, .tbl td { padding-inline: 12px } .tbl td small { display: none } }
+  .note { margin: 0; padding: 14px 22px 18px; font: 400 12px/1.6 var(--mono); color: var(--mu) }
+  .foot-note { margin: 6px 0 0; font: 400 12px/1.7 var(--mono); color: var(--mu) }
+  .status { padding: 40px 22px; font: 400 13px var(--mono); color: var(--mu) }
+  /* Footer (same as the landing page) */
+  footer { border-top: 1px solid var(--line) }
+  footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 10px 32px; padding-block: 22px; font: 400 12.5px/1.6 var(--mono); color: var(--mu2) }
+  footer .grp { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 24px }
+  footer .dept { color: var(--i); font-weight: 700 }
+  footer a { color: var(--mu2); text-decoration: none }
+  footer a:hover { color: var(--i); text-decoration: underline; text-underline-offset: 3px }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important } }
+</style>
+</head>
+<body>
+<a class="skip" href="#dash">Skip to the dashboard</a>
+
+<header>
+  <div class="wrap">
+    <a class="brand" href="/"><b>ECE Labs</b><span>Birzeit University</span></a>
+    <nav aria-label="Primary">
+      <a class="btn" href="/#labs">Labs</a>
+      <a class="btn" href="/schedules/">Schedules</a>
+      <a class="btn" href="/stats/" aria-current="page">Dashboard</a>
+      <a class="btn" href="/#why">Features</a>
+      <a class="btn gh" href="https://github.com/ECE-Birzeit" target="_blank" rel="noopener">GitHub ↗</a>
+    </nav>
+    <button type="button" class="theme btn" role="switch" aria-checked="false" aria-label="Dark theme" title="Toggle dark theme">
+      <svg class="sun" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3 3l1.4 1.4M11.6 11.6L13 13M3 13l1.4-1.4M11.6 4.4L13 3"/></svg>
+      <svg class="moon" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z"/></svg>
+    </button>
+  </div>
+</header>
+
+<main>
+  <div class="wrap" id="dash">
+    <div class="head">
+      <div>
+        <span class="kicker" id="kicker">// This semester · updated daily</span>
+        <h1>How the labs are used</h1>
+      </div>
+      <span class="kicker" id="counted"></span>
+    </div>
+
+    <div class="status" id="status">Loading the numbers…</div>
+
+    <div id="body" hidden>
+      <div class="win">
+        <div class="bar" aria-hidden="true"><i></i><i></i><i></i><span class="t">this semester</span></div>
+        <div class="kpis">
+          <div class="kpi"><b id="k-students"></b><span>students</span><small id="k-students-n"></small></div>
+          <div class="kpi"><b id="k-views"></b><span>experiment pages opened</span><small>across the four lab sites</small></div>
+          <div class="kpi"><b id="k-per"></b><span>experiment pages per student</span><small>pages opened ÷ students</small></div>
+          <div class="kpi"><b id="k-phone"></b><span>read on a phone or tablet</span><small id="k-phone-n"></small></div>
+        </div>
+      </div>
+
+      <div class="row2">
+        <div class="win"><div class="bar" aria-hidden="true"><i></i><i></i><i></i><span class="t">students per day</span></div>
+          <div class="pad"><div class="w-title"><h2>Students per day</h2><span id="daily-note">hover a bar for the numbers</span></div><div id="w-daily"></div></div></div>
+        <div class="win"><div class="bar" aria-hidden="true"><i></i><i></i><i></i><span class="t">semester</span></div>
+          <div class="pad">
+            <div class="w-title"><h2>Semester</h2><span id="term"></span></div>
+            <div class="big"><b id="week"></b><span id="weeks"></span></div>
+            <div id="w-sem"></div>
+            <div class="facts" id="facts"></div>
+          </div></div>
+      </div>
+
+      <div class="row2">
+        <div class="win"><div class="bar" aria-hidden="true"><i></i><i></i><i></i><span class="t">week</span></div>
+          <div class="pad"><div class="w-title"><h2>When students read</h2><span id="heat-note"></span></div><div id="w-heat"></div></div></div>
+        <div class="win"><div class="bar" aria-hidden="true"><i></i><i></i><i></i><span class="t">devices</span></div>
+          <div class="pad">
+            <div class="w-title"><h2>Devices</h2><span>students</span></div><div id="w-dev"></div>
+            <div class="sep"><div class="w-title"><h2>Students by lab</h2></div><div id="w-labs"></div></div>
+          </div></div>
+      </div>
+
+      <div class="row11">
+        <div class="win"><div class="bar" aria-hidden="true"><i></i><i></i><i></i><span class="t">most opened</span></div>
+          <div class="pad"><div class="w-title"><h2>Most-opened experiments</h2><span>page views</span></div><div id="w-top"></div></div></div>
+        <div class="win"><div class="bar" aria-hidden="true"><i></i><i></i><i></i><span class="t">labs</span></div>
+          <div class="pad" style="padding-bottom: 6px"><div class="w-title"><h2>Every lab</h2><span>this semester</span></div></div>
+          <div class="tbl-box"><table class="tbl">
+            <thead><tr><th>Lab</th><th>Students</th><th>Views</th><th>Exps</th><th>Listings</th></tr></thead>
+            <tbody id="labs"></tbody>
+            <tfoot><tr id="labs-total"></tr></tfoot>
+          </table></div>
+          <p class="note" id="labs-note"></p>
+        </div>
+      </div>
+
+      <p class="foot-note" id="foot-note"></p>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span class="grp">
+      <span class="dept">Electrical &amp; Computer Engineering, Birzeit University</span>
+      <span>Developed by <a href="https://mabushelbaia.com" target="_blank" rel="noopener">Mohammad Abu-Shelbaia</a></span>
+    </span>
+    <span class="grp">
+      <a href="/stats.json">Data: stats.json</a>
+      <a href="https://github.com/ECE-Birzeit" target="_blank" rel="noopener">GitHub ↗</a>
+    </span>
+  </div>
+</footer>
+
+<script src="/assets/widgets.js"></script>
+<script>
+  (function () {
+    // Theme switch (same as the landing page)
+    var root = document.documentElement;
+    var mq = window.matchMedia('(prefers-color-scheme: dark)');
+    var toggle = document.querySelector('.theme');
+    var chosen = false;
+    try { chosen = !!localStorage.getItem('ece-labs-theme'); } catch (e) {}
+    function apply(mode) { root.setAttribute('data-theme', mode); toggle.setAttribute('aria-checked', mode === 'dark' ? 'true' : 'false'); }
+    apply(root.getAttribute('data-theme'));
+    toggle.addEventListener('click', function () {
+      var mode = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      chosen = true;
+      try { localStorage.setItem('ece-labs-theme', mode); } catch (e) {}
+      apply(mode);
+    });
+    mq.addEventListener('change', function (e) { if (!chosen) apply(e.matches ? 'dark' : 'light'); });
+
+    var W = window.ECEWidgets, fmt = W.fmt;
+    var $ = function (id) { return document.getElementById(id); };
+    var NAMES = { encs4110: 'Computer Design Laboratory', encs4101: 'Embedded Systems Laboratory', encs5150: 'Advanced Computer Systems Engineering Laboratory', encs5101: 'Microprocessor and Embedded Systems Laboratory' };
+    function cell(tag, text, cls) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+
+    window.ECEWidgets.load().then(function (s) {
+      var v = s && s.visitors;
+      if (!v || !v.students) { $('status').textContent = 'The visitor numbers aren’t available right now.'; return; }
+      var first = v.daily && v.daily.length ? W.day(v.daily[0][0]) : null;
+      var wk = W.week(v.term_dates);
+      $('kicker').textContent = '// ' + (v.term || 'This semester') + (wk && wk.now <= wk.of ? ' · week ' + wk.now + ' of ' + wk.of : '') + ' · updated daily';
+      $('counted').textContent = 'Counted ' + s.generated_at.slice(0, 10) + ' · stats.json';
+
+      W.countUp($('k-students'), v.students);
+      $('k-students-n').textContent = first ? 'unique visitors since ' + W.short(first) : '';
+      W.countUp($('k-views'), v.experiment_views);
+      W.countUp($('k-per'), +(v.experiment_views / v.students).toFixed(1), function (n) { return n.toFixed(1); });
+      var d = v.devices || {}, tot = Object.keys(d).reduce(function (a, k) { return a + d[k]; }, 0);
+      var small = (d.mobile || 0) + (d.tablet || 0);
+      if (tot) W.countUp($('k-phone'), Math.round(100 * small / tot), function (n) { return Math.round(n) + '%'; }); else $('k-phone').textContent = '–';
+      $('k-phone-n').textContent = fmt(small) + ' students';
+
+      W.daily($('w-daily'), v, 190);
+      if (first) $('daily-note').textContent = W.short(first) + ' to ' + W.short(W.day(v.daily[v.daily.length - 1][0])) + ' · hover a bar';
+
+      $('term').textContent = v.term || '';
+      if (wk) { $('week').textContent = 'Week ' + Math.min(wk.now, wk.of); $('weeks').textContent = 'of ' + wk.of; }
+      W.semester($('w-sem'), v.term_dates);
+      var td = v.term_dates || {};
+      [['Teaching ends · ', td.teaching_ends], ['Finals · ', td.exams_start && td.exams_end ? W.short(W.day(td.exams_start)) + ' – ' + W.short(W.day(td.exams_end)) : null]].forEach(function (f) {
+        if (f[1]) $('facts').appendChild(cell('span', f[0] + (f[1].length === 10 ? W.short(W.day(f[1])) : f[1])));
+      });
+      $('facts').appendChild(cell('span', 'Dates from Ritaj’s academic calendar'));
+
+      W.heat($('w-heat'), v, 0, 23, [0, 6, 8, 12, 16, 20, 23]);
+      W.byDay($('w-heat'), v);
+      var best = W.busiest(v), bd = W.busiestDay(v);
+      $('heat-note').textContent = 'page views by hour · busiest ' + W.DAYS[best[0]] + ' ' + String(best[1]).padStart(2, '0') + ':00' + (bd ? ' · busiest day ' + bd : '');
+      W.devices($('w-dev'), v);
+      W.labBars($('w-labs'), s.labs, 'students');
+      W.top($('w-top'), v, 6);
+
+      Object.keys(NAMES).forEach(function (l) {
+        var x = s.labs[l]; if (!x) return;
+        var tr = document.createElement('tr');
+        tr.dataset.lab = l;
+        var first = cell('td');
+        first.append(cell('em', '■'), ' ', cell('b', l.toUpperCase()), ' ', cell('small', NAMES[l]));
+        tr.append(first, cell('td', fmt(x.students)), cell('td', fmt(x.experiment_views)), cell('td', x.experiments), cell('td', x.code_listings));
+        $('labs').appendChild(tr);
+      });
+      $('labs-total').append(cell('td', 'All labs'), cell('td', fmt(v.students)), cell('td', fmt(v.experiment_views)), cell('td', s.experiments), cell('td', s.code_listings));
+      $('labs-note').textContent = 'A student who uses two labs counts once in the total, so the rows add up to more than ' + fmt(v.students) + '.';
+      $('foot-note').textContent = (first ? 'Analytics on the lab sites began on ' + first.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) + '; teaching started on ' + W.day(td.teaching_starts).toLocaleDateString('en-GB', { day: 'numeric', month: 'long' }) + '. ' : '') +
+        'Students are unique visitors as Google Analytics counts them (per browser). Page views count experiment pages only.';
+
+      $('status').hidden = true;
+      $('body').hidden = false;
+      // Windows below the first screen rise in as they scroll into view
+      document.querySelectorAll('#body .win').forEach(function (w) { W.reveal([w]); });
+    }).catch(function () { $('status').textContent = 'Couldn’t load the numbers. Check your connection and reload.'; });
+  })();
+</script>
+</body>
+</html>

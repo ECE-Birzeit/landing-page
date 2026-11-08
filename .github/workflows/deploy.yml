@@ -31,7 +31,7 @@ jobs:
           sed -i -E "s|<lastmod>[^<]*</lastmod>|<lastmod>$d</lastmod>|" sitemap.xml
           mkdir _site
           cp index.html CNAME og.png favicon.svg favicon.png favicon.ico apple-touch-icon.png sitemap.xml robots.txt _site/
-          cp -r v1 v2 legacy assets schedules _site/
+          cp -r v1 v2 legacy assets schedules stats _site/
       - name: Sign in to Google Analytics
         # Keyless: GitHub's OIDC token is exchanged for the ga-reader service account
         # (project birzeit-me-stats). Skipped until the GA_PROPERTY_ID variable is set.

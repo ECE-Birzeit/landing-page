@@ -1,0 +1,86 @@
+/* Analytics widgets shared by the home page and /stats/. They use the pages' tokens (--i, --mu, --line,
+   --soft, --ok, and --a from [data-lab]), so they follow the light and dark themes. */
+.w-title { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 6px 16px }
+.w-title b { font: 700 15px var(--mono); letter-spacing: -.01em }
+.w-title span { font: 400 12px var(--mono); color: var(--mu) }
+
+/* Students per day: one bar a day, the busiest in green */
+.w-daily .bars { display: flex; align-items: flex-end; gap: 4px; height: var(--h, 140px); border-bottom: 1px solid var(--line) }
+.w-daily .bars i { flex: 1; min-width: 0; border-radius: 3px 3px 0 0; background: var(--line2); transition: background .15s }
+.w-daily .bars i:hover { background: var(--mu) }
+.w-daily .bars i.peak { background: var(--ok) }
+.w-daily .axis { display: flex; justify-content: space-between; gap: 10px; margin-top: 8px; font: 400 11.5px var(--mono); color: var(--mu) }
+
+/* When students read: weekday rows (Saturday first) by hour columns, darker = more page views */
+.w-heat { display: flex; flex-direction: column; gap: 3px }
+.w-heat .row { display: flex; align-items: center; gap: 3px }
+.w-heat .row > span { flex: none; width: 34px; font: 400 11.5px var(--mono); color: var(--mu) }
+.w-heat .row i { flex: 1; min-width: 0; aspect-ratio: 1; border-radius: 3px; background: color-mix(in srgb, var(--ok) var(--v, 0%), var(--soft)) }
+.w-heat .ticks span { flex: 1; min-width: 0; width: auto; font: 400 11px var(--mono); color: var(--mu) }
+.w-heat .ticks > span:first-child { flex: none; width: 34px }
+
+/* Bars per lab in the lab's colour */
+.w-labs { display: flex; flex-direction: column; gap: 14px }
+.w-labs .lab-row { display: flex; flex-direction: column; gap: 6px }
+.w-labs .lab-row div:first-child { display: flex; justify-content: space-between; gap: 10px; font: 400 12.5px var(--mono) }
+.w-labs .lab-row div:first-child span:last-child { color: var(--mu2) }
+.w-labs em { font-style: normal; color: var(--a) }
+.w-track { height: 8px; border-radius: 4px; background: var(--soft); overflow: hidden }
+.w-track i { display: block; height: 100%; border-radius: 4px; background: var(--a, var(--ok)) }
+
+/* Devices: one stacked bar and a legend */
+.w-dev { display: flex; flex-direction: column; gap: 14px }
+.w-dev .stack { display: flex; gap: 2px; height: 12px; border-radius: 6px; overflow: hidden }
+.w-dev .stack i { background: var(--c) }
+.w-dev .leg { display: flex; justify-content: space-between; font: 400 12.5px var(--mono) }
+.w-dev .leg em { font-style: normal; color: var(--c) }
+.w-dev .leg span:last-child { color: var(--mu2) }
+
+/* Most-opened experiments */
+.w-top { display: flex; flex-direction: column }
+.w-top a { display: grid; grid-template-columns: 24px minmax(0, 1fr) auto; gap: 4px 12px; align-items: baseline; padding: 12px 0; border-top: 1px solid var(--line); text-decoration: none }
+.w-top a:first-child { border-top: 0 }
+.w-top a:hover .t { text-decoration: underline; text-underline-offset: 3px }
+.w-top .n { font: 400 12px var(--mono); color: var(--mu) }
+.w-top .t { display: block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font: 600 14.5px/1.35 var(--sans) }
+.w-top .m { font: 400 12px var(--mono); color: var(--mu) }
+.w-top .m em { font-style: normal; color: var(--a) }
+.w-top .v { font: 700 14px var(--mono) }
+.w-top .w-track { grid-column: 2 / span 2; height: 4px }
+
+/* Semester: teaching so far in green, the exam weeks hatched */
+.w-sem { display: flex; flex-direction: column; gap: 10px }
+.w-sem .track { position: relative; height: 10px; border-radius: 5px; background: var(--soft); overflow: hidden }
+.w-sem .track i { position: absolute; top: 0; bottom: 0; left: 0; background: var(--ok) }
+.w-sem .track b { position: absolute; top: 0; bottom: 0; right: 0; background: repeating-linear-gradient(135deg, var(--line2) 0 4px, transparent 4px 8px) }
+.w-sem .axis { display: flex; justify-content: space-between; gap: 10px; font: 400 11.5px var(--mono); color: var(--mu) }
+
+/* ---- Motion ----------------------------------------------------------------------------------
+   Only transform and opacity move. Everything settles in under 0.7 s, plays once as it scrolls into
+   view, and none of it runs for people who ask for reduced motion (the classes are only added by
+   widgets.js when motion is allowed). --spring is a gentle spring (about 4% overshoot) as linear(). */
+:root {
+  --ease-out: cubic-bezier(.2, .75, .2, 1);
+  --spring: linear(0, .07, .226, .41, .586, .736, .852, .935, .989, 1.02, 1.035, 1.038, 1.036, 1.03, 1.022, 1.016, 1.01, 1.006, 1.002, 1, .999, .999, .999, .999, 1);
+}
+.rv { opacity: 0; transform: translateY(14px) }
+.rv.in { opacity: 1; transform: none; transition: opacity .45s var(--ease-out), transform .7s var(--spring); transition-delay: var(--d, 0ms) }
+/* Charts draw themselves once visible */
+.w-anim .bars i { transform: scaleY(0); transform-origin: bottom }
+.w-anim.in .bars i { transform: none; transition: transform .7s var(--spring) var(--k, 0ms), background .15s }
+.w-anim .row i { opacity: 0 }
+.w-anim.in .row i { opacity: 1; transition: opacity .4s var(--ease-out) var(--k, 0ms) }
+.w-anim .w-track i, .w-anim .stack i { transform: scaleX(0); transform-origin: left }
+.w-anim.in .w-track i, .w-anim.in .stack i { transform: none; transition: transform .8s var(--spring) var(--k, 0ms) }
+.w-anim .track i { transform: scaleX(0); transform-origin: left }
+.w-anim.in .track i { transform: none; transition: transform .9s var(--spring) .1s }
+.num { font-variant-numeric: tabular-nums }
+@media (prefers-reduced-motion: reduce) { .rv, .w-anim * { opacity: 1 !important; transform: none !important; transition: none !important } }
+
+/* Views by weekday under the heat map */
+.w-days { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 8px; padding-top: 16px; border-top: 1px solid var(--line) }
+.w-days div { display: flex; flex-direction: column; gap: 6px; min-width: 0 }
+.w-days .w-track { height: 6px }
+.w-days span { display: flex; justify-content: space-between; gap: 4px; font: 400 11.5px var(--mono); color: var(--mu) }
+.w-days b { font-weight: 700; color: var(--i) }
+.w-title h2, .w-title h3 { margin: 0; font: 700 15px var(--mono); letter-spacing: -.01em }

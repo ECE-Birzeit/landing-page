@@ -121,8 +121,10 @@ def analytics() -> dict | None:
     daily = sorted((r["dims"][0], r["users"], r["views"]) for r in report(["date"], False))
     when = [[r["dims"][0], r["dims"][1], r["views"]] for r in report(["dayOfWeek", "hour"], False)]
     devices = {r["dims"][0]: r["users"] for r in report(["deviceCategory"], False)}
-    top = [{"lab": r["dims"][0].split(".")[0], "path": r["dims"][1], "title": r["dims"][2], "views": r["views"], "students": r["users"]}
-           for r in report(["hostName", "pagePath", "pageTitle"], True, order="screenPageViews", limit=10)]
+    # The experiments list pages ("/experiments/") aren't experiments; leave them out
+    top = [{"lab": r["dims"][0].split(".")[0], "path": r["dims"][1], "title": r["dims"][2].split(" | ")[0], "views": r["views"], "students": r["users"]}
+           for r in report(["hostName", "pagePath", "pageTitle"], True, order="screenPageViews", limit=16)
+           if not r["dims"][1].rstrip("/").endswith("/experiments")][:10]
     return {
         "since": since,
         "term": term["name"],

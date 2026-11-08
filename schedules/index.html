@@ -70,7 +70,9 @@
   @media (max-width: 560px) {
     header .wrap { gap: 6px 12px }
     header .theme { order: 2; margin-inline-start: auto }
-    nav { order: 3; flex-basis: 100%; margin: 0 -14px; justify-content: space-between }
+    nav { order: 3; flex-basis: 100%; margin: 0 -10px; justify-content: space-between; font-size: 13px }
+    nav a { padding-inline: 10px }
+    nav .gh { display: none }
   }
 
   /* Terminal window */
@@ -161,7 +163,26 @@
   footer .dept { color: var(--i); font-weight: 700 }
   footer a { color: var(--mu2); text-decoration: none }
   footer a:hover { color: var(--i); text-decoration: underline; text-underline-offset: 3px }
-  @media (prefers-reduced-motion: reduce) { * { transition: none !important } }
+  /* Motion (same language as the home page): the page settles in on load; each time you pick an
+     instructor, course or room the week's blocks grow in from their start time, day by day; agenda items
+     and table rows follow. Only transform and opacity move, and none of it runs for reduced motion. */
+  :root { --spring: linear(0, .07, .226, .41, .586, .736, .852, .935, .989, 1.02, 1.035, 1.038, 1.036, 1.03, 1.022, 1.016, 1.01, 1.006, 1.002, 1, .999, .999, .999, .999, 1); --ease-out: cubic-bezier(.2, .75, .2, 1) }
+  @keyframes rise { from { opacity: 0; transform: translateY(14px) } to { opacity: 1; transform: none } }
+  @keyframes blk-in { from { opacity: 0; transform: translateY(6px) scaleX(.55) } to { opacity: 1; transform: none } }
+  @keyframes row-in { from { opacity: 0; transform: translateY(6px) } to { opacity: 1; transform: none } }
+  @media (prefers-reduced-motion: no-preference) {
+    main .head, main .tools, main .week, main .days, main .agenda, main .tbl { animation: rise .7s var(--spring) backwards }
+    main .tools { animation-delay: 60ms } main .week, main .days { animation-delay: 120ms } main .agenda, main .tbl { animation-delay: 180ms }
+    [data-anim=all] .blk { transform-origin: left center; animation: blk-in .6s var(--spring) backwards; animation-delay: var(--k, 0ms) }
+    [data-anim=all] .item { animation: row-in .5s var(--spring) backwards; animation-delay: var(--k, 0ms) }
+    [data-anim=all] #tbody tr, [data-anim=rows] #tbody tr { animation: row-in .45s var(--ease-out) backwards; animation-delay: var(--k, 0ms) }
+    .blk { transition: transform .35s var(--spring), box-shadow .2s }
+    .blk:hover { transform: translateY(-2px); box-shadow: 0 8px 18px -10px var(--c); z-index: 1 }
+    .seg, .dtab { transition: border-color .15s, color .15s, background .15s, transform .35s var(--spring) }
+    .seg:active, .dtab:active { transform: scale(.96) }
+    .seg[aria-pressed=true], .dtab[aria-pressed=true] { background: var(--soft) }
+  }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important } }
 </style>
 </head>
 <body>
@@ -173,8 +194,9 @@
     <nav aria-label="Primary">
       <a class="btn" href="/#labs">Labs</a>
       <a class="btn" href="/schedules/" aria-current="page">Schedules</a>
-      <a class="btn" href="/#why">Why web</a>
-      <a class="btn" href="https://github.com/ECE-Birzeit" target="_blank" rel="noopener">GitHub ↗</a>
+      <a class="btn" href="/stats/">Dashboard</a>
+      <a class="btn" href="/#why">Features</a>
+      <a class="btn gh" href="https://github.com/ECE-Birzeit" target="_blank" rel="noopener">GitHub ↗</a>
     </nav>
     <button type="button" class="theme btn" role="switch" aria-checked="false" aria-label="Dark theme" title="Toggle dark theme">
       <svg class="sun" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3 3l1.4 1.4M11.6 11.6L13 13M3 13l1.4-1.4M11.6 4.4L13 3"/></svg>
@@ -183,7 +205,7 @@
   </div>
 </header>
 
-<main>
+<main id="main" data-anim="all">
   <div class="wrap">
     <div class="head">
       <div>
@@ -251,9 +273,9 @@
       chosen = true;
       try { localStorage.setItem('ece-labs-theme', mode); } catch (e) {}
       apply(mode);
-      render();
+      render('theme');
     });
-    mq.addEventListener('change', function (e) { if (!chosen) { apply(e.matches ? 'dark' : 'light'); render(); } });
+    mq.addEventListener('change', function (e) { if (!chosen) { apply(e.matches ? 'dark' : 'light'); render('theme'); } });
 
     // Live data from bzu-course-catalog, scraped daily from Ritaj
     var DATA = 'https://raw.githubusercontent.com/mabushelbaia/bzu-course-catalog/main/data/';
@@ -337,8 +359,9 @@
       { key: 'enr', label: 'Enrolled', num: true, val: function (g) { return +g.enr || 0; } }
     ];
 
-    function render() {
+    function render(mode) {
       if (!rows.length) return;
+      $('main').dataset.anim = mode === 'theme' ? 'none' : mode === 'sort' ? 'rows' : 'all';
       var view = state.view;
       var sel = state.sel[view] && lists[view].indexOf(state.sel[view]) !== -1 ? state.sel[view] : lists[view].busiest;
       state.sel[view] = sel;
@@ -367,7 +390,7 @@
       var hours = '';
       for (var h = 8; h <= 17; h++) hours += '<span style="left:' + ((h - 8) / 9 * 100) + '%">' + (h < 10 ? '0' : '') + h + ':00</span>';
       var html = '<div class="hhead"></div><div class="hhead">' + hours + '</div>';
-      DAYS.forEach(function (d) {
+      DAYS.forEach(function (d, di) {
         var dm = mine.filter(function (r) { return r.day === d[0]; });
         html += '<div class="dayl">' + d[1] + '</div><div class="lane">';
         dm.forEach(function (r, k) {
@@ -375,7 +398,7 @@
           // Meetings that overlap in time (two sections at once, in the course view) share the lane height
           var overlap = dm.filter(function (o) { return mins(o.start) < mins(r.end) && mins(r.start) < mins(o.end); });
           var cls = overlap.length > 1 ? (overlap.indexOf(r) === 0 ? ' high' : ' low') : '';
-          html += '<div class="blk' + cls + '" style="--c:' + color(r.code) + ';left:calc(' + left + '% + 3px);width:calc(' + w + '% - 6px)" title="' +
+          html += '<div class="blk' + cls + '" style="--k:' + (di * 55 + k * 45) + 'ms;--c:' + color(r.code) + ';left:calc(' + left + '% + 3px);width:calc(' + w + '% - 6px)" title="' +
             esc(r.code + ' · ' + r.start + '–' + r.end + ' · ' + r.room + ' · ' + r.inst) + '"><b>' + esc(r.code) + '</b>' + esc(line(r)) + '</div>';
         });
         html += '</div>';
@@ -391,8 +414,8 @@
       var today = mine.filter(function (r) { return r.day === state.day; });
       $('dayname').textContent = DAYS.filter(function (d) { return d[0] === state.day; })[0][1];
       $('daycount').textContent = today.length + (today.length === 1 ? ' class' : ' classes');
-      $('agenda').innerHTML = today.length ? today.map(function (r) {
-        return '<div class="item" style="--c:' + color(r.code) + '"><div class="tm">' + r.start + '<br>' + r.end + '</div><div><b>' + esc(r.code) + '</b><span>' + esc(names[r.code] || '') +
+      $('agenda').innerHTML = today.length ? today.map(function (r, k) {
+        return '<div class="item" style="--k:' + k * 50 + 'ms;--c:' + color(r.code) + '"><div class="tm">' + r.start + '<br>' + r.end + '</div><div><b>' + esc(r.code) + '</b><span>' + esc(names[r.code] || '') +
           '</span><small>' + esc(line(r) + (view === 'course' ? '' : ' · Sec ' + r.sec)) + '</small></div></div>';
       }).join('') : '<div class="status">No classes on this day.</div>';
 
@@ -421,9 +444,9 @@
         var s = state.sort && state.sort.key === c.key ? (state.sort.dir > 0 ? 'ascending' : 'descending') : 'none';
         return '<th class="' + (c.num ? 'num' : '') + '" aria-sort="' + s + '"><button type="button" data-sort="' + c.key + '">' + c.label + '</button></th>';
       }).join('');
-      $('tbody').innerHTML = table.map(function (g) {
+      $('tbody').innerHTML = table.map(function (g, k) {
         var days = g.dayCodes.map(function (x) { return DAYS.filter(function (d) { return d[0] === x; })[0][1]; }).join(' ');
-        return '<tr style="--c:' + color(g.code) + '"><td class="c"><span class="sw"></span>' + esc(g.code) + '</td><td>' + esc(names[g.code] || '') + '</td><td>Sec ' + esc(g.sec) +
+        return '<tr style="--k:' + Math.min(k * 22, 330) + 'ms;--c:' + color(g.code) + '"><td class="c"><span class="sw"></span>' + esc(g.code) + '</td><td>' + esc(names[g.code] || '') + '</td><td>Sec ' + esc(g.sec) +
           '</td><td>' + days + '</td><td>' + g.start + '–' + g.end + '</td><td>' + esc(g.other) + '</td><td class="num">' + esc(g.enr) + '</td></tr>';
       }).join('');
       $('summary').textContent = table.length + (table.length === 1 ? ' section · ' : ' sections · ') + mine.length + (mine.length === 1 ? ' meeting a week' : ' meetings a week');
@@ -445,7 +468,7 @@
       if (!b) return;
       var key = b.dataset.sort;
       state.sort = state.sort && state.sort.key === key ? { key: key, dir: -state.sort.dir } : { key: key, dir: 1 };
-      render();
+      render('sort');
       var again = document.querySelector('button[data-sort="' + key + '"]');
       if (again) again.focus();
     });

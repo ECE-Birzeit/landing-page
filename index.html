@@ -108,6 +108,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700;800&display=swap">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/11.1.14/swiper-bundle.min.css" integrity="sha512-BhnxuF0ce44V9aI3+IZvRMcxTI/GHY7h9ahE6uI3SUCjhGYV+XfF+3hELKXtJtvrNGObN17nxZ/Reoawm77HOw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+<link rel="stylesheet" href="/assets/widgets.css">
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-K834Q72PP9"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -160,6 +161,14 @@
   .btn:hover { background: var(--soft) }
   @keyframes blink { 50% { opacity: 0 } }
   @keyframes fade { from { opacity: 0; transform: translateY(6px) } to { opacity: 1; transform: none } }
+  @keyframes rise { from { opacity: 0; transform: translateY(16px) } to { opacity: 1; transform: none } }
+  @keyframes deck-in { from { opacity: 0; transform: translateY(24px) scale(.98) } to { opacity: 1; transform: none } }
+  @media (prefers-reduced-motion: no-preference) {
+    .hero-main > * { animation: rise .7s var(--spring) both }
+    .hero-main > :nth-child(2) { animation-delay: 60ms } .hero-main > :nth-child(3) { animation-delay: 120ms }
+    .hero-main > :nth-child(4) { animation-delay: 180ms } .hero-main > :nth-child(5) { animation-delay: 240ms }
+    .deck { animation: deck-in .9s var(--spring) .15s both }
+  }
   .cur { display: inline-block; width: .5em; height: .1em; margin-inline-start: .08em; vertical-align: baseline; background: var(--ok); animation: blink 1.1s steps(1) infinite }
 
   /* A terminal window: title bar with three dots, then content */
@@ -172,7 +181,7 @@
   /* Header */
   header { border-bottom: 1px solid var(--line) }
   header .wrap { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 28px; min-height: 64px; padding-block: 10px }
-  .brand { flex: none; display: flex; align-items: baseline; gap: 12px; text-decoration: none; white-space: nowrap }
+  .brand { flex: none; display: flex; align-items: baseline; gap: 12px; padding-block: 11px; text-decoration: none; white-space: nowrap }
   .brand b { font: 700 16px var(--mono); letter-spacing: -.02em }
   .brand b::before { content: '>'; margin-inline-end: 8px; color: var(--ok) }
   .brand span { font: 400 12px var(--mono); color: var(--mu) }
@@ -185,7 +194,9 @@
   @media (max-width: 560px) {
     header .wrap { gap: 6px 12px }
     header .theme { order: 2; margin-inline-start: auto }
-    nav { order: 3; flex-basis: 100%; margin: 0 -14px; justify-content: space-between }
+    nav { order: 3; flex-basis: 100%; margin: 0 -10px; justify-content: space-between; font-size: 13px }
+    nav a { padding-inline: 10px }
+    nav .gh { display: none }
   }
 
   /* Hero */
@@ -210,6 +221,9 @@
   .chip:hover { border-color: var(--i); color: var(--i) }
   .chip[aria-pressed=true] { background: var(--i); border-color: var(--i); color: var(--p) }
   #find-status { min-height: 20px; font: 400 12.5px var(--mono); color: var(--mu) }
+  #find-status:empty { display: none }
+  .hero-stats { display: flex; flex-wrap: wrap; gap: 8px 22px; margin: 0; padding-top: 18px; border-top: 1px solid var(--line); font: 400 13px var(--mono); color: var(--mu) }
+  .hero-stats b { color: var(--i); font-weight: 700 }
 
   /* Hero: real screenshots of the lab sites, stacked; the front one moves to the back every few seconds */
   .deck { position: relative; min-width: 0; aspect-ratio: 1 / .78; }
@@ -246,30 +260,33 @@
     --swiper-theme-color: var(--i); --swiper-pagination-bullet-inactive-color: var(--mu); --swiper-pagination-bullet-inactive-opacity: .45;
     -webkit-mask-image: linear-gradient(90deg, transparent, #000 var(--g), #000 calc(100% - var(--g)), transparent); mask-image: linear-gradient(90deg, transparent, #000 var(--g), #000 calc(100% - var(--g)), transparent) }
   .rail .swiper-slide.lab { height: 356px }
+  .rail.used .swiper-slide.lab { height: 392px }
   .rail-foot { display: flex; align-items: center; gap: 20px; --swiper-theme-color: var(--i); --swiper-pagination-bullet-inactive-color: var(--mu); --swiper-pagination-bullet-inactive-opacity: .45 }
   .rail-foot .swiper-pagination { position: static; width: auto; text-align: start }
-  .invite { margin-inline-start: auto; font: 400 12.5px var(--mono); color: var(--mu2); text-decoration: none; white-space: nowrap }
+  .invite { margin-inline-start: auto; padding-block: 12px; font: 400 12.5px var(--mono); color: var(--mu2); text-decoration: none; white-space: nowrap }
   .invite b { color: var(--ok); font-weight: 500 }
   .invite:hover b { text-decoration: underline; text-underline-offset: 3px }
 
   /* A lab card: a terminal window with fixed rows, so a long title never pushes anything out of line */
-  .lab { position: relative; flex: none; height: 356px; display: flex; flex-direction: column; text-decoration: none; transition: border-color .3s, transform .35s cubic-bezier(.2,.75,.2,1), box-shadow .35s }
+  .lab { position: relative; flex: none; height: 100%; display: flex; flex-direction: column; text-decoration: none; transition: border-color .3s, transform .6s var(--spring), box-shadow .35s }
   .lab:hover, .lab:focus-within { border-color: var(--a); transform: translateY(-6px); box-shadow: 0 0 0 1px var(--a), 0 26px 50px -28px var(--a) }
   .lab .bar .r { text-transform: none }
   .lab-body { flex: 1; display: flex; flex-direction: column; padding: 16px 18px 16px }
   .lab-no { font: 400 12px var(--mono); color: var(--mu) }
   .lab-ens { margin-top: auto; font: 500 12px var(--mono); color: var(--mu); letter-spacing: .1em }
-  .lab-num { font: 800 82px/.92 var(--mono); letter-spacing: -.06em; margin-inline-start: -3px; transition: color .3s }
-  .lab:hover .lab-num, .lab:focus-within .lab-num { color: var(--a) }
-  .lab-name { margin: 14px 0 0; height: calc(3 * 1.3em); font: 600 16.5px/1.3 var(--sans); letter-spacing: -.01em; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; text-wrap: balance }
+  .lab-num { font: 800 82px/.92 var(--mono); letter-spacing: -.06em; margin-inline-start: -3px; color: var(--a) }
+  .lab-name { margin: 14px 0 0; height: calc(2 * 1.3em); font: 600 16.5px/1.3 var(--sans); letter-spacing: -.01em; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; text-wrap: balance }
   .lab-name a { text-decoration: none }
   .lab-name a::after { content: ''; position: absolute; inset: 0; border-radius: 12px }
   .lab-plat { margin-top: 4px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font: 400 12px var(--mono); color: var(--mu) }
+  .lab-use { display: flex; gap: 14px; margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--line); font: 400 12px var(--mono); color: var(--mu); white-space: nowrap }
+  .lab-use b { color: var(--i); font-weight: 700 }
+  .lab-use .x { margin-inline-start: auto }
   .lab-links { position: relative; z-index: 1; display: flex; gap: 6px; margin-top: 14px }
   .lab-links > a, .lab-links > span { height: 42px; display: flex; align-items: center; justify-content: center; padding: 0 12px; border: 1px solid var(--line); border-radius: 8px; font: 400 12.5px var(--mono); text-decoration: none; color: var(--mu2); transition: background .2s, border-color .2s, color .2s }
   .lab-links a:hover { border-color: var(--i); color: var(--i) }
-  .lab-links .open { flex: 1; justify-content: space-between; padding: 0 14px; border-color: transparent; background: var(--soft); color: var(--i); font-weight: 700 }
-  .lab:hover .lab-links .open, .lab:focus-within .lab-links .open { background: var(--a); border-color: var(--a); color: var(--p) }
+  .lab-links .open { flex: 1; justify-content: space-between; padding: 0 14px; border-color: var(--a); background: var(--a); color: var(--p); font-weight: 700 }
+  .lab-links a.open:hover { border-color: var(--a); color: var(--p); filter: brightness(1.08) }
   .lab.off { display: none }
 
   /* Find a schedule: ECE only; numbers come from the live catalog */
@@ -277,30 +294,36 @@
   #schedules > .wrap { display: flex; flex-direction: column; gap: 22px; padding-top: 68px; padding-bottom: 76px }
   .entries { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px }
   @media (max-width: 720px) { .entries { grid-template-columns: minmax(0, 1fr) } }
-  .entry { display: flex; flex-direction: column; text-decoration: none; transition: border-color .3s, transform .35s cubic-bezier(.2,.75,.2,1) }
+  .entry { display: flex; flex-direction: column; text-decoration: none; transition: border-color .3s, transform .6s var(--spring) }
   .entry:hover, .entry:focus-visible { border-color: var(--i); transform: translateY(-4px) }
   .entry-body { flex: 1; display: flex; flex-direction: column; gap: 12px; padding: 20px 18px 18px }
   .entry .n { font: 800 52px/.9 var(--mono); letter-spacing: -.05em }
-  .entry .l { font: 700 15px var(--mono) }
+  .entry .l { margin: 0; font: 700 15px var(--mono) }
   .entry .d { font-size: 14.5px; line-height: 1.5; color: var(--mu2) }
   .entry .more { margin-top: auto; padding-top: 6px; font: 400 12.5px var(--mono); color: var(--ok) }
 
-  /* Impact strip: what's on the platform, counted daily from the lab repos (stats.json, written by the deploy) */
-  #impact { border-top: 1px solid var(--line) }
-  #impact > .wrap { display: flex; flex-direction: column; gap: 22px; padding-top: 68px; padding-bottom: 76px }
+  /* This semester in numbers: counts from the lab repos and visitors from Analytics (/stats.json, written daily by the deploy) */
+  #numbers { border-top: 1px solid var(--line) }
+  #numbers > .wrap { display: flex; flex-direction: column; gap: 22px; padding-top: 68px; padding-bottom: 76px }
+  .more-link { color: var(--ok); text-decoration: none }
+  .more-link:hover { text-decoration: underline; text-underline-offset: 3px }
   .stats-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)) }
   .stats-grid.visits { grid-template-columns: repeat(5, minmax(0, 1fr)) }
   /* 5 numbers on a tablet or phone: visitors on one row, the counts on the next */
   @media (max-width: 900px) { .stats-grid.visits { grid-template-columns: repeat(6, minmax(0, 1fr)) } .stats-grid.visits .stat { grid-column: span 2 } .stats-grid.visits .stat.v { grid-column: span 3 } }
-  .stat { display: flex; flex-direction: column; gap: 10px; padding: 26px 24px; border-inline-end: 1px solid var(--line); border-bottom: 1px solid var(--line); margin: 0 -1px -1px 0 }
+  .stat { display: flex; flex-direction: column; gap: 8px; padding: 24px 22px 22px; border-inline-end: 1px solid var(--line); border-bottom: 1px solid var(--line); margin: 0 -1px -1px 0; min-width: 0 }
   .stat b { font: 800 46px/.95 var(--mono); letter-spacing: -.05em }
   .stat span { font: 500 13px var(--mono); color: var(--mu2) }
-  .per-lab { display: flex; flex-wrap: wrap; gap: 8px 22px; padding: 14px 18px; border-top: 1px solid var(--line); margin-top: 1px; font: 400 12.5px var(--mono); color: var(--mu) }
-  .per-lab i { font-style: normal; color: var(--a) }
-  .per-lab > span { white-space: nowrap }
-    @media (max-width: 560px) { .stat { padding: 20px 14px; gap: 8px } .stat b { font-size: 34px } .stat span { font-size: 12px } }
+  .stat small { font: 400 12px var(--mono); color: var(--mu) }
+  .stat small:empty { display: none }
+  @media (max-width: 560px) { .stat { padding: 20px 14px; gap: 6px } .stat b { font-size: 34px } .stat span { font-size: 12px } }
+  .widgets { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr) minmax(0, .8fr); margin-top: 1px }
+  .widgets .cell { display: flex; flex-direction: column; gap: 16px; padding: 22px; border-inline-end: 1px solid var(--line); min-width: 0 }
+  .widgets .cell:last-child { border-inline-end: 0 }
+  @media (max-width: 1000px) { .widgets { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) } .widgets .cell:first-child { grid-column: 1 / -1; border-inline-end: 0; border-bottom: 1px solid var(--line) } }
+  @media (max-width: 640px) { .widgets { grid-template-columns: minmax(0, 1fr) } .widgets .cell { border-inline-end: 0; border-bottom: 1px solid var(--line) } .widgets .cell:last-child { border-bottom: 0 } }
 
-  /* Why web */
+  /* Features */
   #why { border-top: 1px solid var(--line); background: var(--bar) }
   #why > .wrap { display: flex; flex-wrap: wrap; gap: 40px 56px; padding-top: 68px; padding-bottom: 76px }
   .why-side { flex: 1 1 360px; min-width: 0; display: flex; flex-direction: column; gap: 22px }
@@ -371,8 +394,9 @@
     <nav aria-label="Primary">
       <a class="btn" href="#labs">Labs</a>
       <a class="btn" href="/schedules/">Schedules</a>
-      <a class="btn" href="#why">Why web</a>
-      <a class="btn" href="https://github.com/ECE-Birzeit" target="_blank" rel="noopener">GitHub ↗</a>
+      <a class="btn" href="/stats/">Dashboard</a>
+      <a class="btn" href="#why">Features</a>
+      <a class="btn gh" href="https://github.com/ECE-Birzeit" target="_blank" rel="noopener">GitHub ↗</a>
     </nav>
     <button type="button" class="theme btn" role="switch" aria-checked="false" aria-label="Dark theme" title="Toggle dark theme">
       <svg class="sun" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3 3l1.4 1.4M11.6 11.6L13 13M3 13l1.4-1.4M11.6 4.4L13 3"/></svg>
@@ -385,9 +409,9 @@
   <section class="hero">
     <div class="wrap">
       <div class="hero-main">
-        <span class="kicker">Birzeit University · Department of Electrical &amp; Computer Engineering</span>
+        <span class="kicker">Birzeit University · Electrical &amp; Computer Engineering</span>
         <h1>ECE Labs<span class="cur" aria-hidden="true"></span></h1>
-        <p class="lede">The ECE labs' experiments on one platform: code that pastes straight into your IDE without page breaks, and every page available offline.</p>
+        <p class="lede">Every ECE lab experiment on one site. Code that pastes straight into your IDE, pages that open offline, and the weekly schedule of every instructor, course and room.</p>
         <form role="search" id="find">
           <label class="search">
             <b aria-hidden="true">›</b>
@@ -407,6 +431,7 @@
           </div>
           <span id="find-status" aria-live="polite"></span>
         </form>
+        <p class="hero-stats" id="hero-stats"><span hidden data-hero="students"><b>·</b> students this semester</span><span><b data-stat="manuals">4</b> labs</span><span><b data-stat="experiments">21</b> experiments</span><span><b data-stat="code_listings">75</b> code listings</span></p>
       </div>
 
       <div class="deck" aria-label="Screenshots of experiment pages on the lab sites">
@@ -433,10 +458,11 @@
     <div class="wrap">
       <div class="sec-head">
         <div>
-          <span class="kicker" id="labs-count">// 04 manuals · more coming</span>
+          <span class="kicker" id="labs-count">// 4 labs · more coming</span>
           <h2 id="labs-h">Pick a lab</h2>
         </div>
         <div class="tools">
+          <span class="kicker" id="rail-count" aria-hidden="true"></span>
           <button type="button" class="arrow btn prev" aria-label="Scroll labs left">←</button>
           <button type="button" class="arrow btn next" aria-label="Scroll labs right">→</button>
         </div>
@@ -454,6 +480,7 @@
               <span class="lab-num" aria-hidden="true">4110</span>
               <h3 class="lab-name"><a href="https://encs4110.birzeit.me/" target="_blank" rel="noopener">Computer Design Laboratory</a></h3>
               <span class="lab-plat">TM4C123 · ARM Cortex-M4</span>
+              <div class="lab-use" data-use="encs4110" hidden><span><b data-u="students"></b> students</span><span><b data-u="experiment_views"></b> page views</span><span class="x"><span data-u="experiments"></span> exp</span></div>
               <div class="lab-links">
                 <a class="open" href="https://encs4110.birzeit.me/" aria-label="Start the ENCS4110 lab" target="_blank" rel="noopener">Start <span aria-hidden="true">→</span></a>
                 <a href="https://encs4110.birzeit.me/manual/encs4110_manual.pdf" aria-label="ENCS4110 manual PDF" target="_blank" rel="noopener">PDF</a>
@@ -472,6 +499,7 @@
               <span class="lab-num" aria-hidden="true">4101</span>
               <h3 class="lab-name"><a href="https://encs4101.birzeit.me/" target="_blank" rel="noopener">Embedded Systems Laboratory</a></h3>
               <span class="lab-plat">STM32 · CubeIDE · HAL</span>
+              <div class="lab-use" data-use="encs4101" hidden><span><b data-u="students"></b> students</span><span><b data-u="experiment_views"></b> page views</span><span class="x"><span data-u="experiments"></span> exp</span></div>
               <div class="lab-links">
                 <a class="open" href="https://encs4101.birzeit.me/" aria-label="Start the ENCS4101 lab" target="_blank" rel="noopener">Start <span aria-hidden="true">→</span></a>
                 <a href="https://encs4101.birzeit.me/ENCS4101-Manual.pdf" aria-label="ENCS4101 manual PDF" target="_blank" rel="noopener">PDF</a>
@@ -490,6 +518,7 @@
               <span class="lab-num" aria-hidden="true">5150</span>
               <h3 class="lab-name"><a href="https://encs5150.birzeit.me/" target="_blank" rel="noopener">Advanced Computer Systems Engineering Laboratory</a></h3>
               <span class="lab-plat">Android (Java) · Spring Boot</span>
+              <div class="lab-use" data-use="encs5150" hidden><span><b data-u="students"></b> students</span><span><b data-u="experiment_views"></b> page views</span><span class="x"><span data-u="experiments"></span> exp</span></div>
               <div class="lab-links">
                 <a class="open" href="https://encs5150.birzeit.me/" aria-label="Start the ENCS5150 lab" target="_blank" rel="noopener">Start <span aria-hidden="true">→</span></a>
                 <a href="https://encs5150.birzeit.me/ENCS515-Manual-2025.pdf" aria-label="ENCS5150 manual PDF" target="_blank" rel="noopener">PDF</a>
@@ -508,6 +537,7 @@
               <span class="lab-num" aria-hidden="true">5101</span>
               <h3 class="lab-name"><a href="https://encs5101.birzeit.me/" target="_blank" rel="noopener">Microprocessor and Embedded Systems Laboratory</a></h3>
               <span class="lab-plat">Cortex-M4 · Arduino Mega · Raspberry Pi</span>
+              <div class="lab-use" data-use="encs5101" hidden><span><b data-u="students"></b> students</span><span><b data-u="experiment_views"></b> page views</span><span class="x"><span data-u="experiments"></span> exp</span></div>
               <div class="lab-links">
                 <a class="open" href="https://encs5101.birzeit.me/" aria-label="Start the ENCS5101 lab" target="_blank" rel="noopener">Start <span aria-hidden="true">→</span></a>
                 <a href="https://encs5101.birzeit.me/ENCS5101-Manual.pdf" aria-label="ENCS5101 manual PDF" target="_blank" rel="noopener">PDF</a>
@@ -521,7 +551,7 @@
 
       <div class="rail-foot">
         <div class="swiper-pagination"></div>
-        <a class="invite" href="mailto:support@birzeit.me?subject=New%20lab%20manual">Teaching a lab? <b>Get in touch →</b></a>
+        <a class="invite" href="mailto:support@birzeit.me?subject=New%20lab%20manual">Teaching a lab? <b>Bring your manual →</b></a>
       </div>
     </div>
   </section>
@@ -533,38 +563,39 @@
           <span class="kicker" id="sched-kicker">// This semester · from Ritaj, daily</span>
           <h2 id="sched-h">Find a schedule</h2>
         </div>
+        <span class="kicker" id="sched-week" hidden></span>
       </div>
       <div class="entries">
-        <a class="entry win" href="/schedules/?view=instructor"><span class="bar" aria-hidden="true"><i></i><i></i><i></i><span class="t">schedules/instructors</span></span><span class="entry-body"><span class="n" data-count="instructor">··</span><span class="l">Instructors</span><span class="d">Any ECE instructor's teaching week: courses, sections and rooms.</span><span class="more">Browse instructors →</span></span></a>
-        <a class="entry win" href="/schedules/?view=course"><span class="bar" aria-hidden="true"><i></i><i></i><i></i><span class="t">schedules/courses</span></span><span class="entry-body"><span class="n" data-count="course">··</span><span class="l">Courses</span><span class="d">Every section of an ENCS, ENEE or MSCE course: when it meets, where, and who teaches it.</span><span class="more">Browse courses →</span></span></a>
-        <a class="entry win" href="/schedules/?view=room"><span class="bar" aria-hidden="true"><i></i><i></i><i></i><span class="t">schedules/rooms</span></span><span class="entry-body"><span class="n" data-count="room">··</span><span class="l">Rooms</span><span class="d">What's booked in each lab and classroom across the week.</span><span class="more">Browse rooms →</span></span></a>
+        <a class="entry win" href="/schedules/?view=instructor"><span class="bar" aria-hidden="true"><i></i><i></i><i></i><span class="t">schedules/instructors</span></span><span class="entry-body"><span class="n" data-count="instructor">··</span><h3 class="l">Instructors</h3><span class="d">Any ECE instructor's teaching week: courses, sections and rooms.</span><span class="more">Browse instructors →</span></span></a>
+        <a class="entry win" href="/schedules/?view=course"><span class="bar" aria-hidden="true"><i></i><i></i><i></i><span class="t">schedules/courses</span></span><span class="entry-body"><span class="n" data-count="course">··</span><h3 class="l">Courses</h3><span class="d">Every section of an ENCS, ENEE or MSCE course: when it meets, where, and who teaches it.</span><span class="more">Browse courses →</span></span></a>
+        <a class="entry win" href="/schedules/?view=room"><span class="bar" aria-hidden="true"><i></i><i></i><i></i><span class="t">schedules/rooms</span></span><span class="entry-body"><span class="n" data-count="room">··</span><h3 class="l">Rooms</h3><span class="d">What's booked in each lab and classroom across the week.</span><span class="more">Browse rooms →</span></span></a>
       </div>
     </div>
   </section>
 
-  <section id="impact" aria-labelledby="impact-h">
+  <section id="numbers" aria-labelledby="numbers-h">
     <div class="wrap">
       <div class="sec-head">
         <div>
-          <span class="kicker" id="impact-kicker">// The four lab sites · counted daily</span>
-          <h2 id="impact-h">Used across ECE</h2>
+          <span class="kicker" id="numbers-kicker">// The four lab sites · counted daily</span>
+          <h2 id="numbers-h">This semester in numbers</h2>
         </div>
+        <a class="kicker more-link" href="/stats/">Open the dashboard →</a>
       </div>
-      <div class="stats win">
+      <div class="win nums">
         <div class="bar" aria-hidden="true"><i></i><i></i><i></i><span class="t">stats.json</span><span class="r" id="stats-when">updated daily</span></div>
         <div class="stats-grid" id="stats-grid">
-        <div class="stat v" hidden><b data-visit="students">0</b><span>students this semester</span></div>
-        <div class="stat v" hidden><b data-visit="experiment_views">0</b><span>experiment pages opened</span></div>
-        <div class="stat"><b data-stat="manuals">4</b><span>lab manuals</span></div>
-        <div class="stat"><b data-stat="experiments">21</b><span>experiments online</span></div>
-        <div class="stat"><b data-stat="code_listings">75</b><span>code listings</span></div>
+          <div class="stat v" hidden><b data-visit="students">0</b><span>students</span><small id="since-note"></small></div>
+          <div class="stat v" hidden><b data-visit="experiment_views">0</b><span>experiment pages opened</span><small id="per-note"></small></div>
+          <div class="stat"><b data-stat="manuals">4</b><span>lab manuals</span></div>
+          <div class="stat"><b data-stat="experiments">21</b><span>experiments online</span></div>
+          <div class="stat"><b data-stat="code_listings">75</b><span>code listings</span></div>
         </div>
-      <div class="per-lab" id="per-lab">
-        <span data-lab="encs4110"><i>■</i> ENCS4110 · <span data-lab-visit="encs4110" hidden></span><span data-lab-exp="encs4110">10</span> experiments</span>
-        <span data-lab="encs4101"><i>■</i> ENCS4101 · <span data-lab-visit="encs4101" hidden></span><span data-lab-exp="encs4101">3</span> experiments</span>
-        <span data-lab="encs5150"><i>■</i> ENCS5150 · <span data-lab-visit="encs5150" hidden></span><span data-lab-exp="encs5150">5</span> experiments</span>
-        <span data-lab="encs5101"><i>■</i> ENCS5101 · <span data-lab-visit="encs5101" hidden></span><span data-lab-exp="encs5101">3</span> experiments</span>
-      </div>
+        <div class="widgets" id="widgets" hidden>
+          <div class="cell"><div class="w-title"><h3>Students per day</h3><span id="w-daily-note"></span></div><div id="w-daily"></div></div>
+          <div class="cell"><div class="w-title"><h3>When they read</h3><span id="w-heat-note"></span></div><div id="w-heat"></div></div>
+          <div class="cell"><div class="w-title"><h3>Students by lab</h3></div><div id="w-labs"></div></div>
+        </div>
       </div>
     </div>
   </section>
@@ -573,21 +604,21 @@
     <div class="wrap">
       <div class="why-side">
         <div>
-          <span class="kicker">// Why web, not just PDF</span>
+          <span class="kicker">// What a PDF can't do</span>
           <h2 id="why-h">A manual you can actually work in.</h2>
         </div>
         <div class="feats" role="tablist" aria-label="Features" aria-orientation="vertical">
           <button type="button" class="feat" role="tab" id="ft-offline" aria-controls="dp-offline" aria-selected="true">
-            <span class="feat-n" aria-hidden="true">01</span><span><b>Works offline</b><span class="feat-d">Install it once and the whole manual opens without internet.</span></span>
+            <span class="feat-n" aria-hidden="true">01</span><span><b>Works offline</b><span class="feat-d">Install a lab once and every page, image and code listing opens without internet.</span></span>
           </button>
           <button type="button" class="feat" role="tab" id="ft-resume" aria-controls="dp-resume" aria-selected="false" tabindex="-1">
-            <span class="feat-n" aria-hidden="true">02</span><span><b>Picks up where you left off</b><span class="feat-d">Come back to the exact experiment and section you were on.</span></span>
+            <span class="feat-n" aria-hidden="true">02</span><span><b>Picks up where you left off</b><span class="feat-d">Come back to the experiment and the section you were reading.</span></span>
           </button>
           <button type="button" class="feat" role="tab" id="ft-copy" aria-controls="dp-copy" aria-selected="false" tabindex="-1">
-            <span class="feat-n" aria-hidden="true">03</span><span><b>Clean code listings</b><span class="feat-d">Code keeps its exact formatting, so it matches what you build in your IDE.</span></span>
+            <span class="feat-n" aria-hidden="true">03</span><span><b>Code you can paste</b><span class="feat-d">Listings keep their exact formatting: no page numbers, no broken lines.</span></span>
           </button>
           <button type="button" class="feat" role="tab" id="ft-current" aria-controls="dp-current" aria-selected="false" tabindex="-1">
-            <span class="feat-n" aria-hidden="true">04</span><span><b>Always current</b><span class="feat-d">Fixes go live as soon as they are merged.</span></span>
+            <span class="feat-n" aria-hidden="true">04</span><span><b>Always current</b><span class="feat-d">A fix goes live the moment it is merged.</span></span>
           </button>
         </div>
         <p class="why-note">Every lab still has a PDF for printing.</p>
@@ -604,7 +635,7 @@
                 <div><small>Exp 2 · Saved for offline</small><p>Flow Control Instructions</p></div>
                 <div><small>Exp 3 · Saved for offline</small><p>Introduction to Microcontrollers and Arduino</p></div>
               </div>
-              <p class="dnote">Install the lab from your browser's menu. Every page, image and code listing is kept on your device, so the manual still opens on a bad campus connection.</p>
+              <p class="dnote">Install a lab from your browser's menu and it keeps working on a bad campus connection.</p>
             </div>
 
             <div class="dpanel" role="tabpanel" id="dp-resume" aria-labelledby="ft-resume" hidden>
@@ -657,6 +688,7 @@ __HAL_TIM_SET_COMPARE(&amp;htim2, TIM_CHANNEL_1, duty);</code></pre>
   </div>
 </footer>
 
+<script src="/assets/widgets.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/11.1.14/swiper-bundle.min.js" integrity="sha512-mNgFElWNPcchY3tb+tENYLBl4oIum5eHvK9mn9ldsgAGdi+zsM26RHIggQIMyvrhRW4EOwWJz33zeB5nOxU1Ag==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
   (function () {
@@ -704,7 +736,7 @@ __HAL_TIM_SET_COMPARE(&amp;htim2, TIM_CHANNEL_1, duty);</code></pre>
       };
     });
     labs.forEach(function (l, i) { l.querySelector('.lab-no').textContent = 'Lab ' + pad(i + 1); });
-    document.getElementById('labs-count').textContent = '// ' + pad(labs.length) + ' manuals · more coming';
+    document.getElementById('labs-count').textContent = '// ' + labs.length + ' labs · more coming';
 
     // Hero: the front screenshot moves to the back every few seconds; pointing at the stack holds it.
     var shots = all('.shot');
@@ -753,11 +785,20 @@ __HAL_TIM_SET_COMPARE(&amp;htim2, TIM_CHANNEL_1, duty);</code></pre>
         a11y: { enabled: true },
         on: {
           // The copies share dots with the originals: light the dot of the real lab
-          slideChange: function (s) { dot(s, n); },
+          slideChange: function (s) { dot(s, n); count(s, n); },
+          init: function (s) { count(s, n); },
           paginationUpdate: function (s) { dot(s, n); }
         }
       });
       if (!railOn && sw.autoplay && sw.autoplay.running) sw.autoplay.stop();
+    }
+    // "01–03 / 04": which labs are in view
+    function count(s, n) {
+      var el = document.getElementById('rail-count');
+      var per = Math.min(n, Math.floor(s.params.slidesPerView) || 1);
+      if (!n || per >= n) { el.textContent = ''; return; }
+      var a = s.realIndex % n;
+      el.textContent = pad(a + 1) + (per > 1 ? '–' + pad((a + per - 1) % n + 1) : '') + ' / ' + pad(n);
     }
     function dot(s, n) {
       all('.swiper-pagination-bullet', s.pagination.el).forEach(function (b, j) {
@@ -776,6 +817,12 @@ __HAL_TIM_SET_COMPARE(&amp;htim2, TIM_CHANNEL_1, duty);</code></pre>
     (function () {
       var base = 'https://raw.githubusercontent.com/mabushelbaia/bzu-course-catalog/main/data/';
       fetch(base + 'index.json').then(function (r) { return r.json(); }).then(function (idx) {
+        var wk = idx.current && window.ECEWidgets.week(idx.current);
+        if (wk && wk.now <= wk.of) {
+          var el = document.getElementById('sched-week');
+          el.textContent = 'Week ' + wk.now + ' of ' + wk.of + ' · teaching ends ' + wk.ends;
+          el.hidden = false;
+        }
         var term = (idx.published_terms || Object.keys(idx.terms))[0];
         // The department's programs: ENCS, ENEE and the MSCE master's
         return Promise.all(['ENCS', 'ENEE', 'MSCE'].map(function (p) {
@@ -800,24 +847,51 @@ __HAL_TIM_SET_COMPARE(&amp;htim2, TIM_CHANNEL_1, duty);</code></pre>
       }).catch(function () {});
     })();
 
-    // Impact strip: the deploy writes /stats.json daily; the numbers in the HTML are a fallback
-    fetch('/stats.json').then(function (r) { return r.ok ? r.json() : null; }).then(function (s) {
+    // This semester in numbers: the deploy writes /stats.json daily; the counts in the HTML are a fallback
+    window.ECEWidgets.load().then(function (s) {
       if (!s) return;
-      all('[data-stat]').forEach(function (el) { if (s[el.dataset.stat] != null) el.textContent = s[el.dataset.stat]; });
-      all('[data-lab-exp]').forEach(function (el) { var l = s.labs && s.labs[el.dataset.labExp]; if (l) el.textContent = l.experiments; });
+      var W = window.ECEWidgets, fmt = W.fmt;
+      all('[data-stat]').forEach(function (el) {
+        if (s[el.dataset.stat] == null) return;
+        if (el.closest('#numbers')) W.countUp(el, s[el.dataset.stat]); else el.textContent = s[el.dataset.stat];
+      });
       if (s.generated_at) document.getElementById('stats-when').textContent = 'counted ' + s.generated_at.slice(0, 10);
-      // Visitors only appear once the deploy has Analytics access
       var v = s.visitors;
-      if (v && v.students) {
-        var fmt = function (n) { return Number(n).toLocaleString('en-US'); };
-        all('[data-visit]').forEach(function (el) { el.textContent = fmt(v[el.dataset.visit] || 0); el.parentNode.hidden = false; });
-        document.getElementById('stats-grid').classList.add('visits');
-        all('[data-lab-visit]').forEach(function (el) { var l = s.labs && s.labs[el.dataset.labVisit]; if (l && l.students != null) { el.textContent = fmt(l.students) + ' students · '; el.hidden = false; } });
-        document.getElementById('impact-kicker').textContent = '// ' + (v.term || 'This semester') + ' · since ' + new Date(v.since + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) + ', from the sites\' analytics';
-      }
+      if (!v || !v.students) return; // visitors only appear once the deploy has Analytics access
+      all('[data-visit]').forEach(function (el) { el.parentNode.hidden = false; W.countUp(el, v[el.dataset.visit]); });
+      document.getElementById('stats-grid').classList.add('visits');
+      var first = v.daily && v.daily.length ? W.day(v.daily[0][0]) : null;
+      document.getElementById('since-note').textContent = first ? 'since ' + W.short(first) : '';
+      document.getElementById('per-note').textContent = (v.experiment_views / v.students).toFixed(1) + ' per student';
+      document.getElementById('numbers-kicker').textContent = '// ' + (v.term || 'This semester') + ' · from the sites\' analytics, updated daily';
+      var hero = document.querySelector('[data-hero="students"]');
+      hero.firstElementChild.textContent = fmt(v.students);
+      hero.hidden = false;
+      // Each lab card gets its own numbers
+      all('[data-use]').forEach(function (el) {
+        var l = s.labs && s.labs[el.dataset.use];
+        if (!l || l.students == null) return;
+        all('[data-u]', el).forEach(function (b) { b.textContent = fmt(l[b.dataset.u]); });
+        el.hidden = false;
+      });
+      railEl.classList.add('used');
+      if (sw) sw.update();
+      // The widgets
+      W.daily(document.getElementById('w-daily'), v, 120);
+      if (first) document.getElementById('w-daily-note').textContent = 'since ' + W.short(first);
+      W.heat(document.getElementById('w-heat'), v, 7, 23, [8, 12, 16, 20]);
+      var best = W.busiest(v);
+      document.getElementById('w-heat-note').textContent = 'busiest: ' + W.DAYS[best[0]] + ' ' + pad(best[1]) + ':00';
+      W.labBars(document.getElementById('w-labs'), s.labs, 'students');
+      document.getElementById('widgets').hidden = false;
     }).catch(function () {});
 
-    // Why web: tabs with arrow-key support.
+    // Sections rise into place as they scroll into view (not for reduced motion; see widgets.js)
+    all('main > section:not(.hero) .sec-head, .why-side, .demo-col, .nums, .rail-foot').forEach(function (e) { window.ECEWidgets.reveal([e]); });
+    window.ECEWidgets.reveal(all('.entry'), 70);
+    window.ECEWidgets.reveal([document.querySelector('.rail')]);
+
+    // Features: tabs with arrow-key support.
     var feats = all('.feat');
     var dpanels = all('.dpanel');
     function selectTab(i) {
