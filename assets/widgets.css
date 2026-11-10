@@ -1,7 +1,7 @@
 /* Analytics widgets shared by the home page and /stats/. They use the pages' tokens (--i, --mu, --line,
    --soft, --ok, and --a from [data-lab]), so they follow the light and dark themes. */
 .w-title { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 6px 16px }
-.w-title b { font: 700 15px var(--mono); letter-spacing: -.01em }
+.w-title b { font: 700 15px var(--display); letter-spacing: -.01em }
 .w-title span { font: 400 12px var(--mono); color: var(--mu) }
 
 /* Students per day: one bar a day, the busiest in green */
@@ -45,7 +45,7 @@
 .w-top .t { display: block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font: 600 14.5px/1.35 var(--sans) }
 .w-top .m { font: 400 12px var(--mono); color: var(--mu) }
 .w-top .m em { font-style: normal; color: var(--a) }
-.w-top .v { font: 700 14px var(--mono) }
+.w-top .v { font: 700 14px var(--display) }
 .w-top .w-track { grid-column: 2 / span 2; height: 4px }
 
 /* Semester: teaching so far in green, the exam weeks hatched */
@@ -83,4 +83,4 @@
 .w-days .w-track { height: 6px }
 .w-days span { display: flex; justify-content: space-between; gap: 4px; font: 400 11.5px var(--mono); color: var(--mu) }
 .w-days b { font-weight: 700; color: var(--i) }
-.w-title h2, .w-title h3 { margin: 0; font: 700 15px var(--mono); letter-spacing: -.01em }
+.w-title h2, .w-title h3 { margin: 0; font: 700 15px var(--display); letter-spacing: -.01em }

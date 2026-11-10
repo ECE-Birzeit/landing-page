@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ECE weekly schedules · ECE Labs</title>
-<meta name="description" content="Weekly schedules for the Department of Electrical &amp; Computer Engineering at Birzeit University (ENCS, ENEE, MSCE, MSAI and JMEE courses): browse by instructor, course or room. Updated daily from Ritaj.">
-<meta property="og:title" content="ECE weekly schedules · ECE Labs">
-<meta property="og:description" content="Browse ECE schedules at Birzeit University by instructor, course or room. Updated daily from Ritaj.">
+<title>Weekly schedules · ECE Hub</title>
+<meta name="description" content="Weekly schedules for every department at Birzeit University: browse by instructor, course or room, filtered by faculty and department. Updated daily from Ritaj.">
+<meta property="og:title" content="Weekly schedules · ECE Hub">
+<meta property="og:description" content="Browse Birzeit University schedules by department, instructor, course or room. Updated daily from Ritaj.">
 <meta property="og:url" content="https://birzeit.me/schedules/">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="ECE Labs">
+<meta property="og:site_name" content="ECE Hub">
 <meta property="og:image" content="https://birzeit.me/og.png">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="canonical" href="https://birzeit.me/schedules/">
@@ -19,7 +19,10 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700;800&display=swap">
+<link rel="preconnect" href="https://api.fontshare.com" crossorigin>
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=supreme@1&display=swap">
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=switzer@1&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fragment+Mono&display=swap">
 <link rel="preconnect" href="https://raw.githubusercontent.com" crossorigin>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-K834Q72PP9"></script>
 <script>
@@ -41,10 +44,10 @@
   * { box-sizing: border-box }
   a { color: inherit }
   [hidden] { display: none !important }
-  :root { --g: clamp(20px, 4vw, 48px); --mono: 'JetBrains Mono', ui-monospace, monospace; --sans: 'Geist', system-ui, sans-serif }
+  :root { --g: clamp(20px, 4vw, 48px); --display: 'Supreme', ui-sans-serif, sans-serif; --sans: 'Switzer', ui-sans-serif, sans-serif; --mono: 'Fragment Mono', ui-monospace, monospace }
   [data-theme=dark] { --p: #0b0c0b; --card: #121312; --bar: #171816; --i: #e8e6e1; --mu: #8d8f89; --mu2: #b9bab5; --line: #2a2b29; --line2: #3a3b39; --soft: #181917; --ok: #4ade80 }
   [data-theme=light] { --p: #f3f2ec; --card: #fff; --bar: #f7f6f1; --i: #1a1b19; --mu: #64655e; --mu2: #45463f; --line: #dddbd2; --line2: #c9c7bd; --soft: #ebe9e1; --ok: #15803d }
-  body { min-height: 100vh; background: var(--p); color: var(--i); font-family: var(--sans); transition: background .25s, color .25s }
+  body { min-height: 100vh; background: var(--p); color: var(--i); font-family: var(--sans); font-weight: 500; font-synthesis: none; transition: background .25s, color .25s }
   :focus-visible { outline: 2px solid currentColor; outline-offset: 3px }
   .wrap { max-width: 1280px; margin: 0 auto; padding-inline: var(--g) }
   .kicker { font: 400 12.5px var(--mono); color: var(--mu) }
@@ -57,11 +60,11 @@
   header { border-bottom: 1px solid var(--line) }
   header .wrap { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 28px; min-height: 64px; padding-block: 10px }
   .brand { flex: none; display: flex; align-items: baseline; gap: 12px; text-decoration: none; white-space: nowrap }
-  .brand b { font: 700 16px var(--mono); letter-spacing: -.02em }
+  .brand b { font: 700 18px var(--display); letter-spacing: -.01em }
   .brand b::before { content: '>'; margin-inline-end: 8px; color: var(--ok) }
-  .brand span { font: 400 12px var(--mono); color: var(--mu) }
-  nav { display: flex; gap: 2px; margin-inline-start: auto; font: 400 13.5px var(--mono) }
-  nav a { padding: 10px 14px; border-radius: 8px; text-decoration: none; color: var(--mu2) }
+  .brand span { font: 500 12px var(--sans); color: var(--mu) }
+  nav { display: flex; gap: 2px; margin-inline-start: auto; font: 600 14px var(--sans) }
+  nav a { padding: 8px 12px; border-radius: 8px; text-decoration: none; color: var(--mu2) }
   nav a:hover { color: var(--i) }
   nav a[aria-current=page] { color: var(--i); box-shadow: inset 0 -2px 0 var(--ok); border-radius: 0 }
   .theme { flex: none; width: 44px; height: 44px; display: grid; place-items: center; padding: 0; border: 1px solid var(--line); border-radius: 10px; background: var(--card); color: inherit }
@@ -72,7 +75,6 @@
     header .theme { order: 2; margin-inline-start: auto }
     nav { order: 3; flex-basis: 100%; margin: 0 -10px; justify-content: space-between; font-size: 13px }
     nav a { padding-inline: 10px }
-    nav .gh { display: none }
   }
 
   /* Terminal window */
@@ -87,7 +89,7 @@
   /* Let wide children (the sections table) scroll inside their own box instead of widening the page */
   main .wrap > * { min-width: 0; max-width: 100% }
   .head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 18px }
-  h1 { margin: 8px 0 0; font: 800 clamp(32px, 4.4vw, 48px)/1.02 var(--mono); letter-spacing: -.045em }
+  h1 { margin: 8px 0 0; font: 700 clamp(32px, 4.4vw, 48px)/1.02 var(--display); letter-spacing: -.03em }
   .views { display: flex; gap: 8px }
   .seg { height: 40px; padding: 0 14px; border: 1px solid var(--line); border-radius: 8px; background: transparent; color: var(--mu2); font: 400 13px var(--mono); cursor: pointer; transition: border-color .15s, color .15s }
   .seg:hover { color: var(--i) }
@@ -99,8 +101,10 @@
   .pick select { position: absolute; inset: 0; width: 100%; height: 100%; padding: 0 var(--caret-w, 130px) 0 38px; border: 0; border-radius: inherit; outline: 0; background: transparent; color: var(--i); font: 400 14px var(--mono); text-overflow: ellipsis; appearance: none; -webkit-appearance: none; cursor: pointer }
   .pick select option { background: var(--card); color: var(--i) }
   .pick b, .pick .caret { position: absolute; top: 50%; transform: translateY(-50%); pointer-events: none }
-  .pick b { left: 15px; font: 700 15px var(--mono); color: var(--ok) }
+  .pick b { left: 15px; font: 700 15px var(--display); color: var(--ok) }
   .pick .caret { right: 14px; font: 400 12px var(--mono); color: var(--mu); white-space: nowrap }
+  .pick.dept { width: min(420px, 100%) }
+  .pick.dept b { color: var(--mu) }
   .meta-right { margin-inline-start: auto }
   .status { padding: 28px; font: 400 13px var(--mono); color: var(--mu) }
 
@@ -111,19 +115,15 @@
   .hhead span:first-child { transform: translate(0, -50%) }
   .hhead span:last-child { transform: translate(-100%, -50%) }
   .dayl { height: 76px; display: flex; align-items: center; padding: 0 14px; border-bottom: 1px solid var(--line); font: 500 12px var(--mono); color: var(--mu2) }
-  .lane { position: relative; height: 76px; border-bottom: 1px solid var(--line); border-inline-start: 1px solid var(--line); background-image: linear-gradient(90deg, var(--line) 1px, transparent 1px); background-size: calc(100% / 9) 100% }
+  .lane { position: relative; height: 76px; border-bottom: 1px solid var(--line); border-inline-start: 1px solid var(--line); background-image: linear-gradient(90deg, var(--line) 1px, transparent 1px); background-size: calc(100% / var(--hours, 9)) 100% }
   .gantt > :nth-last-child(-n+2) { border-bottom: 0 }
   .blk { position: absolute; top: 8px; bottom: 8px; padding: 6px 8px; border-radius: 7px; border: 1px solid var(--c); background: color-mix(in srgb, var(--c) 14%, var(--card)); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font: 400 11px/1.35 var(--mono); color: var(--mu2) }
   .blk b { display: block; overflow: hidden; text-overflow: ellipsis; font-size: 12px; font-weight: 700; color: var(--c) }
-  .blk.ext { border-style: dashed; border-color: var(--line2); background: var(--soft); color: var(--mu) }
-  .blk.ext b { color: var(--mu2) }
-  .item.ext b, tr.ext td.c { color: var(--mu2) }
-  tr.ext td { color: var(--mu) }
   .blk.low { top: 40px; bottom: 6px }
   .blk.high { bottom: 40px }
 
   /* Phone: day tabs and a list instead of the grid */
-  .days { display: none; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px }
+  .days { display: none; grid-template-columns: repeat(var(--days, 5), minmax(0, 1fr)); gap: 6px }
   .dtab { height: 46px; border: 1px solid var(--line); border-radius: 8px; background: transparent; color: var(--mu2); font: 500 12.5px var(--mono); cursor: pointer }
   .dtab small { display: block; font-size: 10px; color: var(--mu) }
   .dtab[aria-pressed=true] { border-color: var(--i); color: var(--i) }
@@ -131,7 +131,7 @@
   .item { display: grid; grid-template-columns: 58px minmax(0, 1fr); gap: 12px; padding: 12px 14px; border-bottom: 1px solid var(--line) }
   .item:last-child { border-bottom: 0 }
   .item .tm { font: 500 12.5px/1.45 var(--mono); color: var(--mu2) }
-  .item b { display: block; font: 700 14px var(--mono); color: var(--c) }
+  .item b { display: block; font: 700 14px var(--display); color: var(--c) }
   .item span { display: block; margin-top: 2px; font-size: 13.5px }
   .item small { display: block; margin-top: 2px; font: 400 11.5px var(--mono); color: var(--mu) }
   @media (max-width: 720px) {
@@ -194,13 +194,11 @@
 
 <header>
   <div class="wrap">
-    <a class="brand" href="/"><b>ECE Labs</b><span>Birzeit University</span></a>
+    <a class="brand" href="/"><b>ECE Hub</b><span>Birzeit University</span></a>
     <nav aria-label="Primary">
       <a class="btn" href="/#labs">Labs</a>
       <a class="btn" href="/schedules/" aria-current="page">Schedules</a>
-      <a class="btn" href="/stats/">Dashboard</a>
-      <a class="btn" href="/#why">Features</a>
-      <a class="btn gh" href="https://github.com/ECE-Birzeit" target="_blank" rel="noopener">GitHub ↗</a>
+      <a class="btn" href="/stats/">Insights</a>
     </nav>
     <button type="button" class="theme btn" role="switch" aria-checked="false" aria-label="Dark theme" title="Toggle dark theme">
       <svg class="sun" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3 3l1.4 1.4M11.6 11.6L13 13M3 13l1.4-1.4M11.6 4.4L13 3"/></svg>
@@ -224,13 +222,14 @@
     </div>
 
     <div class="tools">
+      <label class="pick dept"><b aria-hidden="true">⌂</b><select id="dept" aria-label="Department" disabled><option>Loading…</option></select><span class="caret" id="deptcount">▾</span></label>
       <label class="pick"><b aria-hidden="true">›</b><select id="pick" disabled><option>Loading…</option></select><span class="caret" id="optcount">▾</span></label>
       <span class="kicker" id="summary"></span>
       <span class="kicker meta-right" id="updated"></span>
     </div>
 
     <div class="win week" id="week">
-      <div class="bar"><i></i><i></i><i></i><span class="t" id="file">schedule</span><span class="r">08:00 – 17:00 · Sat – Thu</span></div>
+      <div class="bar"><i></i><i></i><i></i><span class="t" id="file">schedule</span><span class="r" id="span">08:00 – 17:00 · Sat – Thu</span></div>
       <div class="gantt" id="gantt"><div class="status">Loading the schedule…</div></div>
     </div>
 
@@ -281,35 +280,41 @@
     });
     mq.addEventListener('change', function (e) { if (!chosen) { apply(e.matches ? 'dark' : 'light'); render('theme'); } });
 
-    // Live data from bzu-course-catalog, scraped daily from Ritaj
+    // Live data from bzu-course-catalog, scraped daily from Ritaj: the whole university's semester in one
+    // file, and Ritaj's faculties and departments with each one's course prefixes (departments.json)
     var DATA = 'https://raw.githubusercontent.com/mabushelbaia/bzu-course-catalog/main/data/';
-    // The department's programs: computer engineering, electrical engineering, and the master's programs (MSCE, MSAI, JMEE); a program with no classes this semester has no file and is skipped
-    var PROGRAMS = [['ENCS', 'Computer Engineering'], ['ENEE', 'Electrical Engineering'], ['MSCE', "Master's in Computer Engineering"], ['MSAI', "Master's in Artificial Intelligence"], ['JMEE', "Master's in Electrical Engineering"]];
-    var DAYS = [['S', 'Sat'], ['M', 'Mon'], ['T', 'Tue'], ['W', 'Wed'], ['R', 'Thu']];
+    var ALL_DAYS = [['S', 'Sat'], ['U', 'Sun'], ['M', 'Mon'], ['T', 'Tue'], ['W', 'Wed'], ['R', 'Thu']];
+    var DAYS = ALL_DAYS;
     var KEY = { instructor: 'inst', course: 'code', room: 'room' };
     var NOUN = { instructor: ['instructor', 'instructors'], course: ['course', 'courses'], room: ['room', 'rooms'] };
     var $ = function (id) { return document.getElementById(id); };
     var rows = [], names = {}, lists = {}, codes = [];
-    // Rooms are shared with other departments: their classes come from rooms.json, loaded on first use
-    var term = null, roomRows = null, roomsLoading = false;
-    var ECE = /^(ENCS|ENEE|MSCE|MSAI|JMEE)/;
-    function loadRooms() {
-      if (roomRows || roomsLoading || !term) return;
-      roomsLoading = true;
-      fetch(DATA + term + '/rooms.json').then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
-        if (!d) return;
-        roomRows = {};
-        Object.keys(d.rooms).forEach(function (room) {
-          roomRows[room] = d.rooms[room].filter(function (m) { return DAYS.some(function (x) { return x[0] === m[3]; }); }).map(function (m) {
-            var mine = rows.filter(function (x) { return x.code === m[0] && x.sec === m[1] && x.day === m[3] && x.start === m[4]; })[0];
-            return { code: m[0], sec: m[1], inst: m[2] || 'TBA', day: m[3], start: m[4], end: m[5], room: room, enr: mine ? mine.enr : '', ext: !ECE.test(m[0]) };
-          });
-        });
-        if (state.view === 'room') render('rooms');
-      }).catch(function () {}).then(function () { roomsLoading = false; });
-    }
-    var state = { view: 'instructor', sel: {}, day: null, sort: null };
-
+    // Departments: id -> { label, prefixes, groups: [[prefix, program name]] }. "all" is every course,
+    // "f<id>" a whole faculty, "other" the prefixes Ritaj's tree doesn't place anywhere
+    var units = {}, unitOrder = [], DEFAULT = '7261'; // Electrical and Computer Engineering
+    var state = { view: 'instructor', dept: DEFAULT, sel: {}, day: null, sort: null };
+    // Birzeit's buildings by the code rooms start with ("Masri109"); Ritaj spells a few codes differently
+    var BUILDINGS = [
+      ['A.Shaheen', 'Azeez Shaheen Building, Faculty of Arts'], ['Aggad', 'Omar Aggad Engineering Building'],
+      ['Al.Juraysi', 'Abdul Rahman Al-Juraysi Building, Faculty of Business and Economics', 'Al-Juraysi'], ['Alghanim', 'Yusuf Ahmad Alghanim Library'],
+      ['Alsadik', 'Riad Tawfik Al-Sadik Building, Faculty of Law and Public Administration'], ['Aweidah', 'Samir Aweidah Fine Arts, Music & Design Building'],
+      ['Bahrain', "Kingdom of Bahrain Building for Women's Studies"], ['Bamieh', 'Mohammad Omran Bamieh Building, Faculty of Education'],
+      ['Darwazah', 'Samih Darwazah Institute for Pharmaceutical Industries'], ['EL-haj', 'Ali El-Haj Stadium'],
+      ['GYM', 'Physical Education Building'], ['IOL', 'Institute of Law Building'], ['Khoury', 'Said Khoury Building for Development Studies'],
+      ['KNH', 'Kamal Naser Hall'], ['Maktoum', 'Sheikh Rashid Bin Said Al-Maktoum Building'], ['Masri', 'Munib Rashid Masri Building for Information Technology'],
+      ['Masruji', 'Mohammad Masrouji Building for Media', 'Masrouji'], ['N.Shaheen', 'Naseeb Azeez Shaheen Building for Graduate Studies'],
+      ['NSA', 'Naseeb Azeez Shaheen Auditorium'], ['O.Abdulhadi', 'Omar Abdulhadi Business Building'],
+      ['PNH', 'Faculty of Pharmacy, Nursing and Health Professions Building'], ['S.Abdulhadi', 'Samir Abdulhadi Building, Faculty of Science, Math Wing'],
+      ['SCI', 'Faculty of Science Building'], ['Sh.Shaheen', 'Shouky Shaheen Lecture Halls Building'], ['WKS', 'Engineering Workshops'],
+      ['Zeenni', 'Najjad Zeenni Information Technology Center of Excellence']
+    ];
+    var bkey = function (x) { return x.toLowerCase().replace(/[.\-\s]/g, ''); };
+    var BY_KEY = {};
+    BUILDINGS.forEach(function (b) { BY_KEY[bkey(b[0])] = b[0]; if (b[2]) BY_KEY[bkey(b[2])] = b[0]; });
+    function building(room) { var m = room.match(/^[A-Za-z.\-]+/); return (m && BY_KEY[bkey(m[0])]) || 'Other'; }
+    function buildingGroups() { return BUILDINGS.map(function (b) { return [b[0], b[1]]; }).concat([['Other', 'Rooms not on the list']]); }
+    function prefixOf(code) { return (code.match(/^[A-Za-z]*/) || [''])[0]; }
+    function inDept(code) { var u = units[state.dept]; return !u || !u.prefixes || u.prefixes[prefixOf(code)] === 1; }
     function mins(t) { var p = t.split(':'); return +p[0] * 60 + +p[1]; }
     function short(n) { var p = n.split(' '); return p.length > 2 ? p[0] + ' ' + p[p.length - 1] : n; }
     function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
@@ -323,59 +328,111 @@
     // ?view=room&q=Masri107 makes a choice shareable
     function readUrl() {
       var u = new URLSearchParams(location.search);
+      if (u.get('dept')) state.dept = u.get('dept');
       if (KEY[u.get('view')]) state.view = u.get('view');
       if (u.get('q')) state.sel[state.view] = u.get('q');
     }
     function writeUrl() {
-      var u = new URLSearchParams({ view: state.view, q: state.sel[state.view] || '' });
+      var u = new URLSearchParams({ dept: state.dept, view: state.view, q: state.sel[state.view] || '' });
       history.replaceState(null, '', '?' + u.toString());
     }
 
+    function buildUnits(tree, prefixes) {
+      var title = function (p) { return p.name + (p.level && p.level !== 'Bachelor' ? ' (' + p.level + ')' : ''); };
+      function unit(id, label, programs, group) {
+        var u = { id: id, label: label, group: group, prefixes: {}, groups: [] };
+        programs.forEach(function (p) {
+          if (!u.prefixes[p.prefix]) { u.prefixes[p.prefix] = 1; u.groups.push([p.prefix, title(p)]); }
+        });
+        units[id] = u; unitOrder.push(id);
+        return u;
+      }
+      units.all = { id: 'all', label: 'All departments', prefixes: null, groups: null }; unitOrder.push('all');
+      var placed = {};
+      tree.faculties.forEach(function (f) {
+        var everything = f.departments.reduce(function (a, d) { return a.concat(d.programs); }, []).concat(f.programs);
+        unit('f' + f.id, 'All of ' + f.name, everything, f.name);
+        f.departments.forEach(function (d) { if (d.programs.length) unit(d.id, d.name.replace(/^Department of /, ''), d.programs, f.name); });
+        // Programs that sit straight under the faculty, each on its own
+        f.programs.forEach(function (p) { unit(p.id, title(p) + ' · ' + p.prefix, [p], f.name); });
+        everything.forEach(function (p) { placed[p.prefix] = 1; });
+      });
+      tree.programs.forEach(function (p) { unit(p.id, title(p) + ' · ' + p.prefix, [p], 'University'); placed[p.prefix] = 1; });
+      var rest = Object.keys(prefixes).filter(function (x) { return !placed[x]; }).sort();
+      if (rest.length) unit('other', 'Courses not under a department', rest.map(function (x) { return { prefix: x, name: x }; }), 'University');
+    }
+
     function load() {
-      var checked = null;
+      var checked = null, term = null;
       fetch(DATA + 'index.json').then(function (r) { return r.json(); }).then(function (idx) {
         checked = idx.checked_at || null;
         term = (idx.published_terms || Object.keys(idx.terms))[0];
-        return Promise.all(PROGRAMS.map(function (p) {
-          // A program with no courses this semester has no file; skip it rather than fail
-          return fetch(DATA + term + '/' + p[0] + '.json').then(function (r) { return r.ok ? r.json() : null; });
-        }));
-      }).then(function (files) {
-        files = files.filter(Boolean);
-        var d = files[0];
-        files.forEach(function (f) { f.courses.forEach(function (c) {
+        return Promise.all([fetch(DATA + term + '.json'), fetch(DATA + 'departments.json')]);
+      }).then(function (rs) {
+        if (!rs[0].ok) throw new Error(rs[0].status);
+        return Promise.all([rs[0].json(), rs[1].ok ? rs[1].json() : { faculties: [], programs: [] }]);
+      }).then(function (got) {
+        var d = got[0], prefixes = {};
+        d.courses.forEach(function (c) {
+          prefixes[c.prefix] = 1;
           names[c.code] = c.name.replace(/\w\S*/g, function (w) { return w[0] + w.slice(1).toLowerCase(); });
           c.sections.forEach(function (s) {
             s.meetings.forEach(function (m) {
-              if (m.start && m.end && DAYS.some(function (x) { return x[0] === m.day; }))
+              if (m.start && m.end && ALL_DAYS.some(function (x) { return x[0] === m.day; }))
                 rows.push({ code: c.code, sec: s.number, inst: s.instructor || 'TBA', day: m.day, start: m.start, end: m.end, room: m.room || 'TBA', enr: s.enrolled });
             });
           });
-        }); });
-        d.updated_at = files.map(function (f) { return f.updated_at; }).sort().pop();
-        codes = Object.keys(names).sort();
-        Object.keys(KEY).forEach(function (v) {
-          var count = {};
-          rows.forEach(function (r) { var x = r[KEY[v]]; if (x && x !== 'TBA') count[x] = (count[x] || 0) + 1; });
-          lists[v] = Object.keys(count).sort(function (a, b) { return a.localeCompare(b); });
         });
-        $('kicker').textContent = '// ' + d.name + ' · ' + lists.course.length + ' courses · ' + lists.instructor.length + ' instructors · ' + lists.room.length + ' rooms';
+        codes = Object.keys(names).sort(); // one colour per course, the same in every department
+        buildUnits(got[1], prefixes);
+        if (!units[state.dept]) state.dept = units[DEFAULT] ? DEFAULT : 'all';
+        $('dept').innerHTML = deptOptions();
+        $('dept').disabled = false;
+        state.term = d.name;
         // checked_at: when Ritaj was last scraped (daily); updated_at: when this semester's data last changed
         var c = (checked || d.updated_at).slice(0, 10), u = d.updated_at.slice(0, 10);
         $('updated').textContent = 'Checked ' + c + ' from Ritaj' + (u !== c ? ' · last change ' + u : '');
         $('pick').disabled = false;
+        scope();
         render();
       }).catch(function () {
         $('gantt').innerHTML = '<div class="status">Couldn’t load the schedule. Check your connection and reload.</div>';
       });
     }
 
+    // The department picker: all departments, then each faculty (the whole faculty first)
+    function deptOptions() {
+      var html = '<option value="all">All departments</option>', group = null;
+      unitOrder.forEach(function (id) {
+        var u = units[id];
+        if (id === 'all') return;
+        if (u.group !== group) { html += (group ? '</optgroup>' : '') + '<optgroup label="' + esc(u.group) + '">'; group = u.group; }
+        html += '<option value="' + esc(id) + '">' + esc(u.label) + '</option>';
+      });
+      return html + (group ? '</optgroup>' : '');
+    }
+
+    // The department narrows the instructor and course lists (its courses and who teaches them); rooms are
+    // every room on campus. A week always shows everything in it, from any department.
+    function scope() {
+      var mine = rows.filter(function (r) { return inDept(r.code); });
+      Object.keys(KEY).forEach(function (v) {
+        var count = {};
+        (v === 'room' ? rows : mine).forEach(function (r) { var x = r[KEY[v]]; if (x && x !== 'TBA') count[x] = 1; });
+        lists[v] = Object.keys(count).sort(function (a, b) { return a.localeCompare(b); });
+      });
+      $('dept').value = state.dept;
+      $('deptcount').textContent = (units[state.dept].prefixes ? Object.keys(units[state.dept].prefixes).length + ' prefixes ' : '') + '▾';
+      $('dept').parentNode.style.setProperty('--caret-w', ($('deptcount').offsetWidth + 28) + 'px');
+      $('kicker').textContent = '// ' + state.term + ' · ' + lists.course.length + ' courses · ' + lists.instructor.length + ' instructors · ' + lists.room.length + ' rooms on campus';
+    }
+
     var COLS = [
       { key: 'code', label: 'Course', val: function (g) { return g.code; } },
       { key: 'name', label: 'Title', val: function (g) { return names[g.code] || ''; } },
       { key: 'sec', label: 'Section', val: function (g) { return +g.sec || 0; } },
-      { key: 'days', label: 'Days', val: function (g) { return 'SMTWR'.indexOf(g.dayCodes[0]) * 1e4 + mins(g.start); } },
-      { key: 'time', label: 'Time', val: function (g) { return mins(g.start) * 10 + 'SMTWR'.indexOf(g.dayCodes[0]); } },
+      { key: 'days', label: 'Days', val: function (g) { return 'SUMTWR'.indexOf(g.dayCodes[0]) * 1e4 + mins(g.start); } },
+      { key: 'time', label: 'Time', val: function (g) { return mins(g.start) * 10 + 'SUMTWR'.indexOf(g.dayCodes[0]); } },
       { key: 'other', label: '', val: function (g) { return g.other; } },
       { key: 'enr', label: 'Enrolled', num: true, val: function (g) { return +g.enr || 0; } }
     ];
@@ -384,6 +441,14 @@
       if (!rows.length) return;
       $('main').dataset.anim = mode === 'theme' ? 'none' : mode === 'sort' ? 'rows' : 'all';
       var view = state.view;
+      if (!lists[view].length) {
+        $('pick').innerHTML = '<option>Nothing this semester</option>';
+        $('optcount').textContent = '▾';
+        $('gantt').innerHTML = '<div class="status">No classes for this department this semester.</div>';
+        $('agenda').innerHTML = ''; $('tbody').innerHTML = ''; $('days').innerHTML = ''; $('summary').textContent = '';
+        writeUrl();
+        return;
+      }
       var sel = state.sel[view] && lists[view].indexOf(state.sel[view]) !== -1 ? state.sel[view] : lists[view][0];
       state.sel[view] = sel;
       writeUrl();
@@ -392,36 +457,51 @@
       var pick = $('pick');
       pick.setAttribute('aria-label', 'Choose ' + NOUN[view][0]);
       var opt = function (x) { return '<option value="' + esc(x) + '">' + esc(label(view, x)) + '</option>'; };
-      // Courses are grouped by program; instructors and rooms are shared across programs
-      pick.innerHTML = view !== 'course' ? lists[view].map(opt).join('') : PROGRAMS.map(function (p) {
-        var cs = lists.course.filter(function (x) { return x.indexOf(p[0]) === 0; });
-        return cs.length ? '<optgroup label="' + p[0] + ' · ' + esc(p[1]) + '">' + cs.map(opt).join('') + '</optgroup>' : '';
-      }).join('');
+      // Courses are grouped by course prefix (a department's programs); instructors and rooms are one list
+      var groups = units[state.dept].groups || Object.keys(lists.course.reduce(function (a, x) { a[prefixOf(x)] = 1; return a; }, {})).sort().map(function (x) { return [x, '']; });
+      var optgroups = function (pairs, list, key) {
+        return pairs.map(function (p) {
+          var xs = list.filter(function (x) { return key(x) === p[0]; });
+          return xs.length ? '<optgroup label="' + esc(p[0]) + (p[1] ? ' · ' + esc(p[1]) : '') + '">' + xs.map(opt).join('') + '</optgroup>' : '';
+        }).join('');
+      };
+      pick.innerHTML = view === 'course' ? optgroups(groups, lists.course, prefixOf)
+        : view === 'room' ? optgroups(buildingGroups(), lists.room, building)
+        : lists[view].map(opt).join('');
       pick.value = sel;
       $('optcount').textContent = lists[view].length + ' ' + NOUN[view][1] + ' ▾';
       pick.style.setProperty('--caret-w', ($('optcount').offsetWidth + 28) + 'px');
 
-      if (view === 'room') loadRooms();
-      var src = view === 'room' && roomRows && roomRows[sel] ? roomRows[sel] : rows.filter(function (r) { return r[KEY[view]] === sel; });
-      var mine = src.slice().sort(function (a, b) {
-        return 'SMTWR'.indexOf(a.day) - 'SMTWR'.indexOf(b.day) || mins(a.start) - mins(b.start);
+      // A week shows everything the instructor teaches or the room holds, whatever the department
+      var mine = rows.filter(function (r) { return r[KEY[view]] === sel; }).map(function (r) {
+        return r;
+      }).sort(function (a, b) {
+        return 'SUMTWR'.indexOf(a.day) - 'SUMTWR'.indexOf(b.day) || mins(a.start) - mins(b.start);
       });
-      var line = function (r) { return view === 'room' ? (r.ext ? 'Sec ' + r.sec + ' · ' : '') + short(r.inst) : view === 'course' ? 'Sec ' + r.sec + ' · ' + r.room : r.room; };
+      // Sunday only when something meets then; hours stretch past 08:00–17:00 when classes do
+      DAYS = ALL_DAYS.filter(function (d) { return d[0] !== 'U' || mine.some(function (r) { return r.day === 'U'; }); });
+      var h0 = Math.min.apply(null, [8].concat(mine.map(function (r) { return Math.floor(mins(r.start) / 60); })));
+      var h1 = Math.max.apply(null, [17].concat(mine.map(function (r) { return Math.ceil(mins(r.end) / 60); })));
+      var span = (h1 - h0) * 60;
+      $('gantt').style.setProperty('--hours', h1 - h0);
+      $('days').style.setProperty('--days', DAYS.length);
+      $('span').textContent = (h0 < 10 ? '0' : '') + h0 + ':00 – ' + h1 + ':00 · ' + DAYS[0][1] + ' – ' + DAYS[DAYS.length - 1][1];
+      var line = function (r) { return view === 'room' ? short(r.inst) : view === 'course' ? 'Sec ' + r.sec + ' · ' + r.room : r.room; };
       $('file').textContent = NOUN[view][0] + ' · ' + label(view, sel);
 
       // Week grid
       var hours = '';
-      for (var h = 8; h <= 17; h++) hours += '<span style="left:' + ((h - 8) / 9 * 100) + '%">' + (h < 10 ? '0' : '') + h + ':00</span>';
+      for (var h = h0; h <= h1; h++) hours += '<span style="left:' + ((h - h0) / (h1 - h0) * 100) + '%">' + (h < 10 ? '0' : '') + h + ':00</span>';
       var html = '<div class="hhead"></div><div class="hhead">' + hours + '</div>';
       DAYS.forEach(function (d, di) {
         var dm = mine.filter(function (r) { return r.day === d[0]; });
         html += '<div class="dayl">' + d[1] + '</div><div class="lane">';
         dm.forEach(function (r, k) {
-          var left = (mins(r.start) - 480) / 540 * 100, w = (mins(r.end) - mins(r.start)) / 540 * 100;
+          var left = (mins(r.start) - h0 * 60) / span * 100, w = (mins(r.end) - mins(r.start)) / span * 100;
           // Meetings that overlap in time (two sections at once, in the course view) share the lane height
           var overlap = dm.filter(function (o) { return mins(o.start) < mins(r.end) && mins(r.start) < mins(o.end); });
           var cls = overlap.length > 1 ? (overlap.indexOf(r) === 0 ? ' high' : ' low') : '';
-          html += '<div class="blk' + cls + (r.ext ? ' ext' : '') + '" style="--k:' + (di * 55 + k * 45) + 'ms;--c:' + color(r.code) + ';left:calc(' + left + '% + 3px);width:calc(' + w + '% - 6px)" title="' +
+          html += '<div class="blk' + cls + '" style="--k:' + (di * 55 + k * 45) + 'ms;--c:' + color(r.code) + ';left:calc(' + left + '% + 3px);width:calc(' + w + '% - 6px)" title="' +
             esc(r.code + ' · ' + r.start + '–' + r.end + ' · ' + r.room + ' · ' + r.inst) + '"><b>' + esc(r.code) + '</b>' + esc(line(r)) + '</div>';
         });
         html += '</div>';
@@ -438,12 +518,12 @@
       $('dayname').textContent = DAYS.filter(function (d) { return d[0] === state.day; })[0][1];
       $('daycount').textContent = today.length + (today.length === 1 ? ' class' : ' classes');
       $('agenda').innerHTML = today.length ? today.map(function (r, k) {
-        return '<div class="item' + (r.ext ? ' ext' : '') + '" style="--k:' + k * 50 + 'ms;--c:' + color(r.code) + '"><div class="tm">' + r.start + '<br>' + r.end + '</div><div><b>' + esc(r.code) + '</b><span>' + esc(names[r.code] || '') +
+        return '<div class="item" style="--k:' + k * 50 + 'ms;--c:' + color(r.code) + '"><div class="tm">' + r.start + '<br>' + r.end + '</div><div><b>' + esc(r.code) + '</b><span>' + esc(names[r.code] || '') +
           '</span><small>' + esc(line(r) + (view === 'course' ? '' : ' · Sec ' + r.sec)) + '</small></div></div>';
       }).join('') : '<div class="status">No classes on this day.</div>';
 
       // Sections table: one row per section and time, days merged
-      var groups = {}, order = [];
+      groups = {}; var order = [];
       mine.forEach(function (r) {
         var k = [r.code, r.sec, r.start, r.end, r.room].join('|');
         if (!groups[k]) { groups[k] = Object.assign({ dayCodes: [] }, r); order.push(k); }
@@ -460,7 +540,7 @@
         table.sort(function (a, b) {
           var x = col.val(a), y = col.val(b);
           var c = typeof x === 'number' ? x - y : String(x).localeCompare(String(y), undefined, { numeric: true });
-          return state.sort.dir * (c || ('SMTWR'.indexOf(a.dayCodes[0]) - 'SMTWR'.indexOf(b.dayCodes[0])) || mins(a.start) - mins(b.start));
+          return state.sort.dir * (c || ('SUMTWR'.indexOf(a.dayCodes[0]) - 'SUMTWR'.indexOf(b.dayCodes[0])) || mins(a.start) - mins(b.start));
         });
       }
       $('thead').innerHTML = COLS.map(function (c) {
@@ -469,12 +549,10 @@
       }).join('');
       $('tbody').innerHTML = table.map(function (g, k) {
         var days = g.dayCodes.map(function (x) { return DAYS.filter(function (d) { return d[0] === x; })[0][1]; }).join(' ');
-        return '<tr' + (g.ext ? ' class="ext"' : '') + ' style="--k:' + Math.min(k * 22, 330) + 'ms;--c:' + (g.ext ? 'var(--line2)' : color(g.code)) + '"><td class="c"><span class="sw"></span>' + esc(g.code) + '</td><td>' + esc(names[g.code] || (g.ext ? 'Another department' : '')) + '</td><td>Sec ' + esc(g.sec) +
+        return '<tr style="--k:' + Math.min(k * 22, 330) + 'ms;--c:' + color(g.code) + '"><td class="c"><span class="sw"></span>' + esc(g.code) + '</td><td>' + esc(names[g.code] || '') + '</td><td>Sec ' + esc(g.sec) +
           '</td><td>' + days + '</td><td>' + g.start + '–' + g.end + '</td><td>' + esc(g.other) + '</td><td class="num">' + esc(g.enr) + '</td></tr>';
       }).join('');
-      var others = mine.filter(function (r) { return r.ext; }).length;
-      $('summary').textContent = table.length + (table.length === 1 ? ' section · ' : ' sections · ') + mine.length + (mine.length === 1 ? ' meeting a week' : ' meetings a week') +
-        (view !== 'room' ? '' : roomRows ? (others ? ' · ' + others + ' from other departments' : ' · ECE only') : ' · loading other departments…');
+      $('summary').textContent = table.length + (table.length === 1 ? ' section · ' : ' sections · ') + mine.length + (mine.length === 1 ? ' meeting a week' : ' meetings a week');
     }
 
     // Controls
@@ -486,6 +564,8 @@
       render();
     });
     $('pick').addEventListener('change', function () { state.sel[state.view] = this.value; render(); });
+    // A room (or an instructor still in the new list) stays selected across departments
+    $('dept').addEventListener('change', function () { state.dept = this.value; state.sort = null; scope(); render(); });
     $('days').addEventListener('click', function (e) { var b = e.target.closest('.dtab'); if (b) { state.day = b.dataset.day; render(); } });
     // Sorting: first click sorts by that column, the next click on the same column reverses it
     $('thead').addEventListener('click', function (e) {

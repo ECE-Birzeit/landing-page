@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ECE Labs · Birzeit University</title>
-<meta name="description" content="A web platform for the lab manuals of the Department of Electrical &amp; Computer Engineering at Birzeit University, with setup guides and clean code listings.">
-<meta property="og:title" content="ECE Labs · Birzeit University">
-<meta property="og:description" content="A web platform for the lab manuals of the Department of Electrical &amp; Computer Engineering at Birzeit University, with setup guides and clean code listings.">
+<title>ECE Hub · Birzeit University</title>
+<meta name="description" content="Lab manuals built for the web and the weekly schedule of every course, instructor and room in the Department of Electrical &amp; Computer Engineering at Birzeit University.">
+<meta property="og:title" content="ECE Hub · Birzeit University">
+<meta property="og:description" content="Lab manuals built for the web and the weekly schedule of every course, instructor and room in the Department of Electrical &amp; Computer Engineering at Birzeit University.">
 <meta property="og:url" content="https://birzeit.me/">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="ECE Labs">
+<meta property="og:site_name" content="ECE Hub">
 <meta property="og:image" content="https://birzeit.me/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -28,8 +28,8 @@
       "@type": "WebSite",
       "@id": "https://birzeit.me/#website",
       "url": "https://birzeit.me/",
-      "name": "ECE Labs",
-      "description": "A web platform for the lab manuals of the Department of Electrical & Computer Engineering at Birzeit University, with setup guides and clean code listings."
+      "name": "ECE Hub",
+      "description": "Lab manuals built for the web and the weekly schedule of every course, instructor and room in the Department of Electrical & Computer Engineering at Birzeit University."
     },
     {
       "@type": "ItemList",
@@ -158,7 +158,9 @@
   body { min-height: 100vh; background: var(--p); color: var(--i); font-family: var(--sans); font-weight: 500; font-synthesis: none; transition: background .25s, color .25s }
   :focus-visible { outline: 2px solid currentColor; outline-offset: 3px }
   .wrap { max-width: 1280px; margin: 0 auto; padding-inline: var(--g) }
-  .kicker { font: 500 13px var(--sans); color: var(--mu) }
+  .kicker { font: 400 12.5px var(--mono); color: var(--mu) }
+  /* Every kicker over a heading starts with // (the text itself is often set by script) */
+  .hero .kicker::before, .sec-head > div:first-child > .kicker::before, .why-side .kicker::before { content: '// ' }
   .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap }
   .skip { position: absolute; inset-inline-start: -9999px }
   .skip:focus { inset-inline-start: 16px; top: 16px; z-index: 10; padding: 8px 12px; background: var(--i); color: var(--p) }
@@ -200,7 +202,6 @@
     header .theme { order: 2; margin-inline-start: auto }
     nav { order: 3; flex-basis: 100%; margin: 0 -10px; justify-content: space-between; font-size: 13px }
     nav a { padding-inline: 10px }
-    nav .gh { display: none }
   }
 
   /* Hero */
@@ -221,8 +222,12 @@
   .cta.primary:hover { border-color: var(--mu2); background: var(--mu2) }
   .cta.primary:hover span { transform: translateY(2px) }
   .cta:not(.primary):hover span { color: var(--i); transform: translateX(2px) }
-  .hero-stats { display: flex; flex-wrap: wrap; gap: 8px 24px; margin: 0; padding-top: 20px; border-top: 1px solid var(--line); font: 500 13px var(--sans); color: var(--mu) }
-  .hero-stats b { color: var(--i); font-weight: 600 }
+
+  /* Hero: where the semester is, under the buttons (dates from Ritaj's academic calendar) */
+  .hero-sem { display: flex; flex-direction: column; gap: 10px; max-width: 500px; padding-top: 20px; border-top: 1px solid var(--line) }
+  .hs-row { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 16px }
+  .hs-row b { font: 700 16px var(--display) }
+  .hs-row span { font: 400 12px var(--mono); color: var(--mu) }
 
   /* Hero: real screenshots of the lab sites, stacked; the front one moves to the back every few seconds */
   .deck { position: relative; min-width: 0; aspect-ratio: 1 / .78; }
@@ -290,7 +295,7 @@
   .lab-links .open { flex: 1; justify-content: space-between; padding: 0 16px; border-color: var(--i); background: var(--i); color: var(--p); font-weight: 600 }
   .lab-links a.open:hover { border-color: var(--mu2); background: var(--mu2); color: var(--p) }
 
-  /* Find a schedule: ECE only; numbers come from the live catalog */
+  /* Find a schedule: every department; numbers come from the live catalog */
   #schedules { border-top: 1px solid var(--line) }
   #schedules > .wrap { display: flex; flex-direction: column; gap: 22px; padding-top: 68px; padding-bottom: 76px }
   .entries { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px }
@@ -396,13 +401,11 @@
 
 <header>
   <div class="wrap">
-    <a class="brand" href="#top"><b>ECE Labs</b><span>Birzeit University</span></a>
+    <a class="brand" href="#top"><b>ECE Hub</b><span>Birzeit University</span></a>
     <nav aria-label="Primary">
       <a class="btn" href="#labs">Labs</a>
       <a class="btn" href="/schedules/">Schedules</a>
-      <a class="btn" href="/stats/">Dashboard</a>
-      <a class="btn" href="#why">Features</a>
-      <a class="btn gh" href="https://github.com/ECE-Birzeit" target="_blank" rel="noopener">GitHub ↗</a>
+      <a class="btn" href="/stats/">Insights</a>
     </nav>
     <button type="button" class="theme btn" role="switch" aria-checked="false" aria-label="Dark theme" title="Toggle dark theme">
       <svg class="sun" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3 3l1.4 1.4M11.6 11.6L13 13M3 13l1.4-1.4M11.6 4.4L13 3"/></svg>
@@ -416,13 +419,16 @@
     <div class="wrap">
       <div class="hero-main">
         <span class="kicker">Electrical &amp; Computer Engineering</span>
-        <h1>ECE Labs</h1>
-        <p class="lede">The lab manuals of Birzeit's ECE department, rebuilt for the web: step-by-step experiments, code that pastes cleanly into your IDE, and pages that keep working offline.</p>
+        <h1>ECE Hub</h1>
+        <p class="lede">ECE lab manuals built for the web, weekly schedules for every department, and insights into how the labs are used.</p>
         <div class="ctas">
           <a class="cta primary" href="#labs">Browse the labs <span aria-hidden="true">↓</span></a>
           <a class="cta" href="/schedules/">Weekly schedules <span aria-hidden="true">→</span></a>
         </div>
-        <p class="hero-stats" id="hero-stats"><span hidden data-hero="students"><b>·</b> students this semester</span><span><b data-stat="manuals">4</b> labs</span><span><b data-stat="experiments">21</b> experiments</span><span><b data-stat="code_listings">75</b> code listings</span></p>
+        <div class="hero-sem" id="hero-sem" hidden>
+          <div class="hs-row"><b id="hero-week"></b><span id="hero-ends"></span></div>
+          <div id="hero-track"></div>
+        </div>
       </div>
 
       <div class="deck" aria-label="Screenshots of experiment pages on the lab sites">
@@ -557,9 +563,9 @@
         <span class="kicker" id="sched-week" hidden></span>
       </div>
       <div class="entries">
-        <a class="entry win" href="/schedules/?view=instructor"><span class="entry-body"><span class="n" data-count="instructor">··</span><h3 class="l">Instructors</h3><span class="d">Any ECE instructor's teaching week: courses, sections and rooms.</span><span class="more">Browse instructors →</span></span></a>
-        <a class="entry win" href="/schedules/?view=course"><span class="entry-body"><span class="n" data-count="course">··</span><h3 class="l">Courses</h3><span class="d">Every section of the department's courses (ENCS, ENEE and the MSCE, MSAI and JMEE master's): when it meets, where, and who teaches it.</span><span class="more">Browse courses →</span></span></a>
-        <a class="entry win" href="/schedules/?view=room"><span class="entry-body"><span class="n" data-count="room">··</span><h3 class="l">Rooms</h3><span class="d">What's booked in each lab and classroom across the week.</span><span class="more">Browse rooms →</span></span></a>
+        <a class="entry win" href="/schedules/?view=instructor"><span class="entry-body"><span class="n" data-count="instructor">··</span><h3 class="l">Instructors</h3><span class="d">Any instructor's teaching week: courses, sections and rooms.</span><span class="more">Browse instructors →</span></span></a>
+        <a class="entry win" href="/schedules/?view=course"><span class="entry-body"><span class="n" data-count="course">··</span><h3 class="l">Courses</h3><span class="d">Every section of every department's courses: when it meets, where, and who teaches it.</span><span class="more">Browse courses →</span></span></a>
+        <a class="entry win" href="/schedules/?view=room"><span class="entry-body"><span class="n" data-count="room">··</span><h3 class="l">Rooms</h3><span class="d">What's booked in each lab and classroom on campus, building by building.</span><span class="more">Browse rooms →</span></span></a>
       </div>
     </div>
   </section>
@@ -571,7 +577,7 @@
           <span class="kicker" id="numbers-kicker">The four lab sites · counted daily</span>
           <h2 id="numbers-h">This semester in numbers</h2>
         </div>
-        <a class="kicker more-link" href="/stats/">Open the dashboard →</a>
+        <a class="kicker more-link" href="/stats/">All insights →</a>
       </div>
       <div class="win nums">
         <div class="bar" aria-hidden="true"><span class="t">stats.json</span><span class="r" id="stats-when">updated daily</span></div>
@@ -804,7 +810,7 @@ __HAL_TIM_SET_COMPARE(&amp;htim2, TIM_CHANNEL_1, duty);</code></pre>
     }).observe(railEl);
     build(labs);
 
-    // Find a schedule: live counts from bzu-course-catalog (the same data the schedules page uses)
+    // Find a schedule: the semester's dates and counts from bzu-course-catalog (the same data the schedules page uses)
     (function () {
       var base = 'https://raw.githubusercontent.com/mabushelbaia/bzu-course-catalog/main/data/';
       fetch(base + 'index.json').then(function (r) { return r.json(); }).then(function (idx) {
@@ -813,28 +819,17 @@ __HAL_TIM_SET_COMPARE(&amp;htim2, TIM_CHANNEL_1, duty);</code></pre>
           var el = document.getElementById('sched-week');
           el.textContent = 'Week ' + wk.now + ' of ' + wk.of + ' · teaching ends ' + wk.ends;
           el.hidden = false;
+          // The same dates open the hero window
+          document.getElementById('hero-week').textContent = 'Week ' + wk.now + ' of ' + wk.of;
+          document.getElementById('hero-ends').textContent = 'teaching ends ' + wk.ends;
+          window.ECEWidgets.semester(document.getElementById('hero-track'), idx.current);
+          document.getElementById('hero-sem').hidden = false;
         }
+        // The schedules cover the whole university: the semester's counts are in the catalog's index
         var term = (idx.published_terms || Object.keys(idx.terms))[0];
-        // The department's programs: ENCS, ENEE, and the MSCE, MSAI and JMEE master's
-        return Promise.all(['ENCS', 'ENEE', 'MSCE', 'MSAI', 'JMEE'].map(function (p) {
-          return fetch(base + term + '/' + p + '.json').then(function (r) { return r.ok ? r.json() : null; });
-        }));
-      }).then(function (files) {
-        files = files.filter(Boolean);
-        var d = files[0];
-        var sets = { instructor: {}, course: {}, room: {} };
-        files.forEach(function (f) { f.courses.forEach(function (c) {
-          c.sections.forEach(function (s) {
-            s.meetings.forEach(function (m) {
-              if (!m.start) return;
-              sets.course[c.code] = 1;
-              if (s.instructor) sets.instructor[s.instructor] = 1;
-              if (m.room) sets.room[m.room] = 1;
-            });
-          });
-        }); });
-        all('[data-count]').forEach(function (el) { el.textContent = Object.keys(sets[el.dataset.count]).length; });
-        document.getElementById('sched-kicker').textContent = d.name + ' · from Ritaj, daily';
+        var t = idx.terms[term], n = t.counts || {};
+        all('[data-count]').forEach(function (el) { if (n[el.dataset.count + 's'] != null) el.textContent = window.ECEWidgets.fmt(n[el.dataset.count + 's']); });
+        document.getElementById('sched-kicker').textContent = t.name + ' · every department, from Ritaj daily';
       }).catch(function () {});
     })();
 
@@ -855,9 +850,6 @@ __HAL_TIM_SET_COMPARE(&amp;htim2, TIM_CHANNEL_1, duty);</code></pre>
       document.getElementById('since-note').textContent = first ? 'since ' + W.short(first) : '';
       document.getElementById('per-note').textContent = (v.experiment_views / v.students).toFixed(1) + ' per student';
       document.getElementById('numbers-kicker').textContent = (v.term || 'This semester') + ' · from the sites\' analytics, updated daily';
-      var hero = document.querySelector('[data-hero="students"]');
-      hero.firstElementChild.textContent = fmt(v.students);
-      hero.hidden = false;
       // Each lab card gets its own numbers
       all('[data-use]').forEach(function (el) {
         var l = s.labs && s.labs[el.dataset.use];

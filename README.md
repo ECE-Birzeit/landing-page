@@ -22,8 +22,8 @@ python3 -m http.server 8000   # http://localhost:8000
 |:--|:--|
 | `index.html` | The current page at `/`: markup, styles, theme switch, search, hero preview of a lab page, analytics |
 | `scripts/stats.py` | Writes `/stats.json` daily in the deploy: manuals, experiments and code listings from the four lab repos, plus visitors from Google Analytics (keyless sign-in) counted from the semester's first teaching day, which comes from bzu-course-catalog |
-| `stats/index.html` | The dashboard at `/stats/`: students, experiment pages opened, students per day, busiest hours, devices, most-opened experiments and every lab, all drawn from `/stats.json` |
-| `assets/widgets.js`, `assets/widgets.css` | The chart widgets shared by the home page's "This semester in numbers" section and the dashboard |
+| `stats/index.html` | The insights page at `/stats/`: students, experiment pages opened, students per day, busiest hours, devices, most-opened experiments and every lab, all drawn from `/stats.json` |
+| `assets/widgets.js`, `assets/widgets.css` | The chart widgets shared by the home page's "This semester in numbers" section and the insights page |
 | `schedules/index.html` | The ECE weekly schedules at `/schedules/`: browse by instructor, course or room, with a sortable sections table. Reads the live JSON from [bzu-course-catalog](https://github.com/mabushelbaia/bzu-course-catalog) in the browser, so it stays current without redeploys |
 | `v1/index.html` | The first design, frozen at `/v1/` (not indexed by search engines) |
 | `v2/index.html` | The second design, frozen at `/v2/` (not indexed by search engines) |
