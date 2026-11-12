@@ -210,7 +210,7 @@
 
   /* ---- Hero ------------------------------------------------------------------------------- */
   .hero { border-bottom: 1px solid var(--line); overflow: clip }
-  .hero .wrap { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: 48px 32px; align-items: center; min-height: min(calc(100svh - 65px), 760px); padding-block: 64px }
+  .hero .wrap { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 48px 64px; align-items: center; min-height: min(calc(100svh - 65px), 760px); padding-block: 64px }
   .hero-main { min-width: 0; display: flex; flex-direction: column; gap: 24px }
   h1 { margin: 0; max-width: 14ch; font: 500 clamp(40px, 5vw, 68px)/1.04 var(--sans); letter-spacing: -.03em; text-wrap: balance }
   .lede { margin: 0; max-width: 34rem; font-size: 19px; line-height: 1.55; color: var(--mu2); text-wrap: pretty }
@@ -224,18 +224,16 @@
     .hero .wrap { grid-template-columns: minmax(0, 1fr); min-height: 0; padding-block: 56px 64px }
   }
 
-  /* The board: the TM4C123 LaunchPad from the first lab, drawn as a grid of characters from a real
-     ARM listing. Red where the circuit board is, ink for the parts, one green LED. Three labels pin
-     real facts to it. On load it prints in row by row; after that a few characters change slowly */
-  .board { position: relative; justify-self: end; width: min(100%, 640px); aspect-ratio: 940 / 700; container-type: inline-size }
-  .board canvas { position: absolute; inset: 0; width: 100%; height: 100% }
-  /* A label pinned to a part: the text, a leader line and a pad on the part itself */
-  .tag { position: absolute; right: calc(100% - var(--x)); top: var(--y); display: flex; align-items: center; transform: translate(4px, -50%); white-space: nowrap }
-  .tag b { padding: 6px 10px; border: 1px solid var(--line2); border-radius: 6px; background: var(--card); box-shadow: var(--sh); font-size: 13px; font-weight: 500; color: var(--i) }
-  .tag i { flex: none; width: var(--len); height: 1px; background: var(--mu) }
-  .tag::after { content: ''; flex: none; width: 8px; height: 8px; border: 1.5px solid var(--i); border-radius: 2px; background: var(--card) }
-  @media (max-width: 1100px) { .tag { display: none } }
-  @media (max-width: 960px) { .board { justify-self: center; width: min(100%, 520px); aspect-ratio: 720 / 700 } }
+  /* The mark: the letters ECE routed as traces on a board, with pads at their ends and a few fine
+     traces running off to the edges. On load the traces route in and one pad lights */
+  .mark { justify-self: center; width: min(100%, 560px); min-width: 0 }
+  .mark svg { display: block; width: 100%; height: auto; overflow: visible }
+  .mk-fat path { fill: none; stroke: var(--i); stroke-width: 14; stroke-linecap: round; stroke-linejoin: round }
+  .mk-thin path { fill: none; stroke: var(--line2); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round }
+  .mk-pad { fill: var(--p); stroke: var(--i); stroke-width: 4 }
+  .mk-pad.lit { fill: var(--ok); stroke: var(--ok) }
+  .mk-via { fill: var(--p); stroke: var(--line2); stroke-width: 2 }
+  @media (max-width: 960px) { .mark { width: min(86%, 420px) } }
 
   /* ---- Showcases: one tool per row, the words on one side and a working example on the other ---- */
   .show-row { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: 48px 64px; align-items: center }
@@ -440,11 +438,13 @@
         </div>
       </div>
 
-      <div class="board" role="img" aria-label="The TM4C123 LaunchPad from the Computer Design Lab, drawn in characters of ARM assembly">
-        <canvas aria-hidden="true"></canvas>
-        <span class="tag" style="--x: 34%; --y: 27.9%; --len: 5cqw"><b id="tag-exp">ENCS4110 · 10 experiments</b><i></i></span>
-        <span class="tag" style="--x: 52.3%; --y: 55.7%; --len: 23cqw"><b>TM4C123 · ARM Cortex-M4</b><i></i></span>
-        <span class="tag" style="--x: 59.6%; --y: 82.4%; --len: 30cqw"><b>Works offline</b><i></i></span>
+      <div class="mark" role="img" aria-label="The letters ECE drawn as traces on a circuit board">
+        <svg viewBox="0 0 560 440" aria-hidden="true">
+          <g class="mk-thin"><path d="M180 120V90L200 70H260V40"/><path d="M180 300V340L160 360H90V400"/><path d="M330 136H350V100L370 80H420V40"/><path d="M330 284H350V330L370 350H430V400"/><path d="M480 120H500L520 100V60"/><path d="M480 300H505L525 320V380"/><path d="M160 210H185V250L200 265H215"/><path d="M460 210H490V160"/></g>
+          <g class="mk-vias"><circle class="mk-via" cx="260" cy="40" r="5"/><circle class="mk-via" cx="90" cy="400" r="5"/><circle class="mk-via" cx="420" cy="40" r="5"/><circle class="mk-via" cx="430" cy="400" r="5"/><circle class="mk-via" cx="520" cy="60" r="5"/><circle class="mk-via" cx="525" cy="380" r="5"/><circle class="mk-via" cx="215" cy="265" r="5"/><circle class="mk-via" cx="490" cy="160" r="5"/></g>
+          <g class="mk-fat"><path d="M180 120H76 L60 136V284L76 300H180"/><path d="M60 210H160"/><path d="M330 136L314 120H226L210 136V284L226 300H314L330 284"/><path d="M480 120H376 L360 136V284L376 300H480"/><path d="M360 210H460"/></g>
+          <g class="mk-pads"><circle class="mk-pad" cx="180" cy="120" r="11"/><circle class="mk-pad" cx="180" cy="300" r="11"/><circle class="mk-pad" cx="160" cy="210" r="11"/><circle class="mk-pad" cx="330" cy="136" r="11"/><circle class="mk-pad" cx="330" cy="284" r="11"/><circle class="mk-pad" cx="480" cy="120" r="11"/><circle class="mk-pad" cx="480" cy="300" r="11"/><circle class="mk-pad lit" cx="460" cy="210" r="11"/></g>
+        </svg>
       </div>
     </div>
   </section>
@@ -841,104 +841,21 @@ __HAL_TIM_SET_COMPARE(&amp;htim2, TIM_CHANNEL_1, duty);</code></pre>
     // ---- Motion (GSAP). Everything is visible without it; none of it runs for reduced motion ----
     var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    // ---- The board in code. The parts are drawn as clean outlines; the circuit board and the chips
-    // are filled with characters of a real ARM listing: faint red on the board, dense ink in the chips ----
-    (function () {
-      var box = document.querySelector('.board'), cv = box.querySelector('canvas'), ctx = cv.getContext('2d');
-      var wide = window.matchMedia('(min-width: 961px)').matches, OX = wide ? 220 : 0, OY = 20;
-      var W = 720 + OX, H = 700, COLS = Math.round(54 * W / 720), ROWS = Math.round(COLS * H / W);
-      var CODE = 'PRESERVE8 THUMB AREA RESET,DATA,READONLY EXPORT __Vectors __Vectors DCD 0x20001000 DCD Reset_Handler ALIGN AREA MYCODE,CODE,READONLY ENTRY EXPORT Reset_Handler Reset_Handler MOV R0,#0x20 LDR R1,=GPIO STR R0,[R1] B Reset_Handler END '.replace(/ /g, '');
-      var rr = function (g, x, y, w, h, r) { g.beginPath(); g.roundRect(x, y, w, h, r); };
-      // Where the characters go: the board (faint) and the two chips (dense); everything else is drawn as lines
-      function fills(g, set) {
-        set('pcb'); rr(g, 70, 36, 580, 600, 26); g.fill();
-        set('ink'); rr(g, 272, 282, 176, 176, 8); g.fill(); rr(g, 312, 130, 96, 96, 6); g.fill();
-      }
-      var m = document.createElement('canvas'); m.width = COLS; m.height = ROWS;
-      var mg = m.getContext('2d'); mg.scale(COLS / W, ROWS / H); mg.translate(OX, OY);
-      fills(mg, function (t) { mg.fillStyle = t === 'pcb' ? '#f00' : '#00f'; });
-      var px = mg.getImageData(0, 0, COLS, ROWS).data, cells = [], n = 0;
-      for (var i = 0; i < COLS * ROWS; i++) {
-        if (px[i * 4 + 3] < 140) continue;
-        cells.push({ x: i % COLS, y: Math.floor(i / COLS), tag: px[i * 4 + 2] > px[i * 4] ? 'ink' : 'pcb', ch: CODE[n++ % CODE.length] });
-      }
-      var pal = {}, size = 0, rows = ROWS, k = 1;
-      function colours() {
-        var st = getComputedStyle(document.documentElement), dark = root.getAttribute('data-theme') === 'dark', v = function (x) { return st.getPropertyValue(x).trim(); };
-        pal = { pcb: v('--mu'), ink: v('--i'), mu: v('--mu'), ok: v('--ok'), card: v('--card'), p: v('--p'), line: v('--line2') };
-      }
-      function fit() {
-        var w = box.clientWidth, dpr = Math.min(2, window.devicePixelRatio || 1);
-        size = w / COLS; k = w / W;
-        cv.width = Math.round(w * dpr); cv.height = Math.round(w * H / W * dpr);
-        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-        ctx.font = '400 ' + (size * 1.05).toFixed(2) + 'px "Fragment Mono", ui-monospace, monospace';
-      }
-      function glyph(c) {
-        ctx.fillStyle = c.tag === 'pcb' ? pal.pcb : pal.ink;
-        ctx.globalAlpha = c.tag === 'pcb' ? .32 : 1;
-        ctx.fillText(c.ch, (c.x + .5) * size, (c.y + .56) * size);
-      }
-      // The outlines, in the 720 x 660 drawing's own units
-      function lines() {
-        ctx.save(); ctx.scale(k, k); ctx.translate(OX, OY); ctx.globalAlpha = 1; ctx.lineJoin = 'round'; ctx.lineCap = 'round';
-        var S = function (col, w) { ctx.strokeStyle = col; ctx.lineWidth = w / k; };
-        S(pal.ink, 1.6); rr(ctx, 70, 36, 580, 600, 26); ctx.stroke();
-        ctx.globalAlpha = 1; S(pal.line, 1.2);
-        [[160, 245, 260, 300], [160, 321, 272, 340], [600, 245, 460, 300], [600, 321, 448, 360], [360, 226, 360, 266], [140, 560, 300, 470], [580, 560, 420, 470], [360, 474, 360, 540]].forEach(function (t) {
-          ctx.beginPath(); ctx.moveTo(t[0], t[1]); ctx.lineTo(t[0] + (t[2] - t[0]) * .5, t[1]); ctx.lineTo(t[2], t[3]); ctx.stroke();
-        });
-        ctx.globalAlpha = 1;
-        S(pal.ink, 1.5); rr(ctx, 272, 282, 176, 176, 8); ctx.stroke(); rr(ctx, 312, 130, 96, 96, 6); ctx.stroke();
-        ctx.fillStyle = pal.ink;
-        for (var q = 0; q < 9; q++) { [[288 + q * 18, 268, 6, 12], [288 + q * 18, 460, 6, 12], [258, 298 + q * 18, 12, 6], [450, 298 + q * 18, 12, 6]].forEach(function (b) { ctx.fillRect(b[0], b[1], b[2], b[3]); }); }
-        ctx.fillStyle = pal.card; S(pal.ink, 1.4);                         // the four headers, ten pins each
-        [96, 134, 556, 594].forEach(function (x) {
-          rr(ctx, x - 4, 146, 38, 388, 6); ctx.fill(); ctx.stroke();
-          for (var j = 0; j < 10; j++) { rr(ctx, x + 6, 156 + j * 38, 18, 18, 3); ctx.stroke(); }
-        });
-        S(pal.mu, 1.4); ctx.fillStyle = pal.card; rr(ctx, 304, 0, 112, 84, 10); ctx.fill(); ctx.stroke(); rr(ctx, 324, 18, 72, 30, 5); ctx.stroke();
-        S(pal.ink, 1.4); [[140, 590], [580, 590]].forEach(function (b) { ctx.beginPath(); ctx.arc(b[0], b[1], 24, 0, 7); ctx.fill(); ctx.stroke(); ctx.beginPath(); ctx.arc(b[0], b[1], 12, 0, 7); ctx.stroke(); });
-        rr(ctx, 560, 70, 48, 40, 6); ctx.fill(); ctx.stroke(); ctx.beginPath(); ctx.arc(584, 90, 10, 0, 7); ctx.stroke();
-        ctx.fillStyle = pal.ok; rr(ctx, 340, 544, 40, 26, 5); ctx.fill();   // the LED, lit
-        ctx.restore();
-      }
-      function draw() {
-        ctx.clearRect(0, 0, cv.width, cv.height);
-        ctx.save(); ctx.beginPath(); ctx.rect(0, 0, box.clientWidth, rows * size); ctx.clip();
-        cells.forEach(glyph); lines();
-        ctx.restore(); ctx.globalAlpha = 1;
-      }
-      colours(); fit();
-      new MutationObserver(function () { colours(); draw(); }).observe(root, { attributes: true, attributeFilter: ['data-theme'] });
-      window.addEventListener('resize', function () { fit(); draw(); });
-      if (document.fonts) document.fonts.ready.then(function () { fit(); draw(); });
-      fetch('/stats.json').then(function (r) { return r.ok ? r.json() : null; }).then(function (s) {
-        var e = s && s.labs && s.labs.encs4110 && s.labs.encs4110.experiments;
-        if (e) document.getElementById('tag-exp').textContent = 'ENCS4110 · ' + e + ' experiments';
-      }).catch(function () {});
-
-      if (reduce || !window.gsap) { draw(); return; }
-      // Load: the board prints in from the top, then the labels appear
-      rows = 0; draw();
-      var p = { r: 0 };
-      gsap.timeline({ delay: .2 })
-        .to(p, { r: ROWS, duration: 1.2, ease: 'power1.inOut', onUpdate: function () { rows = p.r; draw(); } })
-        .from('.tag', { opacity: 0, duration: .5, stagger: .12 }, '-=.25');
-      // After that the listing in the chips moves on, a few characters at a time, while it is in view
-      var chip = cells.filter(function (c) { return c.tag === 'ink'; }), on = true, step = n;
-      new IntersectionObserver(function (e) { on = e[0].isIntersecting; }).observe(box);
-      setInterval(function () {
-        if (!on || document.hidden || rows < ROWS) return;
-        for (var t = 0; t < 4; t++) chip[Math.floor(Math.random() * chip.length)].ch = CODE[step++ % CODE.length];
-        draw();
-      }, 125);
-    })();
-
     if (!window.gsap || reduce) return;
     gsap.registerPlugin(ScrollTrigger);
     gsap.defaults({ ease: 'power3.out', duration: .6 });
+
+    // Load: the mark routes in. The letters draw stroke by stroke, the fine traces follow,
+    // the pads and vias land, and the last pad lights
+    (function () {
+      var fat = all('.mk-fat path'), thin = all('.mk-thin path');
+      fat.concat(thin).forEach(function (p) { var L = p.getTotalLength(); p.style.strokeDasharray = L; p.style.strokeDashoffset = L; });
+      gsap.timeline({ delay: .15 })
+        .to(fat, { strokeDashoffset: 0, duration: .7, ease: 'power2.inOut', stagger: .1 })
+        .to(thin, { strokeDashoffset: 0, duration: .6, ease: 'power2.out', stagger: .05 }, '-=.35')
+        .from('.mk-pad:not(.lit), .mk-via', { scale: 0, transformOrigin: '50% 50%', duration: .3, stagger: .03 }, '-=.5')
+        .from('.mk-pad.lit', { scale: 0, transformOrigin: '50% 50%', duration: .4 }, '-=.05');
+    })();
 
     // Load: the hero's text rises in once
     gsap.from('.hero-main > *', { y: 12, opacity: 0, stagger: .06, delay: .05 });
