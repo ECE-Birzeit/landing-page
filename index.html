@@ -107,10 +107,8 @@
 <link rel="preconnect" href="https://api.fontshare.com" crossorigin>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=supreme@1&display=swap">
 <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=switzer@1&display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fragment+Mono&display=swap">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/11.1.14/swiper-bundle.min.css" integrity="sha512-BhnxuF0ce44V9aI3+IZvRMcxTI/GHY7h9ahE6uI3SUCjhGYV+XfF+3hELKXtJtvrNGObN17nxZ/Reoawm77HOw==" crossorigin="anonymous" referrerpolicy="no-referrer">
 <link rel="stylesheet" href="/assets/widgets.css">
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-K834Q72PP9"></script>
 <script>
@@ -132,20 +130,22 @@
   * { box-sizing: border-box }
   a { color: inherit }
   [hidden] { display: none !important }
-  /* One ease-out curve on this page: --spring from widgets.css loses its overshoot */
-  :root { --spring: cubic-bezier(.2, .75, .2, 1) }
-  :root { --g: clamp(20px, 4vw, 48px); --display: 'Supreme', ui-sans-serif, sans-serif; --sans: 'Switzer', ui-sans-serif, sans-serif; --mono: 'Fragment Mono', ui-monospace, monospace }
+  /* One curve for everything that moves; widgets.css's --spring follows it so nothing overshoots */
+  :root { --ease: cubic-bezier(.22, 1, .36, 1); --ease-out: var(--ease); --spring: var(--ease) }
+  :root { --g: clamp(20px, 4vw, 48px); --sans: 'Switzer', ui-sans-serif, sans-serif; --display: var(--sans); --mono: 'Fragment Mono', ui-monospace, monospace }
+  /* Warm paper and ink, the colours of a printed lab manual; green is the one accent */
   [data-theme=dark] {
-    --p: #0b0c0b; --card: #121312; --bar: #171816; --i: #e8e6e1; --mu: #8d8f89; --mu2: #b9bab5;
-    --line: #2a2b29; --line2: #3a3b39; --soft: #181917; --ok: #4ade80;
-    --sh: 0 1px 0 rgba(255,255,255,.03) inset;
+    /* Warm charcoal, not black, and off-white text, not white: easier on the eyes at night */
+    --p: #1a1917; --card: #22211e; --bar: #1f1e1b; --i: #e4e0d6; --mu: #9d988c; --mu2: #c2bdb1;
+    --line: #34322e; --line2: #4a4842; --soft: #2a2926; --ok: #5fcf86;
+    --sh: none;
   }
   [data-theme=light] {
-    --p: #f3f2ec; --card: #fff; --bar: #f7f6f1; --i: #1a1b19; --mu: #64655e; --mu2: #45463f;
-    --line: #dddbd2; --line2: #c9c7bd; --soft: #ebe9e1; --ok: #15803d;
-    --sh: 0 1px 2px rgba(26,27,25,.05), 0 10px 26px -16px rgba(26,27,25,.22);
+    --p: #f3f2ec; --card: #fbfaf6; --bar: #eeece5; --i: #1a1b19; --mu: #6b6c65; --mu2: #45463f;
+    --line: #dddbd2; --line2: #c9c7bd; --soft: #e9e7df; --ok: #15803d;
+    --sh: 0 1px 2px rgba(26,27,25,.05);
   }
-  /* Each lab borrows its site's accent */
+  /* Each lab keeps its own site's accent */
   [data-theme=light] [data-lab=encs4110] { --a: #dc2626 }
   [data-theme=light] [data-lab=encs4101] { --a: #0369a1 }
   [data-theme=light] [data-lab=encs5150] { --a: #c2410c }
@@ -155,259 +155,269 @@
   [data-theme=dark] [data-lab=encs5150] { --a: #fb923c }
   [data-theme=dark] [data-lab=encs5101] { --a: #3cc5cb }
 
-  body { min-height: 100vh; background: var(--p); color: var(--i); font-family: var(--sans); font-weight: 500; font-synthesis: none; transition: background .25s, color .25s }
-  :focus-visible { outline: 2px solid currentColor; outline-offset: 3px }
+  body { min-height: 100vh; background: var(--p); color: var(--i); font: 400 16px/1.5 var(--sans); font-synthesis: none; -webkit-font-smoothing: antialiased; transition: background-color .25s, color .25s }
+  ::selection { background: color-mix(in srgb, var(--ok) 28%, transparent) }
+  :focus-visible { outline: 2px solid var(--ok); outline-offset: 3px; border-radius: 4px }
   .wrap { max-width: 1280px; margin: 0 auto; padding-inline: var(--g) }
-  .kicker { font: 400 12.5px var(--mono); color: var(--mu) }
-  /* Every kicker over a heading starts with // (the text itself is often set by script) */
-  .hero .kicker::before, .sec-head > div:first-child > .kicker::before, .why-side .kicker::before { content: '// ' }
-  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap }
   .skip { position: absolute; inset-inline-start: -9999px }
-  .skip:focus { inset-inline-start: 16px; top: 16px; z-index: 10; padding: 8px 12px; background: var(--i); color: var(--p) }
-  .btn { cursor: pointer; transition: background .15s, border-color .15s, color .15s }
-  .btn:hover { background: var(--soft) }
-  @keyframes fade { from { opacity: 0; transform: translateY(6px) } to { opacity: 1; transform: none } }
-  @keyframes rise { from { opacity: 0; transform: translateY(8px) } to { opacity: 1; transform: none } }
-  @keyframes deck-in { from { opacity: 0; transform: translateY(12px) } to { opacity: 1; transform: none } }
-  @media (prefers-reduced-motion: no-preference) {
-    .hero-main > * { animation: rise .5s var(--ease-out) both }
-    .hero-main > :nth-child(2) { animation-delay: 60ms } .hero-main > :nth-child(3) { animation-delay: 120ms }
-    .hero-main > :nth-child(4) { animation-delay: 180ms } .hero-main > :nth-child(5) { animation-delay: 240ms }
-    .deck { animation: deck-in .6s var(--ease-out) .15s both }
-  }
+  .skip:focus { inset-inline-start: 16px; top: 16px; z-index: 30; padding: 8px 12px; background: var(--i); color: var(--p) }
+  section { scroll-margin-top: 72px }
 
-  /* A terminal window: title bar with three dots, then content */
-  .win { border: 1px solid var(--line); border-radius: 12px; background: var(--card); box-shadow: var(--sh); overflow: hidden }
-  .bar { display: flex; align-items: center; gap: 6px; height: 36px; padding: 0 12px; border-bottom: 1px solid var(--line); background: var(--bar); font: 400 12px var(--mono); color: var(--mu) }
-  .bar i { flex: none; width: 9px; height: 9px; border-radius: 50%; background: var(--line2) }
-  .bar i + .t, .bar i ~ .t { margin-inline-start: 8px }
-  .bar .t { overflow: hidden; white-space: nowrap; text-overflow: ellipsis }
-  .bar .r { margin-inline-start: auto; white-space: nowrap }
-
-  /* Header */
-  header { border-bottom: 1px solid var(--line) }
-  header .wrap { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 28px; min-height: 64px; padding-block: 10px }
-  .brand { flex: none; display: flex; align-items: baseline; gap: 12px; padding-block: 12px; text-decoration: none; white-space: nowrap }
-  .brand b { font: 700 18px var(--display); letter-spacing: -.01em }
-  .brand b::before { content: '>'; margin-inline-end: 8px; color: var(--ok) }
-  .brand span { font: 500 12px var(--sans); color: var(--mu) }
-  nav { display: flex; gap: 2px; margin-inline-start: auto; font: 600 14px var(--sans) }
-  nav a { padding: 8px 12px; border-radius: 8px; text-decoration: none; color: var(--mu2) }
-  nav a:hover { color: var(--i) }
-  .theme { flex: none; width: 44px; height: 44px; display: grid; place-items: center; padding: 0; border: 1px solid var(--line); border-radius: 10px; background: var(--card); color: inherit }
+  /* Header: sticky, solid, a hairline below */
+  header { position: sticky; top: 0; z-index: 20; background: var(--p); border-bottom: 1px solid var(--line); transition: background-color .25s }
+  header .wrap { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 32px; min-height: 64px; padding-block: 8px }
+  .brand { flex: none; display: flex; align-items: baseline; gap: 12px; text-decoration: none; white-space: nowrap }
+  .brand b { font: 600 18px var(--sans); letter-spacing: -.01em }
+  .brand span { font: 400 13px var(--sans); color: var(--mu) }
+  nav { display: flex; gap: 4px; margin-inline-start: auto; font: 500 14px var(--sans) }
+  nav a { padding: 8px 12px; border-radius: 8px; text-decoration: none; color: var(--mu2); transition: color .15s var(--ease), background-color .15s var(--ease) }
+  nav a:hover { color: var(--i); background: var(--soft) }
+  .theme { flex: none; width: 40px; height: 40px; display: grid; place-items: center; padding: 0; border: 1px solid var(--line); border-radius: 10px; background: transparent; color: var(--mu2); cursor: pointer; transition: color .15s var(--ease), border-color .15s var(--ease) }
+  .theme:hover { color: var(--i); border-color: var(--line2) }
   .theme svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round }
   [data-theme=light] .theme .moon, [data-theme=dark] .theme .sun { display: none }
-  @media (max-width: 560px) {
-    header .wrap { gap: 6px 12px }
+  @media (max-width: 640px) {
+    header { position: static }
+    header .wrap { gap: 4px 12px }
     header .theme { order: 2; margin-inline-start: auto }
-    nav { order: 3; flex-basis: 100%; margin: 0 -10px; justify-content: space-between; font-size: 13px }
-    nav a { padding-inline: 10px }
+    nav { order: 3; flex-basis: 100%; margin: 0 -8px; justify-content: space-between; font-size: 13px }
+    nav a { padding-inline: 8px }
   }
 
-  /* Hero */
-  .hero { border-bottom: 1px solid var(--line) }
-  .hero .wrap { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 48px 56px; align-items: center; padding-top: clamp(44px, 6vw, 84px); padding-bottom: clamp(48px, 6vw, 84px) }
-  @media (max-width: 960px) { .hero .wrap { grid-template-columns: minmax(0, 1fr) } .deck { width: min(100%, 600px) } }
-  .hero-main { min-width: 0; display: flex; flex-direction: column; gap: 24px }
-  h1 { margin: 0; font: 700 clamp(48px, 6.6vw, 88px)/.95 var(--display); letter-spacing: -.035em; overflow-wrap: break-word; min-width: 0; text-wrap: balance }
-  .lede { margin: 0; max-width: 500px; font-size: 18px; line-height: 1.6; color: var(--mu2); text-wrap: pretty }
-  /* Hero actions: one primary, one secondary */
-  .ctas { display: flex; flex-wrap: wrap; align-items: center; gap: 12px }
-  .cta { display: inline-flex; align-items: center; gap: 12px; height: 48px; padding: 0 20px; border: 1px solid var(--line2); border-radius: 10px; font: 600 15px var(--sans); text-decoration: none; white-space: nowrap; transition: background-color .15s var(--ease-out), border-color .15s var(--ease-out), color .15s var(--ease-out) }
-  .cta span { color: var(--mu); transition: transform .15s var(--ease-out) }
-  .cta:hover { border-color: var(--i) }
+  /* Buttons: one primary, one secondary */
+  .cta { display: inline-flex; align-items: center; gap: 12px; height: 48px; padding: 0 20px; border: 1px solid color-mix(in srgb, var(--i) 30%, transparent); border-radius: 10px; background: var(--card); color: var(--i); font: 500 15px var(--sans); text-decoration: none; white-space: nowrap; transition: background-color .15s var(--ease), border-color .15s var(--ease), color .15s var(--ease), transform .15s var(--ease) }
+  .cta span { color: var(--mu); transition: transform .2s var(--ease) }
+  .cta:hover { border-color: var(--i); background: var(--soft) }
+  .cta:hover span { transform: translateX(2px) }
   .cta:active { transform: scale(.98) }
-  .cta.primary { border-color: var(--i); background: var(--i); color: var(--p) }
-  .cta.primary span { color: inherit; opacity: .6 }
-  .cta.primary:hover { border-color: var(--mu2); background: var(--mu2) }
+  .cta-ext { width: 12px; height: 12px; fill: none; stroke: var(--mu); stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round }
+  .cta.primary { border-color: var(--ok); background: var(--ok); color: var(--p) }
+  .cta.primary span { color: inherit; opacity: .7 }
+  .cta.primary:hover { border-color: color-mix(in srgb, var(--ok) 84%, var(--i)); background: color-mix(in srgb, var(--ok) 84%, var(--i)) }
   .cta.primary:hover span { transform: translateY(2px) }
-  .cta:not(.primary):hover span { color: var(--i); transform: translateX(2px) }
+  .link { display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 16px; border: 1px solid color-mix(in srgb, var(--i) 30%, transparent); border-radius: 10px; background: var(--card); font: 500 14px var(--sans); color: var(--i); text-decoration: none; white-space: nowrap; transition: border-color .15s var(--ease) }
+  .link span { color: var(--mu); transition: transform .2s var(--ease) }
+  .link:hover { border-color: var(--i); background: var(--soft) }
+  .link:hover span { transform: translateX(2px) }
 
-  /* Hero: where the semester is, under the buttons (dates from Ritaj's academic calendar) */
-  .hero-sem { display: flex; flex-direction: column; gap: 10px; max-width: 500px; padding-top: 20px; border-top: 1px solid var(--line) }
+  /* Section heads: the heading and, on the right, where to go for more */
+  .sec { border-bottom: 1px solid var(--line) }
+  .sec > .wrap { display: flex; flex-direction: column; gap: 40px; padding-block: 96px }
+  .sec-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px 32px }
+  .sec-head h2 { margin: 0; max-width: 20ch; font: 500 clamp(30px, 3.4vw, 44px)/1.1 var(--sans); letter-spacing: -.025em; text-wrap: balance }
+  .sec-head p { margin: 12px 0 0; max-width: 56ch; font-size: 17px; line-height: 1.6; color: var(--mu2); text-wrap: pretty }
+  @media (max-width: 720px) { .sec > .wrap { gap: 32px; padding-block: 64px } }
+
+  /* ---- Hero ------------------------------------------------------------------------------- */
+  .hero { border-bottom: 1px solid var(--line); overflow: clip }
+  .hero .wrap { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: 48px 32px; align-items: center; min-height: min(calc(100svh - 65px), 760px); padding-block: 64px }
+  .hero-main { min-width: 0; display: flex; flex-direction: column; gap: 24px }
+  h1 { margin: 0; max-width: 14ch; font: 500 clamp(40px, 5vw, 68px)/1.04 var(--sans); letter-spacing: -.03em; text-wrap: balance }
+  .lede { margin: 0; max-width: 34rem; font-size: 19px; line-height: 1.55; color: var(--mu2); text-wrap: pretty }
+  .ctas { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 8px }
+  /* Where the semester is, from Ritaj's academic calendar */
+  .hero-sem { display: flex; flex-direction: column; gap: 12px; max-width: 34rem; margin-top: 16px; padding-top: 24px; border-top: 1px solid var(--line) }
   .hs-row { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 16px }
-  .hs-row b { font: 700 16px var(--display) }
-  .hs-row span { font: 400 12px var(--mono); color: var(--mu) }
+  .hs-row b { font: 500 16px var(--sans) }
+  .hs-row span { font-size: 13px; color: var(--mu) }
+  @media (max-width: 960px) {
+    .hero .wrap { grid-template-columns: minmax(0, 1fr); min-height: 0; padding-block: 56px 64px }
+  }
 
-  /* Hero: real screenshots of the lab sites, stacked; the front one moves to the back every few seconds */
-  .deck { position: relative; min-width: 0; aspect-ratio: 1 / .78; }
-  .shot { position: absolute; left: 0; top: 0; width: 86%; display: block; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: var(--card); text-decoration: none;
-    box-shadow: 0 2px 6px rgba(0,0,0,.08), 0 30px 60px -30px rgba(0,0,0,.55);
-    transition: transform .8s cubic-bezier(.2,.75,.2,1), filter .8s, opacity .8s }
-  .shot .bar { height: 32px }
-  .prev-url { flex: 1; min-width: 0; margin-inline-start: 10px; padding: 3px 10px; border: 1px solid var(--line); border-radius: 6px; background: var(--card); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; color: var(--mu) }
-  .shot .prev-url { font-size: 11px }
-  .shot img { display: block; width: 100%; height: auto; aspect-ratio: 16 / 10 }
-  [data-theme=dark] .shot .l, [data-theme=light] .shot .d { display: none }
-  .shot[data-pos="0"] { z-index: 3; transform: translate(0, 22%) }
-  .shot[data-pos="1"] { z-index: 2; transform: translate(8%, 11%) scale(.95); filter: brightness(.9) }
-  .shot[data-pos="2"] { z-index: 1; transform: translate(16%, 0) scale(.9); filter: brightness(.8) }
-  [data-theme=light] .shot[data-pos="1"] { filter: brightness(.97) }
-  [data-theme=light] .shot[data-pos="2"] { filter: brightness(.93) }
-  .shot[data-pos="0"]:hover { transform: translate(0, 21%) }
-  .deck-cap { position: absolute; left: 0; bottom: -6px; font: 500 12px var(--sans); color: var(--mu) }
-  .deck-cap b { font-weight: 600; color: var(--mu2) }
+  /* The board: the TM4C123 LaunchPad from the first lab, drawn as a grid of characters from a real
+     ARM listing. Red where the circuit board is, ink for the parts, one green LED. Three labels pin
+     real facts to it. On load it prints in row by row; after that a few characters change slowly */
+  .board { position: relative; justify-self: end; width: min(100%, 640px); aspect-ratio: 940 / 700; container-type: inline-size }
+  .board canvas { position: absolute; inset: 0; width: 100%; height: 100% }
+  /* A label pinned to a part: the text, a leader line and a pad on the part itself */
+  .tag { position: absolute; right: calc(100% - var(--x)); top: var(--y); display: flex; align-items: center; transform: translate(4px, -50%); white-space: nowrap }
+  .tag b { padding: 6px 10px; border: 1px solid var(--line2); border-radius: 6px; background: var(--card); box-shadow: var(--sh); font-size: 13px; font-weight: 500; color: var(--i) }
+  .tag i { flex: none; width: var(--len); height: 1px; background: var(--mu) }
+  .tag::after { content: ''; flex: none; width: 8px; height: 8px; border: 1.5px solid var(--i); border-radius: 2px; background: var(--card) }
+  @media (max-width: 1100px) { .tag { display: none } }
+  @media (max-width: 960px) { .board { justify-self: center; width: min(100%, 520px); aspect-ratio: 720 / 700 } }
 
-  /* Section heads */
-  .sec-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 20px }
-  .sec-head h2, .why-side h2 { margin: 8px 0 0; font: 700 clamp(32px, 4vw, 48px)/1.05 var(--display); letter-spacing: -.03em; overflow-wrap: break-word; min-width: 0; text-wrap: balance }
-  .tools { display: flex; flex-wrap: wrap; align-items: center; gap: 8px }
-  .arrow { width: 44px; height: 40px; padding: 0; border: 1px solid var(--line); border-radius: 8px; background: transparent; color: var(--i); font: 500 15px var(--sans) }
-  .arrow.prev { margin-inline-start: 8px }
-  .arrow:disabled { color: var(--line2); cursor: default; background: transparent }
+  /* ---- Showcases: one tool per row, the words on one side and a working example on the other ---- */
+  .show-row { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: 48px 64px; align-items: center }
+  .show-row.flip { grid-template-columns: minmax(0, 1.2fr) minmax(0, .8fr) }
+  .show-row.flip .show-text { order: 2 }
+  @media (max-width: 960px) { .show-row, .show-row.flip { grid-template-columns: minmax(0, 1fr) } .show-row.flip .show-text { order: 0 } }
+  .show-text { display: flex; flex-direction: column; align-items: flex-start; gap: 20px }
+  .show-text h2 { margin: 0; font: 500 clamp(30px, 3.4vw, 44px)/1.1 var(--sans); letter-spacing: -.025em; text-wrap: balance }
+  .show-text p { margin: 0; max-width: 46ch; font-size: 17px; line-height: 1.6; color: var(--mu2); text-wrap: pretty }
+  .figs { display: flex; gap: 32px; margin: 4px 0 }
+  .figs div { display: flex; flex-direction: column-reverse; gap: 4px }
+  .figs dt { font-size: 13px; color: var(--mu) }
+  .figs dd { margin: 0; font-size: 28px; font-weight: 500; letter-spacing: -.02em; font-variant-numeric: tabular-nums }
+  .ticks { display: flex; flex-direction: column; gap: 10px; margin: 4px 0; padding: 0; list-style: none; font-size: 15px; color: var(--mu2) }
+  .ticks li { display: flex; align-items: center; gap: 12px }
+  .ticks li::before { content: ''; flex: none; width: 8px; height: 8px; border: 1.5px solid var(--ok); border-radius: 2px; background: color-mix(in srgb, var(--ok) 20%, var(--card)) }
+  /* The example: a quiet card with real sections from this semester */
+  .preview { display: flex; flex-direction: column; gap: 16px; padding: 20px; border: 1px solid var(--line); border-radius: 16px; background: var(--card); box-shadow: var(--sh); text-decoration: none; transition: border-color .2s var(--ease) }
+  .preview:hover { border-color: var(--line2) }
+  .pv-top { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 13px }
+  .seg, .chip, .pick { display: inline-flex; align-items: center; height: 32px; padding: 0 12px; border: 1px solid var(--line); border-radius: 8px; color: var(--mu2) }
+  .seg.on { border-color: var(--i); background: var(--soft); color: var(--i) }
+  .pick { flex: 1; min-width: 120px; border-color: var(--line2); color: var(--i); font: 400 13px var(--mono) }
+  .chip { gap: 8px; font: 400 12px var(--mono); color: var(--i) }
+  .chip::before { content: ''; width: 8px; height: 8px; border-radius: 2px; background: var(--c) }
+  .pv-count { margin-inline-start: auto; color: var(--mu) }
+  .pv-count b { color: var(--i); font-weight: 500 }
+  .pv-foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 16px; font-size: 13px; color: var(--mu) }
+  /* Course colours inside the examples: the one in focus in the accent, the rest in neutral steps */
+  .on { --c: var(--ok) } .alt { --c: var(--i) } .mu { --c: var(--mu) }
+  .wk { display: grid; grid-template-columns: 44px minmax(0, 1fr); grid-template-rows: 24px repeat(5, 52px); border: 1px solid var(--line); border-radius: 10px; overflow: hidden }
+  .wk-h { position: relative; border-inline-start: 1px solid var(--line) }
+  .wk-h span { position: absolute; top: 5px; padding-inline-start: 6px; font: 400 11px var(--mono); color: var(--mu) }
+  .wk-d { display: flex; align-items: center; padding-inline-start: 10px; border-top: 1px solid var(--line); font-size: 12px; color: var(--mu2) }
+  .wk-l { position: relative; border-top: 1px solid var(--line); border-inline-start: 1px solid var(--line); background-image: linear-gradient(90deg, var(--line) 1px, transparent 1px); background-size: calc(200% / var(--hours)) 100% }
+  .wk-l.free { background-color: var(--soft) }
+  .wk-b { position: absolute; top: 6px; bottom: 6px; left: calc(var(--l) * 1% + 2px); width: calc(var(--w) * 1% - 4px); padding: 4px 8px; overflow: hidden; white-space: nowrap; border: 1px solid color-mix(in srgb, var(--c, var(--mu2)) 70%, transparent); border-radius: 6px; background: color-mix(in srgb, var(--c, var(--mu2)) 12%, var(--card)); font: 400 11px/1.35 var(--mono); color: var(--mu2); transform-origin: left center }
+  .wk-b b { display: block; font-weight: 400; color: var(--c, var(--i)) }
+  .wk-b:not(.on):not(.alt):not(.mu) { --c: var(--mu2) }
+  @media (max-width: 560px) { .preview { padding: 12px } .wk { grid-template-columns: 36px minmax(0, 1fr); grid-template-rows: 24px repeat(5, 44px) } .pick { min-width: 0 }
+    /* On a phone the blocks are too narrow for words: the colours and the chips above carry them */
+    .wk-b { padding: 0; font-size: 0 } .wk-b b { display: none } }
+
+  /* ---- Labs: every lab as a card in its own colour ------------------------------------------ */
+  /* The labs: one row of same-size cards that scrolls sideways (drag, swipe, the arrows or the keyboard),
+     so any number of labs fits. Each card has fixed rows: two lines of name, one of platform, two of usage */
+  .rail { display: flex; gap: 16px; margin-inline: calc(-1 * var(--g)); padding: 4px var(--g) 8px; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scroll-padding-inline: var(--g); scrollbar-width: none; cursor: grab }
+  .rail::-webkit-scrollbar { display: none }
+  .rail.dragging { cursor: grabbing; scroll-snap-type: none; user-select: none }
+  .rail .lab { flex: 0 0 clamp(272px, 28vw, 332px); scroll-snap-align: start }
+  .rail-ctl { display: flex; align-items: center; gap: 8px }
+  .arrow { width: 44px; height: 44px; display: grid; place-items: center; padding: 0; border: 1px solid color-mix(in srgb, var(--i) 30%, transparent); border-radius: 10px; background: var(--card); color: var(--i); cursor: pointer; transition: border-color .15s var(--ease), background-color .15s var(--ease), opacity .15s var(--ease) }
+  .arrow:hover:not(:disabled) { border-color: var(--i); background: var(--soft) }
+  .arrow:active:not(:disabled) { transform: scale(.97) }
+  .arrow:disabled { opacity: .35; cursor: default }
+  .arrow svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round }
+  .rail-pos { min-width: 56px; font-size: 13px; color: var(--mu); text-align: center; font-variant-numeric: tabular-nums }
   @media (hover: none) { .arrow { display: none } }
-
-  /* Labs: one row that scrolls sideways, so any number of labs fits */
-  #labs > .wrap { display: flex; flex-direction: column; gap: 24px; padding-top: 72px; padding-bottom: 80px }
-  /* Labs: a Swiper carousel (loop, autoplay, Swiper's default dots). 1 card with a peek on phones, 2 on tablets, 3 on wide screens */
-  .rail { margin: -16px calc(-1 * var(--g)) 0; padding: 16px var(--g) 32px;
-    --swiper-theme-color: var(--i); --swiper-pagination-bullet-inactive-color: var(--mu); --swiper-pagination-bullet-inactive-opacity: .45;
-    -webkit-mask-image: linear-gradient(90deg, transparent, #000 var(--g), #000 calc(100% - var(--g)), transparent); mask-image: linear-gradient(90deg, transparent, #000 var(--g), #000 calc(100% - var(--g)), transparent) }
-  /* Cards size to their content; Swiper's flex row stretches them to one height */
-  .rail .swiper-slide.lab { height: auto }
-  .rail-foot { display: flex; align-items: center; gap: 20px; --swiper-theme-color: var(--i); --swiper-pagination-bullet-inactive-color: var(--mu); --swiper-pagination-bullet-inactive-opacity: .45 }
-  .rail-foot .swiper-pagination { flex: none; position: static; width: auto; text-align: start; white-space: nowrap }
-  .invite { margin-inline-start: auto; padding-block: 12px; font: 500 13px var(--sans); color: var(--mu2); text-decoration: none; white-space: nowrap }
-  .invite b { color: var(--i); font-weight: 600 }
-  .invite:hover b { text-decoration: underline; text-underline-offset: 3px }
-
-  /* A lab card: a terminal window with fixed rows, so a long title never pushes anything out of line */
-  .lab { position: relative; flex: none; height: 100%; display: flex; flex-direction: column; text-decoration: none; transition: border-color .2s var(--ease-out) }
+  .rail-ctl.static .arrow, .rail-ctl.static .rail-pos { display: none }
+  /* The usage line keeps its space before the numbers load, so every card is the same height from the start */
+  .lab-use[hidden] { display: grid !important; visibility: hidden }
+  /* The invitation: a lab card with a dashed edge and a + where the course number goes */
+  .lab.ask { --a: var(--ok); border-style: dashed; border-color: var(--line2); background: transparent; box-shadow: none }
+  .lab.ask .lab-num { color: var(--mu) }
+  .lab.ask .lab-use { display: block; color: var(--mu2); line-height: 1.5 }
+  .lab { position: relative; display: flex; flex-direction: column; padding: 24px; border: 1px solid var(--line); border-radius: 16px; background: var(--card); box-shadow: var(--sh); transition: border-color .2s var(--ease) }
   .lab:hover, .lab:focus-within { border-color: var(--a) }
-  .lab .bar .r { text-transform: none }
-  /* Rows: ENCS + dot | Lab 01, the course number, title (2 lines), platform, usage, links */
-  .lab-body { flex: 1; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-content: start; padding: 20px }
-  .lab-body > * { grid-column: 1 / -1 }
-  .lab-no { grid-column: 2; grid-row: 1; font: 500 12px var(--sans); color: var(--mu) }
-  .lab-ens { grid-column: 1; grid-row: 1; display: flex; align-items: center; gap: 8px; font: 500 12px var(--sans); color: var(--mu) }
-  .lab-ens::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--a) }
-  .lab-num { margin-top: 16px; font: 700 60px/1 var(--display); letter-spacing: -.035em; margin-inline-start: -2px; color: var(--i); font-variant-numeric: tabular-nums }
-  .lab-name { margin: 16px 0 0; height: calc(2 * 1.3em); font: 700 17px/1.3 var(--display); display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; text-wrap: balance }
+  .lab-top { display: flex; justify-content: space-between; align-items: center; gap: 12px; font-size: 13px; color: var(--mu) }
+  .lab-ens { display: flex; align-items: center; gap: 8px }
+  .lab-ens::before { content: ''; width: 8px; height: 8px; border-radius: 2px; background: var(--a) }
+  .lab-num { margin-top: 20px; font: 500 56px/1 var(--sans); letter-spacing: -.035em; margin-inline-start: -3px; font-variant-numeric: tabular-nums }
+  .lab-name { margin: 16px 0 0; height: calc(2 * 1.3em); font: 500 17px/1.3 var(--sans); display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden }
   .lab-name a { text-decoration: none }
-  .lab-name a::after { content: ''; position: absolute; inset: 0; border-radius: 12px }
-  .lab-plat { margin-top: 8px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font: 500 12px var(--sans); color: var(--mu) }
-  .lab-use { display: flex; flex-wrap: wrap; gap: 4px 16px; margin-top: 16px; padding-top: 12px; border-top: 1px dashed var(--line); font: 500 12px var(--sans); color: var(--mu); white-space: nowrap }
-  .lab-use b { color: var(--i); font-weight: 600 }
-  .lab-use .x { margin-inline-start: auto }
-  .lab-links { position: relative; z-index: 1; display: flex; gap: 8px; margin-top: 20px }
-  .lab-links > a, .lab-links > span { height: 40px; display: flex; align-items: center; justify-content: center; padding: 0 12px; border: 1px solid var(--line); border-radius: 8px; font: 500 13px var(--sans); text-decoration: none; color: var(--mu2); transition: background .2s, border-color .2s, color .2s }
-  .lab-links a:hover { border-color: var(--i); color: var(--i) }
-  .lab-links .open { flex: 1; justify-content: space-between; padding: 0 16px; border-color: var(--i); background: var(--i); color: var(--p); font-weight: 600 }
-  .lab-links a.open:hover { border-color: var(--mu2); background: var(--mu2); color: var(--p) }
+  .lab-name a::after { content: ''; position: absolute; inset: 0; border-radius: 16px }
+  .lab-plat { margin-top: 8px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-size: 14px; color: var(--mu2) }
+  .lab-use { display: grid; grid-template-columns: auto auto; justify-content: start; gap: 4px 16px; min-height: 61px; margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--line); font-size: 13px; color: var(--mu); font-variant-numeric: tabular-nums }
+  .lab-use b { color: var(--i); font-weight: 500 }
+  .lab-links { position: relative; z-index: 1; display: flex; gap: 8px; margin-top: auto; padding-top: 24px }
+  .lab-links a { height: 40px; display: flex; align-items: center; justify-content: center; padding: 0 12px; border: 1px solid color-mix(in srgb, var(--i) 30%, transparent); border-radius: 8px; font: 500 13px var(--sans); text-decoration: none; color: var(--i); transition: background-color .15s var(--ease), border-color .15s var(--ease), color .15s var(--ease) }
+  .lab-links a:hover { border-color: var(--i); background: var(--soft) }
+  .lab-links .open { flex: 1; justify-content: space-between; padding: 0 16px; border-color: var(--i); background: var(--i); color: var(--p) }
+  .lab-links a.open:hover { border-color: var(--a); background: var(--a); color: var(--p) }
 
-  /* Find a schedule: every department; numbers come from the live catalog */
-  #schedules { border-top: 1px solid var(--line) }
-  #schedules > .wrap { display: flex; flex-direction: column; gap: 22px; padding-top: 68px; padding-bottom: 76px }
-  .entries { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px }
-  @media (max-width: 720px) { .entries { grid-template-columns: minmax(0, 1fr) } }
-  .entry { display: flex; flex-direction: column; text-decoration: none; transition: border-color .2s var(--ease-out) }
-  .entry:hover, .entry:focus-visible { border-color: var(--i) }
-  .entry-body { flex: 1; display: flex; flex-direction: column; gap: 12px; padding: 20px }
-  .entry .n { font: 700 52px/1 var(--display); letter-spacing: -.03em; font-variant-numeric: tabular-nums }
-  .entry .l { margin: 0; font: 700 18px var(--display) }
-  .entry .d { font-size: 15px; line-height: 1.5; color: var(--mu2) }
-  .entry .more { margin-top: auto; padding-top: 4px; font: 500 13px var(--sans); color: var(--mu2) }
-  .entry:hover .more { color: var(--i) }
-
-  /* This semester in numbers: counts from the lab repos and visitors from Analytics (/stats.json, written daily by the deploy) */
-  #numbers { border-top: 1px solid var(--line) }
-  #numbers > .wrap { display: flex; flex-direction: column; gap: 22px; padding-top: 68px; padding-bottom: 76px }
-  .more-link { color: var(--mu2); text-decoration: none }
-  .more-link:hover { color: var(--i); text-decoration: underline; text-underline-offset: 3px }
+  /* ---- This semester in numbers (/stats.json, written daily by the deploy) ------------------- */
+  .panel { border: 1px solid var(--line); border-radius: 16px; background: var(--card); box-shadow: var(--sh); overflow: hidden }
   .stats-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)) }
   .stats-grid.visits { grid-template-columns: repeat(5, minmax(0, 1fr)) }
-  /* 5 numbers on a tablet or phone: visitors on one row, the counts on the next */
   @media (max-width: 900px) { .stats-grid.visits { grid-template-columns: repeat(6, minmax(0, 1fr)) } .stats-grid.visits .stat { grid-column: span 2 } .stats-grid.visits .stat.v { grid-column: span 3 } }
   .stat { display: flex; flex-direction: column; gap: 8px; padding: 24px; border-inline-end: 1px solid var(--line); border-bottom: 1px solid var(--line); margin: 0 -1px -1px 0; min-width: 0 }
-  .stat b { font: 700 46px/1 var(--display); letter-spacing: -.03em; font-variant-numeric: tabular-nums }
-  .stat span { font: 600 13px var(--sans); color: var(--mu2) }
-  .stat small { font: 500 12px var(--sans); color: var(--mu) }
+  .stat b { font: 500 40px/1 var(--sans); letter-spacing: -.03em; font-variant-numeric: tabular-nums }
+  .stat span { font-size: 14px; color: var(--mu2) }
+  .stat small { font-size: 13px; color: var(--mu) }
   .stat small:empty { display: none }
-  @media (max-width: 560px) { .stat { padding: 20px 16px; gap: 8px } .stat b { font-size: 34px } .stat span { font-size: 12px } }
-  .widgets { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr) minmax(0, .8fr); margin-top: 1px }
+  @media (max-width: 560px) { .stat { padding: 20px 16px } .stat b { font-size: 32px } .stat span { font-size: 13px } }
+  .widgets { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, .8fr) }
   .widgets .cell { display: flex; flex-direction: column; gap: 16px; padding: 24px; border-inline-end: 1px solid var(--line); min-width: 0 }
   .widgets .cell:last-child { border-inline-end: 0 }
+  .w-title h3 { margin: 0; font: 500 15px var(--sans) }
   @media (max-width: 1000px) { .widgets { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) } .widgets .cell:first-child { grid-column: 1 / -1; border-inline-end: 0; border-bottom: 1px solid var(--line) } }
   @media (max-width: 640px) { .widgets { grid-template-columns: minmax(0, 1fr) } .widgets .cell { border-inline-end: 0; border-bottom: 1px solid var(--line) } .widgets .cell:last-child { border-bottom: 0 } }
+  .panel-foot { display: flex; justify-content: space-between; gap: 16px; padding: 12px 24px; border-top: 1px solid var(--line); background: var(--bar); font-size: 13px; color: var(--mu) }
+  .panel-foot span:first-child { font: 400 12px var(--mono) }
 
-  /* Features */
-  #why { border-top: 1px solid var(--line); background: var(--bar) }
-  #why > .wrap { display: flex; flex-wrap: wrap; gap: 40px 56px; padding-top: 68px; padding-bottom: 76px }
-  .why-side { flex: 1 1 360px; min-width: 0; display: flex; flex-direction: column; gap: 24px }
-  .w-title h3 { font: 700 16px var(--display); letter-spacing: 0 }
+  /* ---- A manual you can work in: four things the web manuals do, each with an example ------------ */
+  .why { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: 40px 64px; align-items: center }
+  @media (max-width: 960px) { .why { grid-template-columns: minmax(0, 1fr) } }
   .feats { display: flex; flex-direction: column; border-top: 1px solid var(--line) }
-  .feat { display: flex; gap: 16px; align-items: flex-start; width: 100%; padding: 16px 8px; border: 0; border-bottom: 1px solid var(--line); background: transparent; color: inherit; font: inherit; text-align: start; cursor: pointer; transition: background .15s }
+  .feat { display: grid; grid-template-columns: 10px minmax(0, 1fr); align-items: start; gap: 16px; width: 100%; padding: 20px 8px; border: 0; border-bottom: 1px solid var(--line); background: transparent; color: inherit; font: inherit; text-align: start; cursor: pointer; transition: background-color .15s var(--ease) }
   .feat:hover { background: var(--soft) }
-  /* The ">" sits in its own fixed slot before the number, so selecting a row never moves its text;
-     it slides in on the selected row and out of the one left behind */
-  .feat-n { flex: none; display: flex; font: 400 14px/22px var(--mono); color: var(--mu); transition: color .25s var(--ease-out) }
-  .feat-n::before { content: '>'; width: 1.6ch; opacity: 0; transform: translateX(-4px); transition: opacity .2s var(--ease-out), transform .2s var(--ease-out) }
-  .feat[aria-selected=true] .feat-n { color: var(--ok) }
-  .feat[aria-selected=true] .feat-n::before { opacity: 1; transform: none }
-  .feat b { display: block; font: 700 16px/22px var(--display) }
+  .feat .pad { width: 10px; height: 10px; margin-top: 6px; border: 1.5px solid var(--mu2); border-radius: 2px; background: var(--card); transition: background-color .2s var(--ease), border-color .2s var(--ease) }
+  .feat[aria-selected=true] .pad { border-color: var(--ok); background: var(--ok) }
+  .feat b { display: block; font: 500 16px/1.4 var(--sans) }
   .feat-d { display: block; margin-top: 4px; font-size: 15px; line-height: 1.5; color: var(--mu2) }
-  .why-note { margin: 0; font-size: 15px; color: var(--mu2) }
-  .demo-col { flex: 1.3 1 480px; min-width: 0; align-self: center }
-  .demo-body { min-height: 360px; padding: 24px }
-  .dpanel { display: flex; flex-direction: column; gap: 16px; animation: fade .4s cubic-bezier(.2,.7,.3,1) }
+  .demo { border: 1px solid var(--line); border-radius: 16px; background: var(--card); box-shadow: var(--sh); overflow: hidden }
+  .demo-cap { display: flex; justify-content: space-between; padding: 12px 24px; border-bottom: 1px solid var(--line); background: var(--bar); font-size: 13px; color: var(--mu) }
+  .demo-cap span:last-child { font: 400 12px var(--mono) }
+  .demo-body { min-height: 380px; padding: 24px }
+  .dpanel { display: flex; flex-direction: column; gap: 16px }
   .dnote { margin: 0; font-size: 15px; line-height: 1.55; color: var(--mu2) }
-  .dstatus { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; min-height: 48px; padding: 12px 16px; white-space: nowrap; border: 1px solid var(--line); border-radius: 10px; font: 500 14px var(--sans) }
+  .dstatus { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; min-height: 48px; padding: 12px 16px; white-space: nowrap; border: 1px solid var(--line); border-radius: 10px; font-size: 14px }
   .dstatus .dot { flex: none; width: 8px; height: 8px; border-radius: 50%; background: var(--mu) }
-  .dstatus small { margin-inline-start: auto; font-size: 12px; color: var(--mu); text-align: end }
+  .dstatus small { margin-inline-start: auto; font: 400 12px var(--mono); color: var(--mu); text-align: end }
   .dresume { display: grid; grid-template-columns: 1fr auto; row-gap: 4px; column-gap: 16px; padding: 20px; border: 1px solid var(--a); border-radius: 10px; background: color-mix(in srgb, var(--a) 8%, var(--card)) }
-  .dresume small { font: 500 12px var(--sans); color: var(--a) }
-  .dresume b { font: 600 16px/1.35 var(--sans) }
-  .dresume span { font: 500 13px var(--sans); color: var(--mu) }
+  .dresume small { font-size: 13px; color: var(--a) }
+  .dresume b { font: 500 16px/1.35 var(--sans) }
+  .dresume span { font-size: 13px; color: var(--mu) }
   .dresume i { grid-column: 2; grid-row: 1 / span 3; align-self: center; font-style: normal; font-size: 20px; color: var(--a) }
   .dresults { border: 1px solid var(--line); border-radius: 10px; overflow: hidden }
   .dresults div { padding: 12px 16px; border-bottom: 1px solid var(--line) }
   .dresults div:first-child { background: var(--soft) }
   .dresults div:last-child { border-bottom: 0 }
-  .dresults small { display: block; font: 500 12px var(--sans); color: var(--mu) }
+  .dresults small { display: block; font-size: 13px; color: var(--mu) }
   .dresults p { margin: 4px 0 0; font-size: 15px; line-height: 1.5 }
-  .codeblock { border-radius: 10px; background: #0d0e0d; color: #e8e6e1; overflow: hidden; border: 1px solid #2a2b29 }
-  .codeblock-bar { display: flex; align-items: center; justify-content: space-between; height: 40px; padding: 0 8px 0 16px; border-bottom: 1px solid #2a2b29; font: 400 12px var(--mono); color: #8d8f89 }
-  .copy { height: 30px; padding: 0 10px; border: 1px solid #3a3b39; border-radius: 6px; background: transparent; color: #e8e6e1; font: 500 12px var(--sans); cursor: pointer }
+  .codeblock { border-radius: 10px; background: #141311; color: #e8e6e1; overflow: hidden; border: 1px solid #2a2b29 }
+  .codeblock-bar { display: flex; align-items: center; justify-content: space-between; height: 40px; padding: 4px 8px 4px 16px; border-bottom: 1px solid #2a2b29; font: 400 12px var(--mono); color: #8d8f89 }
+  .copy { height: 28px; padding: 0 10px; border: 1px solid #3a3b39; border-radius: 6px; background: transparent; color: #e8e6e1; font: 500 12px var(--sans); cursor: pointer; transition: background-color .15s var(--ease) }
   .copy:hover { background: #1d1e1c }
   .codeblock pre { margin: 0; padding: 16px; font: 400 13px/1.7 var(--mono); white-space: pre; overflow-x: auto }
   .codeblock .c { color: #7d8f73 }
   .log { margin: 0; padding: 0; list-style: none }
   .log li { display: flex; gap: 16px }
-  .log-rail { display: flex; flex-direction: column; align-items: center; width: 14px }
-  .log-rail::before { content: ''; flex: none; width: 12px; height: 12px; margin-top: 4px; border: 2px solid var(--line2); border-radius: 50%; background: var(--card) }
+  .log-rail { display: flex; flex-direction: column; align-items: center; width: 12px }
+  .log-rail::before { content: ''; flex: none; width: 10px; height: 10px; margin-top: 4px; border: 1.5px solid var(--line2); border-radius: 2px; background: var(--card) }
   .log li:first-child .log-rail::before { border-color: var(--ok); background: var(--ok) }
-  .log-rail::after { content: ''; flex: 1; width: 1px; background: var(--line) }
+  .log-rail::after { content: ''; flex: 1; width: 1.5px; background: var(--line) }
   .log-body { flex: 1; display: flex; flex-direction: column; gap: 4px; padding-bottom: 20px }
-  .log-body small { font: 500 12px var(--sans); color: var(--mu) }
-  .log-body span:not(.badge) { font: 500 14px/1.45 var(--sans) }
-  .badge { align-self: flex-start; margin-top: 2px; padding: 3px 8px; border-radius: 6px; background: color-mix(in srgb, var(--ok) 14%, transparent); color: var(--ok); font: 500 11.5px var(--sans) }
-  .badge.wip { background: var(--soft); color: var(--mu2) }
+  .log-body small { font-size: 13px; color: var(--mu) }
+  .log-body span:not(.badge) { font-size: 14px; line-height: 1.45 }
+  .badge { align-self: flex-start; margin-top: 4px; font-size: 13px; color: var(--ok) }
+  .badge.wip { color: var(--mu) }
+
+  /* ---- Bring your manual ------------------------------------------------------------------- */
+  .join { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 32px 64px; align-items: end }
+  .join .ctas { margin: 0 }
+  @media (max-width: 860px) { .join { grid-template-columns: minmax(0, 1fr); align-items: start } }
 
   /* Footer */
-  footer { border-top: 1px solid var(--line) }
-  /* Two groups on one baseline: who and where on the left, links and date on the right; they stack, left-aligned, on narrow screens */
-  footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px 32px; padding-block: 24px; font: 500 13px/1.6 var(--sans); color: var(--mu2) }
+  footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px 32px; padding-block: 32px; font-size: 14px; color: var(--mu2) }
   footer .grp { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 24px }
-  footer .dept { color: var(--i); font-weight: 600 }
-  footer a { color: var(--mu2); text-decoration: none }
-  footer a:hover { color: var(--i); text-decoration: underline; text-underline-offset: 3px }
+  footer .dept { color: var(--i); font-weight: 500 }
+  /* Footer links look like links: underlined, with a small up-right arrow when they leave the site */
+  footer a { display: inline-flex; align-items: baseline; gap: 4px; color: var(--mu2); text-decoration: underline; text-decoration-color: color-mix(in srgb, currentColor 40%, transparent); text-decoration-thickness: 1px; text-underline-offset: 4px; transition: color .15s, text-decoration-color .15s }
+  footer a:hover { color: var(--i); text-decoration-color: currentColor }
+  footer .ext { flex: none; width: 10px; height: 10px; fill: none; stroke: currentColor; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round }
   footer .date { color: var(--mu) }
 
   @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important } }
 </style>
 </head>
 <body>
-<a class="skip" href="#labs">Skip to labs</a>
+<a class="skip" href="#labs">Skip to the labs</a>
 
 <header>
   <div class="wrap">
     <a class="brand" href="#top"><b>ECE Hub</b><span>Birzeit University</span></a>
     <nav aria-label="Primary">
-      <a class="btn" href="#labs">Labs</a>
-      <a class="btn" href="/schedules/">Schedules</a>
-      <a class="btn" href="/stats/">Insights</a>
+      <a href="/labs/">Labs</a>
+      <a href="/schedules/">Schedules</a>
+      <a href="/timetable/">Timetable</a>
+      <a href="/stats/">Insights</a>
     </nav>
-    <button type="button" class="theme btn" role="switch" aria-checked="false" aria-label="Dark theme" title="Toggle dark theme">
+    <button type="button" class="theme" role="switch" aria-checked="false" aria-label="Dark theme" title="Toggle dark theme">
       <svg class="sun" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3 3l1.4 1.4M11.6 11.6L13 13M3 13l1.4-1.4M11.6 4.4L13 3"/></svg>
       <svg class="moon" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z"/></svg>
     </button>
@@ -418,12 +428,11 @@
   <section class="hero">
     <div class="wrap">
       <div class="hero-main">
-        <span class="kicker">Electrical &amp; Computer Engineering</span>
-        <h1>ECE Hub</h1>
-        <p class="lede">ECE lab manuals built for the web, and weekly schedules for every course, instructor and room at the university.</p>
+        <h1>Lab manuals and schedules for Birzeit ECE</h1>
+        <p class="lede">Lab manuals that work offline, the weekly schedule of every course and room from Ritaj, and a schedule builder for registration</p>
         <div class="ctas">
           <a class="cta primary" href="#labs">Browse the labs <span aria-hidden="true">↓</span></a>
-          <a class="cta" href="/schedules/">Weekly schedules <span aria-hidden="true">→</span></a>
+          <a class="cta" href="/timetable/">Build your schedule <span aria-hidden="true">→</span></a>
         </div>
         <div class="hero-sem" id="hero-sem" hidden>
           <div class="hs-row"><b id="hero-week"></b><span id="hero-ends"></span></div>
@@ -431,199 +440,115 @@
         </div>
       </div>
 
-      <div class="deck" aria-label="Screenshots of experiment pages on the lab sites">
-        <a class="shot" data-pos="0" data-code="ENCS4101" data-kind="hero-shot" href="https://encs4101.birzeit.me/experiments/exp3-adc" target="_blank" rel="noopener">
-          <span class="bar"><i></i><i></i><i></i><span class="prev-url">encs4101.birzeit.me/experiments/exp3-adc</span></span>
-          <img class="l" src="assets/hero/4101-light.webp" width="1280" height="800" alt="ENCS4101, Experiment 3: ADC and Analog Sensors, with a C code listing">
-          <img class="d" src="assets/hero/4101-dark.webp" width="1280" height="800" alt="ENCS4101, Experiment 3: ADC and Analog Sensors, with a C code listing">
-        </a>
-        <a class="shot" data-pos="1" data-code="ENCS5101" data-kind="hero-shot" href="https://encs5101.birzeit.me/experiments/exp1-arm-basics" target="_blank" rel="noopener">
-          <span class="bar"><i></i><i></i><i></i><span class="prev-url">encs5101.birzeit.me/experiments/exp1-arm-basics</span></span>
-          <img class="l" src="assets/hero/5101-light.webp" width="1280" height="800" alt="ENCS5101, Experiment 1: ARM Assembly and Keil, with an assembly listing">
-          <img class="d" src="assets/hero/5101-dark.webp" width="1280" height="800" alt="ENCS5101, Experiment 1: ARM Assembly and Keil, with an assembly listing">
-        </a>
-        <a class="shot" data-pos="2" data-code="ENCS5150" data-kind="hero-shot" href="https://encs5150.birzeit.me/experiments/exp4-sqlite" target="_blank" rel="noopener">
-          <span class="bar"><i></i><i></i><i></i><span class="prev-url">encs5150.birzeit.me/experiments/exp4-sqlite</span></span>
-          <img class="l" src="assets/hero/5150-light.webp" width="1280" height="800" alt="ENCS5150, Experiment 4: SQLite Database, with Java code">
-          <img class="d" src="assets/hero/5150-dark.webp" width="1280" height="800" alt="ENCS5150, Experiment 4: SQLite Database, with Java code">
-        </a>
+      <div class="board" role="img" aria-label="The TM4C123 LaunchPad from the Computer Design Lab, drawn in characters of ARM assembly">
+        <canvas aria-hidden="true"></canvas>
+        <span class="tag" style="--x: 34%; --y: 27.9%; --len: 5cqw"><b id="tag-exp">ENCS4110 · 10 experiments</b><i></i></span>
+        <span class="tag" style="--x: 52.3%; --y: 55.7%; --len: 23cqw"><b>TM4C123 · ARM Cortex-M4</b><i></i></span>
+        <span class="tag" style="--x: 59.6%; --y: 82.4%; --len: 30cqw"><b>Works offline</b><i></i></span>
       </div>
     </div>
   </section>
 
-  <section id="labs" aria-labelledby="labs-h">
+  <section class="sec" id="labs" aria-labelledby="labs-h">
     <div class="wrap">
       <div class="sec-head">
         <div>
-          <span class="kicker" id="labs-count">4 labs · more coming</span>
-          <h2 id="labs-h">Pick a lab</h2>
+          <h2 id="labs-h">Featured laboratories</h2>
+          <p>Each manual is its own site, with experiments, code listings and a setup guide for the boards and tools it uses</p>
         </div>
-        <div class="tools">
-          <span class="kicker" id="rail-count" aria-hidden="true"></span>
-          <button type="button" class="arrow btn prev" aria-label="Scroll labs left">←</button>
-          <button type="button" class="arrow btn next" aria-label="Scroll labs right">→</button>
-        </div>
-      </div>
-
-      <div class="rail swiper">
-        <div class="swiper-wrapper">
-          <article class="lab win swiper-slide" data-lab="encs4110" data-langs="Assembly,C"
-            data-code="ENCS4110" data-url="https://encs4110.birzeit.me/"
-            data-search="encs4110 computer design laboratory tm4c123 arm cortex-m4 hardware lab cortex-m4 arm assembly stack procedures gpio interrupts adc uart tiva launchpad tm4c ek-tm4c123gxl arm cortex assembly computer design">
-            <div class="bar"><i></i><i></i><i></i><span class="t">encs4110</span><span class="r lab-lang">Assembly · C</span></div>
-            <div class="lab-body">
-              <span class="lab-no">Lab 01</span>
-              <span class="lab-ens">ENCS</span>
-              <span class="lab-num" aria-hidden="true">4110</span>
-              <h3 class="lab-name"><a href="https://encs4110.birzeit.me/" target="_blank" rel="noopener">Computer Design Laboratory</a></h3>
-              <span class="lab-plat">TM4C123 · ARM Cortex-M4</span>
-              <div class="lab-use" data-use="encs4110" hidden><span><b data-u="students"></b> students</span><span><b data-u="experiment_views"></b> page views</span><span class="x"><span data-u="experiments"></span> exp</span></div>
-              <div class="lab-links">
-                <a class="open" href="https://encs4110.birzeit.me/" aria-label="Start the ENCS4110 lab" target="_blank" rel="noopener">Start <span aria-hidden="true">→</span></a>
-                <a href="https://encs4110.birzeit.me/manual/encs4110_manual.pdf" aria-label="ENCS4110 manual PDF" target="_blank" rel="noopener">PDF</a>
-                <a href="https://encs4110.birzeit.me/setup/" aria-label="ENCS4110 setup guide" target="_blank" rel="noopener">Setup</a>
-              </div>
-            </div>
-          </article>
-
-          <article class="lab win swiper-slide" data-lab="encs4101" data-langs="C"
-            data-code="ENCS4101" data-url="https://encs4101.birzeit.me/"
-            data-search="encs4101 embedded systems laboratory stm32 cubeide hal hardware lab clocks gpio interrupts timers pwm dc stepper motors adc i²c i2c uart embedded hal cubeide motors pwm encoder lcd keypad">
-            <div class="bar"><i></i><i></i><i></i><span class="t">encs4101</span><span class="r lab-lang">C</span></div>
-            <div class="lab-body">
-              <span class="lab-no">Lab 02</span>
-              <span class="lab-ens">ENCS</span>
-              <span class="lab-num" aria-hidden="true">4101</span>
-              <h3 class="lab-name"><a href="https://encs4101.birzeit.me/" target="_blank" rel="noopener">Embedded Systems Laboratory</a></h3>
-              <span class="lab-plat">STM32 · CubeIDE · HAL</span>
-              <div class="lab-use" data-use="encs4101" hidden><span><b data-u="students"></b> students</span><span><b data-u="experiment_views"></b> page views</span><span class="x"><span data-u="experiments"></span> exp</span></div>
-              <div class="lab-links">
-                <a class="open" href="https://encs4101.birzeit.me/" aria-label="Start the ENCS4101 lab" target="_blank" rel="noopener">Start <span aria-hidden="true">→</span></a>
-                <a href="https://encs4101.birzeit.me/ENCS4101-Manual.pdf" aria-label="ENCS4101 manual PDF" target="_blank" rel="noopener">PDF</a>
-                <a href="https://encs4101.birzeit.me/setup/" aria-label="ENCS4101 setup guide" target="_blank" rel="noopener">Setup</a>
-              </div>
-            </div>
-          </article>
-
-          <article class="lab win swiper-slide" data-lab="encs5150" data-langs="Java"
-            data-code="ENCS5150" data-url="https://encs5150.birzeit.me/"
-            data-search="encs5150 advanced computer systems engineering laboratory android (java) spring boot software lab activities intents fragments sqlite sharedpreferences rest json spring boot android java android studio jdk spring boot mvc encs515 mobile app">
-            <div class="bar"><i></i><i></i><i></i><span class="t">encs5150</span><span class="r lab-lang">Java</span></div>
-            <div class="lab-body">
-              <span class="lab-no">Lab 03</span>
-              <span class="lab-ens">ENCS</span>
-              <span class="lab-num" aria-hidden="true">5150</span>
-              <h3 class="lab-name"><a href="https://encs5150.birzeit.me/" target="_blank" rel="noopener">Advanced Computer Systems Engineering Laboratory</a></h3>
-              <span class="lab-plat">Android (Java) · Spring Boot</span>
-              <div class="lab-use" data-use="encs5150" hidden><span><b data-u="students"></b> students</span><span><b data-u="experiment_views"></b> page views</span><span class="x"><span data-u="experiments"></span> exp</span></div>
-              <div class="lab-links">
-                <a class="open" href="https://encs5150.birzeit.me/" aria-label="Start the ENCS5150 lab" target="_blank" rel="noopener">Start <span aria-hidden="true">→</span></a>
-                <a href="https://encs5150.birzeit.me/ENCS515-Manual-2025.pdf" aria-label="ENCS5150 manual PDF" target="_blank" rel="noopener">PDF</a>
-                <a href="https://encs5150.birzeit.me/setup/" aria-label="ENCS5150 setup guide" target="_blank" rel="noopener">Setup</a>
-              </div>
-            </div>
-          </article>
-
-          <article class="lab win swiper-slide" data-lab="encs5101" data-langs="Assembly,C++"
-            data-code="ENCS5101" data-url="https://encs5101.birzeit.me/"
-            data-search="encs5101 microprocessor and embedded systems laboratory arm cortex-m4 assembly keil uvision simulator arduino mega 2560 atmega2560 avr hardware lab flow control branches gpio leds push buttons keypad dc motor pwm timers interrupts adc serial uart spi i2c labview linx elevator raspberry pi">
-            <div class="bar"><i></i><i></i><i></i><span class="t">encs5101</span><span class="r lab-lang">Assembly · C++</span></div>
-            <div class="lab-body">
-              <span class="lab-no">Lab 04</span>
-              <span class="lab-ens">ENCS</span>
-              <span class="lab-num" aria-hidden="true">5101</span>
-              <h3 class="lab-name"><a href="https://encs5101.birzeit.me/" target="_blank" rel="noopener">Microprocessor and Embedded Systems Laboratory</a></h3>
-              <span class="lab-plat">Cortex-M4 · Arduino Mega · Raspberry Pi</span>
-              <div class="lab-use" data-use="encs5101" hidden><span><b data-u="students"></b> students</span><span><b data-u="experiment_views"></b> page views</span><span class="x"><span data-u="experiments"></span> exp</span></div>
-              <div class="lab-links">
-                <a class="open" href="https://encs5101.birzeit.me/" aria-label="Start the ENCS5101 lab" target="_blank" rel="noopener">Start <span aria-hidden="true">→</span></a>
-                <a href="https://encs5101.birzeit.me/ENCS5101-Manual.pdf" aria-label="ENCS5101 manual PDF" target="_blank" rel="noopener">PDF</a>
-                <a href="https://encs5101.birzeit.me/setup/" aria-label="ENCS5101 setup guide" target="_blank" rel="noopener">Setup</a>
-              </div>
-            </div>
-          </article>
-
+        <div class="rail-ctl">
+          <button type="button" class="arrow" id="rail-prev" aria-label="Previous labs"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M11 4 6 9l5 5"/></svg></button>
+          <span class="rail-pos" id="rail-pos" aria-live="polite"></span>
+          <button type="button" class="arrow" id="rail-next" aria-label="Next labs"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="m7 4 5 5-5 5"/></svg></button>
+          <a class="link" href="/labs/">All labs <span aria-hidden="true">→</span></a>
         </div>
       </div>
-
-      <div class="rail-foot">
-        <div class="swiper-pagination"></div>
-        <a class="invite" href="mailto:support@birzeit.me?subject=New%20lab%20manual">Teaching a lab? <b>Bring your manual →</b></a>
+      <div class="rail" id="rail" tabindex="0" aria-label="Laboratories, scroll sideways for more">
+        <article class="lab" data-lab="encs4110" data-code="ENCS4110">
+          <div class="lab-top"><span class="lab-ens">ENCS</span><span class="lab-lang">Assembly · C</span></div>
+          <span class="lab-num" aria-hidden="true">4110</span>
+          <h3 class="lab-name"><a href="https://encs4110.birzeit.me/" target="_blank" rel="noopener">Computer Design Laboratory</a></h3>
+          <span class="lab-plat">TM4C123 · ARM Cortex-M4</span>
+          <div class="lab-use" data-use="encs4110" hidden><span><b data-u="students"></b> students</span><span><b data-u="experiment_views"></b> page views</span><span><b data-u="experiments"></b> experiments</span></div>
+          <div class="lab-links">
+            <a class="open" href="https://encs4110.birzeit.me/" aria-label="Start the ENCS4110 lab" target="_blank" rel="noopener">Start <span aria-hidden="true">→</span></a>
+            <a href="https://encs4110.birzeit.me/manual/encs4110_manual.pdf" aria-label="ENCS4110 manual PDF" target="_blank" rel="noopener">PDF</a>
+            <a href="https://encs4110.birzeit.me/setup/" aria-label="ENCS4110 setup guide" target="_blank" rel="noopener">Setup</a>
+          </div>
+        </article>
+        <article class="lab" data-lab="encs4101" data-code="ENCS4101">
+          <div class="lab-top"><span class="lab-ens">ENCS</span><span class="lab-lang">C</span></div>
+          <span class="lab-num" aria-hidden="true">4101</span>
+          <h3 class="lab-name"><a href="https://encs4101.birzeit.me/" target="_blank" rel="noopener">Embedded Systems Laboratory</a></h3>
+          <span class="lab-plat">STM32 · CubeIDE · HAL</span>
+          <div class="lab-use" data-use="encs4101" hidden><span><b data-u="students"></b> students</span><span><b data-u="experiment_views"></b> page views</span><span><b data-u="experiments"></b> experiments</span></div>
+          <div class="lab-links">
+            <a class="open" href="https://encs4101.birzeit.me/" aria-label="Start the ENCS4101 lab" target="_blank" rel="noopener">Start <span aria-hidden="true">→</span></a>
+            <a href="https://encs4101.birzeit.me/ENCS4101-Manual.pdf" aria-label="ENCS4101 manual PDF" target="_blank" rel="noopener">PDF</a>
+            <a href="https://encs4101.birzeit.me/setup/" aria-label="ENCS4101 setup guide" target="_blank" rel="noopener">Setup</a>
+          </div>
+        </article>
+        <article class="lab" data-lab="encs5150" data-code="ENCS5150">
+          <div class="lab-top"><span class="lab-ens">ENCS</span><span class="lab-lang">Java</span></div>
+          <span class="lab-num" aria-hidden="true">5150</span>
+          <h3 class="lab-name"><a href="https://encs5150.birzeit.me/" target="_blank" rel="noopener">Advanced Computer Systems Engineering Laboratory</a></h3>
+          <span class="lab-plat">Android (Java) · Spring Boot</span>
+          <div class="lab-use" data-use="encs5150" hidden><span><b data-u="students"></b> students</span><span><b data-u="experiment_views"></b> page views</span><span><b data-u="experiments"></b> experiments</span></div>
+          <div class="lab-links">
+            <a class="open" href="https://encs5150.birzeit.me/" aria-label="Start the ENCS5150 lab" target="_blank" rel="noopener">Start <span aria-hidden="true">→</span></a>
+            <a href="https://encs5150.birzeit.me/ENCS515-Manual-2025.pdf" aria-label="ENCS5150 manual PDF" target="_blank" rel="noopener">PDF</a>
+            <a href="https://encs5150.birzeit.me/setup/" aria-label="ENCS5150 setup guide" target="_blank" rel="noopener">Setup</a>
+          </div>
+        </article>
+        <article class="lab" data-lab="encs5101" data-code="ENCS5101">
+          <div class="lab-top"><span class="lab-ens">ENCS</span><span class="lab-lang">Assembly · C++</span></div>
+          <span class="lab-num" aria-hidden="true">5101</span>
+          <h3 class="lab-name"><a href="https://encs5101.birzeit.me/" target="_blank" rel="noopener">Microprocessor and Embedded Systems Laboratory</a></h3>
+          <span class="lab-plat">Cortex-M4 · Arduino Mega · Raspberry Pi</span>
+          <div class="lab-use" data-use="encs5101" hidden><span><b data-u="students"></b> students</span><span><b data-u="experiment_views"></b> page views</span><span><b data-u="experiments"></b> experiments</span></div>
+          <div class="lab-links">
+            <a class="open" href="https://encs5101.birzeit.me/" aria-label="Start the ENCS5101 lab" target="_blank" rel="noopener">Start <span aria-hidden="true">→</span></a>
+            <a href="https://encs5101.birzeit.me/ENCS5101-Manual.pdf" aria-label="ENCS5101 manual PDF" target="_blank" rel="noopener">PDF</a>
+            <a href="https://encs5101.birzeit.me/setup/" aria-label="ENCS5101 setup guide" target="_blank" rel="noopener">Setup</a>
+          </div>
+        </article>
+        <article class="lab ask" data-lab="ask">
+          <div class="lab-top"><span class="lab-ens">Your lab</span><span>Open source</span></div>
+          <span class="lab-num" aria-hidden="true">+</span>
+          <h3 class="lab-name"><a href="mailto:support@birzeit.me?subject=New%20lab%20manual">Teaching a lab? Bring your manual</a></h3>
+          <span class="lab-plat">Any lab in the department</span>
+          <div class="lab-use"><span>It becomes a site like these, with pages that work offline and code you can copy</span></div>
+          <div class="lab-links">
+            <a class="open" href="mailto:support@birzeit.me?subject=New%20lab%20manual">Get in touch <span aria-hidden="true">→</span></a>
+            <a href="https://github.com/ECE-Birzeit" target="_blank" rel="noopener">GitHub</a>
+          </div>
+        </article>
       </div>
     </div>
   </section>
-
-  <section id="schedules" aria-labelledby="sched-h">
+  <section class="sec" id="why" aria-labelledby="why-h">
     <div class="wrap">
-      <div class="sec-head">
+      <div class="why">
         <div>
-          <span class="kicker" id="sched-kicker">This semester · from Ritaj, daily</span>
-          <h2 id="sched-h">Find a schedule</h2>
+          <div class="sec-head"><div><h2 id="why-h">A manual you can actually work in</h2></div></div>
+          <div class="feats" role="tablist" aria-label="What the web manuals do" aria-orientation="vertical" style="margin-top:32px">
+            <button type="button" class="feat" role="tab" id="ft-offline" aria-controls="dp-offline" aria-selected="true">
+              <span class="pad" aria-hidden="true"></span><span><b>Works offline</b><span class="feat-d">Install a lab once and every page, image and code listing opens without internet</span></span>
+            </button>
+            <button type="button" class="feat" role="tab" id="ft-resume" aria-controls="dp-resume" aria-selected="false" tabindex="-1">
+              <span class="pad" aria-hidden="true"></span><span><b>Picks up where you left off</b><span class="feat-d">Come back to the experiment and the section you were reading</span></span>
+            </button>
+            <button type="button" class="feat" role="tab" id="ft-copy" aria-controls="dp-copy" aria-selected="false" tabindex="-1">
+              <span class="pad" aria-hidden="true"></span><span><b>Code you can paste</b><span class="feat-d">Listings keep their exact formatting: no page numbers, no broken lines</span></span>
+            </button>
+            <button type="button" class="feat" role="tab" id="ft-current" aria-controls="dp-current" aria-selected="false" tabindex="-1">
+              <span class="pad" aria-hidden="true"></span><span><b>Always current</b><span class="feat-d">A fix goes live the moment it is merged</span></span>
+            </button>
+          </div>
         </div>
-        <span class="kicker" id="sched-week" hidden></span>
-      </div>
-      <div class="entries">
-        <a class="entry win" href="/schedules/?view=instructor"><span class="entry-body"><span class="n" data-count="instructor">··</span><h3 class="l">Instructors</h3><span class="d">Any instructor's teaching week: courses, sections and rooms.</span><span class="more">Browse instructors →</span></span></a>
-        <a class="entry win" href="/schedules/?view=course"><span class="entry-body"><span class="n" data-count="course">··</span><h3 class="l">Courses</h3><span class="d">Every section of every department's courses: when it meets, where, and who teaches it.</span><span class="more">Browse courses →</span></span></a>
-        <a class="entry win" href="/schedules/?view=room"><span class="entry-body"><span class="n" data-count="room">··</span><h3 class="l">Rooms</h3><span class="d">What's booked in each lab and classroom on campus, building by building.</span><span class="more">Browse rooms →</span></span></a>
-      </div>
-    </div>
-  </section>
 
-  <section id="numbers" aria-labelledby="numbers-h">
-    <div class="wrap">
-      <div class="sec-head">
-        <div>
-          <span class="kicker" id="numbers-kicker">The four lab sites · counted daily</span>
-          <h2 id="numbers-h">This semester in numbers</h2>
-        </div>
-        <a class="kicker more-link" href="/stats/">All insights →</a>
-      </div>
-      <div class="win nums">
-        <div class="bar" aria-hidden="true"><span class="t">stats.json</span><span class="r" id="stats-when">updated daily</span></div>
-        <div class="stats-grid" id="stats-grid">
-          <div class="stat v" hidden><b data-visit="students">0</b><span>students</span><small id="since-note"></small></div>
-          <div class="stat v" hidden><b data-visit="experiment_views">0</b><span>experiment pages opened</span><small id="per-note"></small></div>
-          <div class="stat"><b data-stat="manuals">4</b><span>lab manuals</span></div>
-          <div class="stat"><b data-stat="experiments">21</b><span>experiments online</span></div>
-          <div class="stat"><b data-stat="code_listings">75</b><span>code listings</span></div>
-        </div>
-        <div class="widgets" id="widgets" hidden>
-          <div class="cell"><div class="w-title"><h3>Students per day</h3><span id="w-daily-note"></span></div><div id="w-daily"></div></div>
-          <div class="cell"><div class="w-title"><h3>When they read</h3><span id="w-heat-note"></span></div><div id="w-heat"></div></div>
-          <div class="cell"><div class="w-title"><h3>Students by lab</h3></div><div id="w-labs"></div></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section id="why" aria-labelledby="why-h">
-    <div class="wrap">
-      <div class="why-side">
-        <div>
-          <span class="kicker">What a PDF can't do</span>
-          <h2 id="why-h">A manual you can actually work in</h2>
-        </div>
-        <div class="feats" role="tablist" aria-label="Features" aria-orientation="vertical">
-          <button type="button" class="feat" role="tab" id="ft-offline" aria-controls="dp-offline" aria-selected="true">
-            <span class="feat-n" aria-hidden="true">01</span><span><b>Works offline</b><span class="feat-d">Install a lab once and every page, image and code listing opens without internet.</span></span>
-          </button>
-          <button type="button" class="feat" role="tab" id="ft-resume" aria-controls="dp-resume" aria-selected="false" tabindex="-1">
-            <span class="feat-n" aria-hidden="true">02</span><span><b>Picks up where you left off</b><span class="feat-d">Come back to the experiment and the section you were reading.</span></span>
-          </button>
-          <button type="button" class="feat" role="tab" id="ft-copy" aria-controls="dp-copy" aria-selected="false" tabindex="-1">
-            <span class="feat-n" aria-hidden="true">03</span><span><b>Code you can paste</b><span class="feat-d">Listings keep their exact formatting: no page numbers, no broken lines.</span></span>
-          </button>
-          <button type="button" class="feat" role="tab" id="ft-current" aria-controls="dp-current" aria-selected="false" tabindex="-1">
-            <span class="feat-n" aria-hidden="true">04</span><span><b>Always current</b><span class="feat-d">A fix goes live the moment it is merged.</span></span>
-          </button>
-        </div>
-        <p class="why-note">Every lab still has a PDF for printing.</p>
-      </div>
-
-      <div class="demo-col">
-        <div class="win">
-          <div class="bar"><span class="t">Example</span></div>
+        <div class="demo">
+          <div class="demo-cap"><span>Example</span><span id="demo-which">encs5101.birzeit.me</span></div>
           <div class="demo-body">
             <div class="dpanel" role="tabpanel" id="dp-offline" aria-labelledby="ft-offline">
               <div class="dstatus" aria-hidden="true"><span class="dot"></span>No connection<small>encs5101.birzeit.me · installed</small></div>
@@ -663,9 +588,93 @@ __HAL_TIM_SET_COMPARE(&amp;htim2, TIM_CHANNEL_1, duty);</code></pre>
                 <li><span class="log-rail" aria-hidden="true"></span><span class="log-body"><small>Pull request · merged</small><span>docs: add a wiring photo to the stepper-motor lab</span><span class="badge">Live on the site</span></span></li>
                 <li><span class="log-rail" aria-hidden="true"></span><span class="log-body"><small>Issue · opened by a student</small><span>Setup guide: driver step missing on Windows</span><span class="badge wip">Being fixed</span></span></li>
               </ol>
-              <p class="dnote">A fix merged in the morning is on the site before the afternoon lab. No reprinting, no outdated copies.</p>
+              <p class="dnote">A fix merged in the morning is on the site before the afternoon lab, so nobody works from an outdated copy.</p>
             </div>
           </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="sec show" id="schedules" aria-labelledby="sched-h">
+    <div class="wrap">
+      <div class="show-row">
+        <div class="show-text">
+          <h2 id="sched-h">Every course, instructor and room, week by week</h2>
+          <p>The teaching week of anyone or anywhere at the university, read from Ritaj every day. See what runs in a lab before you book it, or find where a section meets.</p>
+          <dl class="figs">
+            <div><dt>courses</dt><dd data-count="course">1,171</dd></div>
+            <div><dt>instructors</dt><dd data-count="instructor">745</dd></div>
+            <div><dt>rooms</dt><dd data-count="room">260</dd></div>
+          </dl>
+          <a class="link" href="/schedules/">Open the schedules <span aria-hidden="true">→</span></a>
+        </div>
+        <a class="preview" href="/schedules/?view=room&amp;q=Masri207" aria-label="Example: the week of room Masri207">
+          <div class="pv-top"><span class="seg">Instructors</span><span class="seg">Courses</span><span class="seg on">Rooms</span><span class="pick">Masri207</span></div>
+          <div class="wk" style="--hours:10"><div></div><div class="wk-h"><span style="left:0%">08:00</span><span style="left:20%">10:00</span><span style="left:40%">12:00</span><span style="left:60%">14:00</span><span style="left:80%">16:00</span></div><div class="wk-d">Sat</div><div class="wk-l"><span class="wk-b " style="--l:30.00;--w:28.33"><b>ENCS4110</b>Sec 5</span></div><div class="wk-d">Mon</div><div class="wk-l"><span class="wk-b " style="--l:0.00;--w:28.33"><b>ENCS4110</b>Sec 1</span><span class="wk-b " style="--l:30.00;--w:28.33"><b>ENCS4110</b>Sec 6</span></div><div class="wk-d">Tue</div><div class="wk-l"><span class="wk-b " style="--l:30.00;--w:28.33"><b>ENCS4110</b>Sec 2</span><span class="wk-b on" style="--l:60.00;--w:28.33"><b>ENCS4110</b>Sec 3</span></div><div class="wk-d">Wed</div><div class="wk-l"><span class="wk-b alt" style="--l:0.00;--w:28.33"><b>ENCS5101</b>Sec 1</span><span class="wk-b " style="--l:30.00;--w:28.33"><b>ENCS4110</b>Sec 7</span></div><div class="wk-d">Thu</div><div class="wk-l"><span class="wk-b " style="--l:60.00;--w:28.33"><b>ENCS4110</b>Sec 4</span></div></div>
+          <div class="pv-foot"><span>Masri207 · 8 sections a week</span><span>First Semester 2026/2027</span></div>
+        </a>
+      </div>
+    </div>
+  </section>
+  <section class="sec show" id="builder" aria-labelledby="build-h">
+    <div class="wrap">
+      <div class="show-row flip">
+        <div class="show-text">
+          <h2 id="build-h">Plan next semester without a clash</h2>
+          <p>Add the courses you plan to take and step through every combination of sections that fits, best first. Keep days free or skip early starts, then add the week to your calendar.</p>
+          <ul class="ticks">
+            <li>Lectures, labs and discussions, one section of each</li>
+            <li>Filter by start time, end time and days off</li>
+            <li>A link that opens the same timetable</li>
+          </ul>
+          <a class="link" href="/timetable/">Build your schedule <span aria-hidden="true">→</span></a>
+        </div>
+        <a class="preview" href="/timetable/?c=ENCS4110,ENCS3320,ENEE2360" aria-label="Example: three courses fitted into two days">
+          <div class="pv-top"><span class="chip on">ENCS4110</span><span class="chip alt">ENCS3320</span><span class="chip mu">ENEE2360</span><span class="pv-count">1 of <b>108</b></span></div>
+          <div class="wk" style="--hours:7"><div></div><div class="wk-h"><span style="left:0%">08:00</span><span style="left:28.5714%">10:00</span><span style="left:57.1429%">12:00</span><span style="left:85.7143%">14:00</span></div><div class="wk-d">Sat</div><div class="wk-l"><span class="wk-b alt" style="--l:42.86;--w:19.05"><b>ENCS3320</b>Masri406</span><span class="wk-b mu" style="--l:64.29;--w:19.05"><b>ENEE2360</b>Masri306</span></div><div class="wk-d">Mon</div><div class="wk-l"><span class="wk-b on" style="--l:0.00;--w:40.48"><b>ENCS4110</b>Masri207</span><span class="wk-b alt" style="--l:42.86;--w:19.05"><b>ENCS3320</b>Masri406</span><span class="wk-b mu" style="--l:64.29;--w:19.05"><b>ENEE2360</b>Masri306</span></div><div class="wk-d">Tue</div><div class="wk-l free"></div><div class="wk-d">Wed</div><div class="wk-l free"></div><div class="wk-d">Thu</div><div class="wk-l free"></div></div>
+          <div class="pv-foot"><span>2 days on campus · Tuesday to Thursday free</span><span>no clashes</span></div>
+        </a>
+      </div>
+    </div>
+  </section>
+  <section class="sec" id="numbers" aria-labelledby="numbers-h">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <h2 id="numbers-h">This semester in numbers</h2>
+          <p id="numbers-note">Counted every day from the four lab sites and their analytics</p>
+        </div>
+        <a class="link" href="/stats/">All insights <span aria-hidden="true">→</span></a>
+      </div>
+      <div class="panel">
+        <div class="stats-grid" id="stats-grid">
+          <div class="stat v" hidden><b data-visit="students">0</b><span>students</span><small id="since-note"></small></div>
+          <div class="stat v" hidden><b data-visit="experiment_views">0</b><span>experiment pages opened</span><small id="per-note"></small></div>
+          <div class="stat"><b data-stat="manuals">4</b><span>lab manuals</span></div>
+          <div class="stat"><b data-stat="experiments">26</b><span>experiments online</span></div>
+          <div class="stat"><b data-stat="code_listings">128</b><span>code listings</span></div>
+        </div>
+        <div class="widgets" id="widgets" hidden>
+          <div class="cell"><div class="w-title"><h3>Students per day</h3><span id="w-daily-note"></span></div><div id="w-daily"></div></div>
+          <div class="cell"><div class="w-title"><h3>When they read</h3><span id="w-heat-note"></span></div><div id="w-heat"></div></div>
+          <div class="cell"><div class="w-title"><h3>Students by lab</h3></div><div id="w-labs"></div></div>
+        </div>
+        <div class="panel-foot"><span>stats.json</span><span id="stats-when">updated daily</span></div>
+      </div>
+    </div>
+  </section>
+  <section class="sec" id="join" aria-labelledby="join-h">
+    <div class="wrap">
+      <div class="join">
+        <div class="sec-head">
+          <div>
+            <h2 id="join-h">Teaching a lab? Bring your manual</h2>
+            <p>Every manual here is open source. Send yours and it becomes a site like these, with pages that work offline and code you can copy. Found a wrong step in one? Open an issue on the lab's repository.</p>
+          </div>
+        </div>
+        <div class="ctas">
+          <a class="cta primary" href="mailto:support@birzeit.me?subject=New%20lab%20manual">Bring your manual <span aria-hidden="true">→</span></a>
+          <a class="cta" href="https://github.com/ECE-Birzeit" target="_blank" rel="noopener">GitHub <svg class="cta-ext" viewBox="0 0 10 10" aria-hidden="true"><path d="M3 7l4-4M3.5 3H7v3.5"/></svg></a>
         </div>
       </div>
     </div>
@@ -676,17 +685,18 @@ __HAL_TIM_SET_COMPARE(&amp;htim2, TIM_CHANNEL_1, duty);</code></pre>
   <div class="wrap">
     <span class="grp">
       <span class="dept">Electrical &amp; Computer Engineering, Birzeit University</span>
-      <span>Developed by <a href="https://mabushelbaia.com" target="_blank" rel="noopener">Mohammad Abu-Shelbaia</a></span>
+      <span>Developed by <a href="https://mabushelbaia.com" target="_blank" rel="noopener">Mohammad Abu-Shelbaia<svg class="ext" viewBox="0 0 10 10" aria-hidden="true"><path d="M3 7l4-4M3.5 3H7v3.5"/></svg></a></span>
     </span>
     <span class="grp">
-      <a href="https://github.com/ECE-Birzeit" target="_blank" rel="noopener">GitHub ↗</a>
+      <a href="https://github.com/ECE-Birzeit" target="_blank" rel="noopener">GitHub<svg class="ext" viewBox="0 0 10 10" aria-hidden="true"><path d="M3 7l4-4M3.5 3H7v3.5"/></svg></a>
       <span class="date">Updated <time id="updated" datetime="2026-10-23">2026-10-23</time></span>
     </span>
   </div>
 </footer>
 
 <script src="/assets/widgets.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/11.1.14/swiper-bundle.min.js" integrity="sha512-mNgFElWNPcchY3tb+tENYLBl4oIum5eHvK9mn9ldsgAGdi+zsM26RHIggQIMyvrhRW4EOwWJz33zeB5nOxU1Ag==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" integrity="sha512-7eHRwcbYkK4d9g/6tD/mhkf++eoTHwpNM9woBxtPUBWm67zeAfFC+HrdoE2GanKeocly/VxeLvIqwvCdk7qScg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" integrity="sha512-onMTRKJBKz8M1TnqqDuGBlowlH0ohFzMXYRNebz+yOcc5TQr/zAKsthzhuv0hiyUKEiQEQXEynnXCvNTOk50dg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
   (function () {
     var root = document.documentElement;
@@ -694,11 +704,7 @@ __HAL_TIM_SET_COMPARE(&amp;htim2, TIM_CHANNEL_1, duty);</code></pre>
     var toggle = document.querySelector('.theme');
     var chosen = false;
     try { chosen = !!localStorage.getItem('ece-labs-theme'); } catch (e) {}
-
-    function apply(mode) {
-      root.setAttribute('data-theme', mode);
-      toggle.setAttribute('aria-checked', mode === 'dark' ? 'true' : 'false');
-    }
+    function apply(mode) { root.setAttribute('data-theme', mode); toggle.setAttribute('aria-checked', mode === 'dark' ? 'true' : 'false'); }
     apply(root.getAttribute('data-theme'));
     toggle.addEventListener('click', function () {
       var mode = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
@@ -710,197 +716,256 @@ __HAL_TIM_SET_COMPARE(&amp;htim2, TIM_CHANNEL_1, duty);</code></pre>
 
     function all(sel, scope) { return Array.prototype.slice.call((scope || document).querySelectorAll(sel)); }
     function pad(n) { return String(n).padStart(2, '0'); }
-    var still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var W = window.ECEWidgets;
 
-    // Report which lab and which button was used; GA treats our subdomains as internal links.
-    function report(e) {
-      var a = e.target.closest('a');
-      var lab = a && a.closest('[data-code]');
+    // Which lab and which link people use; GA treats the lab subdomains as internal links
+    document.getElementById('labs').addEventListener('click', function (e) {
+      var a = e.target.closest('a'), lab = a && a.closest('[data-code]');
       if (!lab || typeof gtag !== 'function') return;
-      var kind = a.dataset.kind || (a.classList.contains('open') ? 'manual' : a.closest('h3') ? 'title' : a.textContent.trim().toLowerCase());
+      var kind = a.classList.contains('open') ? 'manual' : a.closest('h3') ? 'title' : a.textContent.trim().toLowerCase();
       gtag('event', 'lab_click', { lab: lab.dataset.code, link_type: kind, link_url: a.href });
-    }
-    document.getElementById('labs').addEventListener('click', report);
-
-    // Everything below is read from the cards, so adding or removing a card needs no other edits.
-    var labs = all('article.lab');
-    var info = labs.map(function (l) {
-      return {
-        el: l, id: l.dataset.lab, code: l.dataset.code, url: l.dataset.url,
-        dir: l.dataset.code.toLowerCase(),
-        name: l.querySelector('.lab-name').textContent.trim(),
-        meta: l.querySelector('.lab-plat').textContent.trim()
-      };
     });
-    labs.forEach(function (l, i) { l.querySelector('.lab-no').textContent = 'Lab ' + pad(i + 1); });
-    document.getElementById('labs-count').textContent = labs.length + ' labs · more coming';
 
-    // Hero: the front screenshot moves to the back every few seconds; pointing at the stack holds it.
-    var shots = all('.shot');
-    var deck = document.querySelector('.deck');
-    var holdDeck = false;
-    deck.addEventListener('mouseenter', function () { holdDeck = true; });
-    deck.addEventListener('mouseleave', function () { holdDeck = false; });
-    deck.addEventListener('focusin', function () { holdDeck = true; });
-    deck.addEventListener('focusout', function () { holdDeck = false; });
-    if (!still) setInterval(function () {
-      if (holdDeck || document.hidden) return;
-      shots.forEach(function (s) { s.dataset.pos = (Number(s.dataset.pos) + shots.length - 1) % shots.length; });
-    }, 4500);
-    document.querySelector('.hero').addEventListener('click', report);
-
-
-    // The lab row is a Swiper carousel: it loops, plays on its own (pausing under the pointer) and uses
-    // Swiper's default dots.
-    var railEl = document.querySelector('.rail');
-    var wrapper = railEl.querySelector('.swiper-wrapper');
-    var sw = null, railOn = true;
-    function build(cards) {
-      if (sw) { sw.destroy(true, true); sw = null; }
-      var n = cards.length;
-      // Swiper's loop needs at least twice as many slides as fit on screen (3 on wide screens), so with
-      // only a few labs it gets a hidden second copy of the cards. One dot per lab either way.
-      var loop = n > 3;
-      var copies = loop ? cards.map(function (c) {
-        var d = c.cloneNode(true);
-        d.setAttribute('aria-hidden', 'true');
-        all('a', d).forEach(function (a) { a.tabIndex = -1; });
-        return d;
-      }) : [];
-      wrapper.replaceChildren.apply(wrapper, cards.concat(copies));
-      sw = new Swiper(railEl, {
-        slidesPerView: 1.16, spaceBetween: 16, speed: 700, loop: loop, grabCursor: true, watchOverflow: true,
-        breakpoints: { 560: { slidesPerView: 2 }, 860: { slidesPerView: 3 } },
-        autoplay: loop && !still ? { delay: 4500, pauseOnMouseEnter: true, disableOnInteraction: false } : false,
-        pagination: {
-          el: '.rail-foot .swiper-pagination', clickable: true,
-          renderBullet: function (i, cls) { return '<span class="' + cls + '"' + (i >= n ? ' hidden' : '') + '></span>'; }
-        },
-        navigation: { prevEl: '.arrow.prev', nextEl: '.arrow.next' },
-        // Sideways two-finger scrolling on a trackpad moves the row; vertical scrolling still scrolls the page
-        mousewheel: { forceToAxis: true, thresholdDelta: 12 },
-        a11y: { enabled: true },
-        on: {
-          // The copies share dots with the originals: light the dot of the real lab
-          slideChange: function (s) { dot(s, n); count(s, n); },
-          init: function (s) { count(s, n); },
-          paginationUpdate: function (s) { dot(s, n); }
-        }
-      });
-      if (!railOn && sw.autoplay && sw.autoplay.running) sw.autoplay.stop();
-    }
-    // "01–03 / 04": which labs are in view
-    function count(s, n) {
-      var el = document.getElementById('rail-count');
-      var per = Math.min(n, Math.floor(s.params.slidesPerView) || 1);
-      if (!n || per >= n) { el.textContent = ''; return; }
-      var a = s.realIndex % n;
-      el.textContent = pad(a + 1) + (per > 1 ? '–' + pad((a + per - 1) % n + 1) : '') + ' / ' + pad(n);
-    }
-    function dot(s, n) {
-      all('.swiper-pagination-bullet', s.pagination.el).forEach(function (b, j) {
-        b.classList.toggle('swiper-pagination-bullet-active', j === s.realIndex % n);
-      });
-    }
-    // Don't spin while it's off-screen
-    new IntersectionObserver(function (e) {
-      railOn = e[0].isIntersecting;
-      if (!sw || !sw.params.autoplay || !sw.params.autoplay.enabled) return;
-      if (railOn) sw.autoplay.start(); else sw.autoplay.stop();
-    }).observe(railEl);
-    build(labs);
-
-    // Find a schedule: the semester's dates and counts from bzu-course-catalog (the same data the schedules page uses)
+    // The lab row: arrows step one card, the row can be dragged with a mouse; 'n–m of N' says what is in view
     (function () {
-      var base = 'https://raw.githubusercontent.com/mabushelbaia/bzu-course-catalog/main/data/';
-      fetch(base + 'index.json').then(function (r) { return r.json(); }).then(function (idx) {
-        var wk = idx.current && window.ECEWidgets.week(idx.current);
-        if (wk && wk.now <= wk.of) {
-          var el = document.getElementById('sched-week');
-          el.textContent = 'Week ' + wk.now + ' of ' + wk.of + ' · teaching ends ' + wk.ends;
-          el.hidden = false;
-          // The same dates open the hero window
-          document.getElementById('hero-week').textContent = 'Week ' + wk.now + ' of ' + wk.of;
-          document.getElementById('hero-ends').textContent = 'teaching ends ' + wk.ends;
-          window.ECEWidgets.semester(document.getElementById('hero-track'), idx.current);
-          document.getElementById('hero-sem').hidden = false;
+      var rail = document.getElementById('rail'), cards = all('.lab', rail), prev = document.getElementById('rail-prev'), next = document.getElementById('rail-next');
+      var step = function () { return cards[0].getBoundingClientRect().width + 16; };
+      function state() {
+        var max = rail.scrollWidth - rail.clientWidth;
+        prev.disabled = rail.scrollLeft < 4; next.disabled = rail.scrollLeft > max - 4;
+        var first = Math.round(rail.scrollLeft / step()), shown = Math.max(1, Math.floor((rail.clientWidth - 16) / step() + .05));
+        var last = Math.min(cards.length, first + shown);
+        document.getElementById('rail-pos').textContent = max < 4 ? cards.length + ' of ' + cards.length : (last - first > 1 ? (first + 1) + '–' + last : last) + ' of ' + cards.length;
+        document.querySelector('.rail-ctl').classList.toggle('static', max < 4);
+      }
+      prev.addEventListener('click', function () { rail.scrollBy({ left: -step(), behavior: 'smooth' }); });
+      next.addEventListener('click', function () { rail.scrollBy({ left: step(), behavior: 'smooth' }); });
+      rail.addEventListener('scroll', state, { passive: true });
+      window.addEventListener('resize', state);
+      rail.addEventListener('keydown', function (e) {
+        if (e.key === 'ArrowRight') { e.preventDefault(); next.click(); } else if (e.key === 'ArrowLeft') { e.preventDefault(); prev.click(); }
+      });
+      // Mouse drag; a drag never counts as a click on a link inside a card
+      var down = null, moved = 0;
+      rail.addEventListener('pointerdown', function (e) { if (e.pointerType !== 'mouse' || e.button) return; down = { x: e.clientX, s: rail.scrollLeft }; moved = 0; });
+      window.addEventListener('pointermove', function (e) {
+        if (!down) return;
+        moved = Math.abs(e.clientX - down.x);
+        if (moved > 4) { rail.classList.add('dragging'); rail.scrollLeft = down.s - (e.clientX - down.x); }
+      });
+      window.addEventListener('pointerup', function () {
+        if (!down) return;
+        down = null;
+        if (rail.classList.contains('dragging')) {
+          rail.classList.remove('dragging');
+          var i = Math.round(rail.scrollLeft / step());
+          rail.scrollTo({ left: i * step(), behavior: 'smooth' });
         }
-        // The schedules cover the whole university: the semester's counts are in the catalog's index
-        var term = (idx.published_terms || Object.keys(idx.terms))[0];
-        var t = idx.terms[term], n = t.counts || {};
-        all('[data-count]').forEach(function (el) { if (n[el.dataset.count + 's'] != null) el.textContent = window.ECEWidgets.fmt(n[el.dataset.count + 's']); });
-        document.getElementById('sched-kicker').textContent = t.name + ' · every department, from Ritaj daily';
-      }).catch(function () {});
+      });
+      rail.addEventListener('click', function (e) { if (moved > 4) { e.preventDefault(); e.stopPropagation(); } }, true);
+      state();
     })();
 
-    // This semester in numbers: the deploy writes /stats.json daily; the counts in the HTML are a fallback
-    window.ECEWidgets.load().then(function (s) {
+    // The semester and the catalog's counts, from bzu-course-catalog (the data the schedules use)
+    fetch('https://raw.githubusercontent.com/mabushelbaia/bzu-course-catalog/main/data/index.json').then(function (r) { return r.json(); }).then(function (idx) {
+      var wk = idx.current && W.week(idx.current);
+      if (wk && wk.now <= wk.of) {
+        document.getElementById('hero-week').textContent = 'Week ' + wk.now + ' of ' + wk.of;
+        document.getElementById('hero-ends').textContent = 'teaching ends ' + wk.ends;
+        W.semester(document.getElementById('hero-track'), idx.current);
+        document.getElementById('hero-sem').hidden = false;
+      }
+      var term = (idx.published_terms || Object.keys(idx.terms))[0], n = idx.terms[term].counts || {};
+      all('[data-count]').forEach(function (el) { if (n[el.dataset.count + 's'] != null) el.textContent = W.fmt(n[el.dataset.count + 's']); });
+    }).catch(function () {});
+
+    // This semester in numbers: the deploy writes /stats.json daily; the numbers in the HTML are a fallback
+    W.load().then(function (s) {
       if (!s) return;
-      var W = window.ECEWidgets, fmt = W.fmt;
       all('[data-stat]').forEach(function (el) {
         if (s[el.dataset.stat] == null) return;
-        if (el.closest('#numbers')) W.countUp(el, s[el.dataset.stat]); else el.textContent = s[el.dataset.stat];
+        if (el.closest('#numbers')) W.countUp(el, s[el.dataset.stat]); else el.textContent = W.fmt(s[el.dataset.stat]);
       });
       if (s.generated_at) document.getElementById('stats-when').textContent = 'counted ' + s.generated_at.slice(0, 10);
       var v = s.visitors;
-      if (!v || !v.students) return; // visitors only appear once the deploy has Analytics access
+      if (!v || !v.students) return;
       all('[data-visit]').forEach(function (el) { el.parentNode.hidden = false; W.countUp(el, v[el.dataset.visit]); });
       document.getElementById('stats-grid').classList.add('visits');
       var first = v.daily && v.daily.length ? W.day(v.daily[0][0]) : null;
       document.getElementById('since-note').textContent = first ? 'since ' + W.short(first) : '';
       document.getElementById('per-note').textContent = (v.experiment_views / v.students).toFixed(1) + ' per student';
-      document.getElementById('numbers-kicker').textContent = (v.term || 'This semester') + ' · from the sites\' analytics, updated daily';
-      // Each lab card gets its own numbers
+      if (v.term) document.getElementById('numbers-note').textContent = v.term + ', counted every day from the four lab sites and their analytics';
       all('[data-use]').forEach(function (el) {
         var l = s.labs && s.labs[el.dataset.use];
         if (!l || l.students == null) return;
-        all('[data-u]', el).forEach(function (b) { b.textContent = fmt(l[b.dataset.u]); });
+        all('[data-u]', el).forEach(function (b) { b.textContent = W.fmt(l[b.dataset.u]); });
         el.hidden = false;
       });
-      railEl.classList.add('used');
-      if (sw) sw.update();
-      // The widgets
       W.daily(document.getElementById('w-daily'), v, 120);
       if (first) document.getElementById('w-daily-note').textContent = 'since ' + W.short(first);
       W.heat(document.getElementById('w-heat'), v, 7, 23, [8, 12, 16, 20]);
       var best = W.busiest(v);
-      document.getElementById('w-heat-note').textContent = 'busiest: ' + W.DAYS[best[0]] + ' ' + pad(best[1]) + ':00';
+      document.getElementById('w-heat-note').textContent = 'busiest ' + W.DAYS[best[0]] + ' ' + pad(best[1]) + ':00';
       W.labBars(document.getElementById('w-labs'), s.labs, 'students');
       document.getElementById('widgets').hidden = false;
+      if (window.ScrollTrigger) ScrollTrigger.refresh();
     }).catch(function () {});
 
-    // Sections rise into place as they scroll into view (not for reduced motion; see widgets.js)
-    all('main > section:not(.hero) .sec-head, .why-side, .demo-col, .nums, .rail-foot').forEach(function (e) { window.ECEWidgets.reveal([e]); });
-    window.ECEWidgets.reveal(all('.entry'), 70);
-    window.ECEWidgets.reveal([document.querySelector('.rail')]);
-
-    // Features: tabs with arrow-key support.
-    var feats = all('.feat');
-    var dpanels = all('.dpanel');
+    // A manual you can work in: tabs with arrow keys; the example crossfades
+    var feats = all('.feat'), dpanels = all('.dpanel');
+    var hosts = ['encs5101.birzeit.me', 'encs5101.birzeit.me', 'encs4101.birzeit.me', 'github.com/ECE-Birzeit'];
     function selectTab(i) {
       feats.forEach(function (t, j) { t.setAttribute('aria-selected', j === i ? 'true' : 'false'); t.tabIndex = j === i ? 0 : -1; });
       dpanels.forEach(function (p, j) { p.hidden = j !== i; });
+      document.getElementById('demo-which').textContent = hosts[i];
+      if (window.gsap && !reduce) gsap.fromTo(dpanels[i], { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: .4, ease: 'power3.out' });
     }
     feats.forEach(function (f, i) { f.addEventListener('click', function () { selectTab(i); }); });
     document.querySelector('.feats').addEventListener('keydown', function (e) {
-      var i = feats.indexOf(document.activeElement);
-      var d = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[e.key];
+      var i = feats.indexOf(document.activeElement), d = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[e.key];
       if (i === -1 || !d) return;
       e.preventDefault();
-      var n = (i + d + feats.length) % feats.length;
-      selectTab(n); feats[n].focus();
+      var k = (i + d + feats.length) % feats.length;
+      selectTab(k); feats[k].focus();
     });
-
-    // Copy buttons
     document.addEventListener('click', function (e) {
       var b = e.target.closest('.copy');
       if (!b || !navigator.clipboard) return;
       navigator.clipboard.writeText(b.closest('.codeblock').querySelector('pre').textContent).then(function () {
-        b.textContent = 'Copied ✓';
+        b.textContent = 'Copied';
         clearTimeout(b.reset);
         b.reset = setTimeout(function () { b.textContent = 'Copy'; }, 1600);
       }, function () {});
     });
+
+    // ---- Motion (GSAP). Everything is visible without it; none of it runs for reduced motion ----
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // ---- The board in code. The parts are drawn as clean outlines; the circuit board and the chips
+    // are filled with characters of a real ARM listing: faint red on the board, dense ink in the chips ----
+    (function () {
+      var box = document.querySelector('.board'), cv = box.querySelector('canvas'), ctx = cv.getContext('2d');
+      var wide = window.matchMedia('(min-width: 961px)').matches, OX = wide ? 220 : 0, OY = 20;
+      var W = 720 + OX, H = 700, COLS = Math.round(54 * W / 720), ROWS = Math.round(COLS * H / W);
+      var CODE = 'PRESERVE8 THUMB AREA RESET,DATA,READONLY EXPORT __Vectors __Vectors DCD 0x20001000 DCD Reset_Handler ALIGN AREA MYCODE,CODE,READONLY ENTRY EXPORT Reset_Handler Reset_Handler MOV R0,#0x20 LDR R1,=GPIO STR R0,[R1] B Reset_Handler END '.replace(/ /g, '');
+      var rr = function (g, x, y, w, h, r) { g.beginPath(); g.roundRect(x, y, w, h, r); };
+      // Where the characters go: the board (faint) and the two chips (dense); everything else is drawn as lines
+      function fills(g, set) {
+        set('pcb'); rr(g, 70, 36, 580, 600, 26); g.fill();
+        set('ink'); rr(g, 272, 282, 176, 176, 8); g.fill(); rr(g, 312, 130, 96, 96, 6); g.fill();
+      }
+      var m = document.createElement('canvas'); m.width = COLS; m.height = ROWS;
+      var mg = m.getContext('2d'); mg.scale(COLS / W, ROWS / H); mg.translate(OX, OY);
+      fills(mg, function (t) { mg.fillStyle = t === 'pcb' ? '#f00' : '#00f'; });
+      var px = mg.getImageData(0, 0, COLS, ROWS).data, cells = [], n = 0;
+      for (var i = 0; i < COLS * ROWS; i++) {
+        if (px[i * 4 + 3] < 140) continue;
+        cells.push({ x: i % COLS, y: Math.floor(i / COLS), tag: px[i * 4 + 2] > px[i * 4] ? 'ink' : 'pcb', ch: CODE[n++ % CODE.length] });
+      }
+      var pal = {}, size = 0, rows = ROWS, k = 1;
+      function colours() {
+        var st = getComputedStyle(document.documentElement), dark = root.getAttribute('data-theme') === 'dark', v = function (x) { return st.getPropertyValue(x).trim(); };
+        pal = { pcb: v('--mu'), ink: v('--i'), mu: v('--mu'), ok: v('--ok'), card: v('--card'), p: v('--p'), line: v('--line2') };
+      }
+      function fit() {
+        var w = box.clientWidth, dpr = Math.min(2, window.devicePixelRatio || 1);
+        size = w / COLS; k = w / W;
+        cv.width = Math.round(w * dpr); cv.height = Math.round(w * H / W * dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.font = '400 ' + (size * 1.05).toFixed(2) + 'px "Fragment Mono", ui-monospace, monospace';
+      }
+      function glyph(c) {
+        ctx.fillStyle = c.tag === 'pcb' ? pal.pcb : pal.ink;
+        ctx.globalAlpha = c.tag === 'pcb' ? .32 : 1;
+        ctx.fillText(c.ch, (c.x + .5) * size, (c.y + .56) * size);
+      }
+      // The outlines, in the 720 x 660 drawing's own units
+      function lines() {
+        ctx.save(); ctx.scale(k, k); ctx.translate(OX, OY); ctx.globalAlpha = 1; ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+        var S = function (col, w) { ctx.strokeStyle = col; ctx.lineWidth = w / k; };
+        S(pal.ink, 1.6); rr(ctx, 70, 36, 580, 600, 26); ctx.stroke();
+        ctx.globalAlpha = 1; S(pal.line, 1.2);
+        [[160, 245, 260, 300], [160, 321, 272, 340], [600, 245, 460, 300], [600, 321, 448, 360], [360, 226, 360, 266], [140, 560, 300, 470], [580, 560, 420, 470], [360, 474, 360, 540]].forEach(function (t) {
+          ctx.beginPath(); ctx.moveTo(t[0], t[1]); ctx.lineTo(t[0] + (t[2] - t[0]) * .5, t[1]); ctx.lineTo(t[2], t[3]); ctx.stroke();
+        });
+        ctx.globalAlpha = 1;
+        S(pal.ink, 1.5); rr(ctx, 272, 282, 176, 176, 8); ctx.stroke(); rr(ctx, 312, 130, 96, 96, 6); ctx.stroke();
+        ctx.fillStyle = pal.ink;
+        for (var q = 0; q < 9; q++) { [[288 + q * 18, 268, 6, 12], [288 + q * 18, 460, 6, 12], [258, 298 + q * 18, 12, 6], [450, 298 + q * 18, 12, 6]].forEach(function (b) { ctx.fillRect(b[0], b[1], b[2], b[3]); }); }
+        ctx.fillStyle = pal.card; S(pal.ink, 1.4);                         // the four headers, ten pins each
+        [96, 134, 556, 594].forEach(function (x) {
+          rr(ctx, x - 4, 146, 38, 388, 6); ctx.fill(); ctx.stroke();
+          for (var j = 0; j < 10; j++) { rr(ctx, x + 6, 156 + j * 38, 18, 18, 3); ctx.stroke(); }
+        });
+        S(pal.mu, 1.4); ctx.fillStyle = pal.card; rr(ctx, 304, 0, 112, 84, 10); ctx.fill(); ctx.stroke(); rr(ctx, 324, 18, 72, 30, 5); ctx.stroke();
+        S(pal.ink, 1.4); [[140, 590], [580, 590]].forEach(function (b) { ctx.beginPath(); ctx.arc(b[0], b[1], 24, 0, 7); ctx.fill(); ctx.stroke(); ctx.beginPath(); ctx.arc(b[0], b[1], 12, 0, 7); ctx.stroke(); });
+        rr(ctx, 560, 70, 48, 40, 6); ctx.fill(); ctx.stroke(); ctx.beginPath(); ctx.arc(584, 90, 10, 0, 7); ctx.stroke();
+        ctx.fillStyle = pal.ok; rr(ctx, 340, 544, 40, 26, 5); ctx.fill();   // the LED, lit
+        ctx.restore();
+      }
+      function draw() {
+        ctx.clearRect(0, 0, cv.width, cv.height);
+        ctx.save(); ctx.beginPath(); ctx.rect(0, 0, box.clientWidth, rows * size); ctx.clip();
+        cells.forEach(glyph); lines();
+        ctx.restore(); ctx.globalAlpha = 1;
+      }
+      colours(); fit();
+      new MutationObserver(function () { colours(); draw(); }).observe(root, { attributes: true, attributeFilter: ['data-theme'] });
+      window.addEventListener('resize', function () { fit(); draw(); });
+      if (document.fonts) document.fonts.ready.then(function () { fit(); draw(); });
+      fetch('/stats.json').then(function (r) { return r.ok ? r.json() : null; }).then(function (s) {
+        var e = s && s.labs && s.labs.encs4110 && s.labs.encs4110.experiments;
+        if (e) document.getElementById('tag-exp').textContent = 'ENCS4110 · ' + e + ' experiments';
+      }).catch(function () {});
+
+      if (reduce || !window.gsap) { draw(); return; }
+      // Load: the board prints in from the top, then the labels appear
+      rows = 0; draw();
+      var p = { r: 0 };
+      gsap.timeline({ delay: .2 })
+        .to(p, { r: ROWS, duration: 1.2, ease: 'power1.inOut', onUpdate: function () { rows = p.r; draw(); } })
+        .from('.tag', { opacity: 0, duration: .5, stagger: .12 }, '-=.25');
+      // After that the listing in the chips moves on, a few characters at a time, while it is in view
+      var chip = cells.filter(function (c) { return c.tag === 'ink'; }), on = true, step = n;
+      new IntersectionObserver(function (e) { on = e[0].isIntersecting; }).observe(box);
+      setInterval(function () {
+        if (!on || document.hidden || rows < ROWS) return;
+        for (var t = 0; t < 4; t++) chip[Math.floor(Math.random() * chip.length)].ch = CODE[step++ % CODE.length];
+        draw();
+      }, 125);
+    })();
+
+    if (!window.gsap || reduce) return;
+    gsap.registerPlugin(ScrollTrigger);
+    gsap.defaults({ ease: 'power3.out', duration: .6 });
+
+    // Load: the hero's text rises in once
+    gsap.from('.hero-main > *', { y: 12, opacity: 0, stagger: .06, delay: .05 });
+
+    // The examples: once in view, each week fills in, day by day
+    all('.preview').forEach(function (pv) {
+      gsap.from(pv.querySelectorAll('.wk-b'), { scaleX: 0, opacity: 0, duration: .5, stagger: .06, scrollTrigger: { trigger: pv, start: 'top 80%', once: true } });
+    });
+
+    // Everything else rises into place once, as it comes into view
+    function rise(sel, opts) {
+      var els = all(sel);
+      if (!els.length) return;
+      gsap.set(els, { opacity: 0, y: 12 });
+      ScrollTrigger.batch(els, { start: 'top 88%', once: true, onEnter: function (b) { gsap.to(b, Object.assign({ opacity: 1, y: 0, stagger: .06, overwrite: true }, opts)); } });
+    }
+    rise('#labs .sec-head, #numbers .sec-head, #why .sec-head, #join .sec-head, #join .ctas, .show-text, .preview');
+    // The labs arrive as a stack on the first card and deal out into the row
+    (function () {
+      var cards = all('#rail .lab');
+      if (!cards.length) return;
+      var w = cards[0].getBoundingClientRect().width + 16;
+      gsap.set(cards, { x: function (i) { return -i * w + i * 6; }, y: function (i) { return i * 6; }, rotation: function (i) { return i ? (i % 2 ? 2 : -2) * Math.min(i, 2) : 0; }, zIndex: function (i) { return cards.length - i; }, opacity: function (i) { return i ? .9 : 1; } });
+      gsap.to(cards, { x: 0, y: 0, rotation: 0, opacity: 1, duration: .8, ease: 'power3.inOut', stagger: .08, clearProps: 'zIndex,transform',
+        scrollTrigger: { trigger: '#rail', start: 'top 78%', once: true } });
+    })();
+    rise('#numbers .panel, .feat, .demo');
   })();
 </script>
 </body>
