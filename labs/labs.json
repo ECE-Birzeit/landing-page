@@ -1,0 +1,34 @@
+[
+ {
+  "id": "encs4110", "code": "ENCS4110", "name": "Computer Design Laboratory",
+  "url": "https://encs4110.birzeit.me/", "pdf": "https://encs4110.birzeit.me/manual/encs4110_manual.pdf", "setup": "https://encs4110.birzeit.me/setup/",
+  "kind": "Hardware", "langs": ["Assembly", "C"], "platform": "TM4C123 · ARM Cortex-M4",
+  "boards": ["TM4C123 Tiva C LaunchPad"],
+  "topics": ["ARM assembly", "Stack and procedures", "GPIO", "Interrupts", "ADC", "UART"],
+  "accent": { "light": "#dc2626", "dark": "#f87171" }
+ },
+ {
+  "id": "encs4101", "code": "ENCS4101", "name": "Embedded Systems Laboratory",
+  "url": "https://encs4101.birzeit.me/", "pdf": "https://encs4101.birzeit.me/ENCS4101-Manual.pdf", "setup": "https://encs4101.birzeit.me/setup/",
+  "kind": "Hardware", "langs": ["C"], "platform": "STM32 · CubeIDE · HAL",
+  "boards": ["STM32"],
+  "topics": ["Clocks", "GPIO", "Interrupts", "Timers", "PWM", "DC and stepper motors", "ADC", "I²C", "UART"],
+  "accent": { "light": "#0369a1", "dark": "#38bdf8" }
+ },
+ {
+  "id": "encs5150", "code": "ENCS5150", "name": "Advanced Computer Systems Engineering Laboratory",
+  "url": "https://encs5150.birzeit.me/", "pdf": "https://encs5150.birzeit.me/ENCS515-Manual-2025.pdf", "setup": "https://encs5150.birzeit.me/setup/",
+  "kind": "Software", "langs": ["Java"], "platform": "Android (Java) · Spring Boot",
+  "boards": [],
+  "topics": ["Activities", "Intents", "Fragments", "SQLite", "SharedPreferences", "REST and JSON", "Spring Boot"],
+  "accent": { "light": "#c2410c", "dark": "#fb923c" }
+ },
+ {
+  "id": "encs5101", "code": "ENCS5101", "name": "Microprocessor and Embedded Systems Laboratory",
+  "url": "https://encs5101.birzeit.me/", "pdf": "https://encs5101.birzeit.me/ENCS5101-Manual.pdf", "setup": "https://encs5101.birzeit.me/setup/",
+  "kind": "Hardware", "langs": ["Assembly", "C++"], "platform": "Cortex-M4 · Arduino Mega · Raspberry Pi",
+  "boards": ["Arduino Mega 2560", "Raspberry Pi"],
+  "topics": ["ARM assembly", "Flow control", "GPIO", "Keypad", "DC motor", "PWM", "Timers", "Interrupts", "ADC", "UART", "SPI", "I²C", "LabVIEW"],
+  "accent": { "light": "#00787f", "dark": "#3cc5cb" }
+ }
+]

@@ -20,11 +20,13 @@ python3 -m http.server 8000   # http://localhost:8000
 
 | Path | Contents |
 |:--|:--|
-| `index.html` | The current page at `/`: markup, styles, theme switch, search, hero preview of a lab page, analytics |
+| `index.html` | The home page at `/`: the hero with its chip mark, the five tools as a pin header, the lab cards, this semester's numbers, what the web manuals do, and the call for manuals. Motion uses [GSAP](https://gsap.com) 3.12.5 and ScrollTrigger from cdnjs with integrity hashes: the chip's traces route out on load and a signal runs down the trace nearest the pointer; sections rise in once as they scroll into view. Nothing moves for reduced motion, and the page is complete without the scripts |
 | `scripts/stats.py` | Writes `/stats.json` daily in the deploy: manuals, experiments and code listings from the four lab repos, plus visitors from Google Analytics (keyless sign-in) counted from the semester's first teaching day, which comes from bzu-course-catalog |
 | `stats/index.html` | The insights page at `/stats/`: students, experiment pages opened, students per day, busiest hours, devices, most-opened experiments and every lab, all drawn from `/stats.json` |
 | `assets/widgets.js`, `assets/widgets.css` | The chart widgets shared by the home page's "This semester in numbers" section and the insights page |
 | `schedules/index.html` | The ECE weekly schedules at `/schedules/`: browse by instructor, course or room, with a sortable sections table. Reads the live JSON from [bzu-course-catalog](https://github.com/mabushelbaia/bzu-course-catalog) in the browser, so it stays current without redeploys |
+| `labs/index.html`, `labs/labs.json` | Every lab at `/labs/`, with search and filters for type (hardware or software), language and year. The cards are drawn from `labs.json`; the home page features a few of them in its carousel |
+| `timetable/index.html` | The timetable builder at `/timetable/`: pick courses and step through every clash-free combination of sections, with filters (start and end hours, days off), per-section switches, a calendar (`.ics`) export and a shareable link. Reads the same catalog JSON; choices are kept in `localStorage` under `ece-timetable` |
 | `v1/index.html` | The first design, frozen at `/v1/` (not indexed by search engines) |
 | `v2/index.html` | The second design, frozen at `/v2/` (not indexed by search engines) |
 | `legacy/index.html` | Redirects `/legacy/` to `/v1/` |
@@ -40,6 +42,8 @@ Each design lives in its own folder and is served as is. To freeze the current p
 
 ### Adding a lab
 
+Add it to `labs/labs.json` (`id`, `code`, `name`, `url`, `pdf`, `setup`, `kind`, `langs`, `platform`, `boards`, `topics` and its `accent` colours for the light and dark theme) so it shows on `/labs/`. To feature it on the home page as well:
+
 Copy one of the `<article class="lab">` blocks in `index.html` and update:
 
 - `data-lab`, `data-code`, `data-url`, and `data-langs`, the languages students write in that lab, comma-separated (`Assembly,C`). They show on the card's title bar, and the search box matches them
@@ -47,7 +51,7 @@ Copy one of the `<article class="lab">` blocks in `index.html` and update:
 - the course number in `.lab-num`, the name, the platform line and the three links
 - the lab's accent colors, in the two `[data-lab=…]` rules (light and dark theme)
 
-The labs sit in a [Swiper](https://swiperjs.com) carousel (3 across on wide screens, 2 on tablets, 1 on phones) that loops and plays on its own, with Swiper's default dots; a new card just joins the loop. Swiper is loaded from cdnjs with an integrity hash. Every card has the same fixed layout: the name always takes three lines' worth of space, so a long title never pushes the rest out of line. The "Lab 0N" labels, the manual count and everything else that lists labs all come from the cards, so there is nothing else to update.
+The home page shows every lab as a card in a grid (4 across on wide screens, 2 on tablets, 1 on phones); the cards share rows through CSS subgrid, so numbers, names and links line up whatever the title length. The counts and usage numbers on the page come from the cards and from `/stats.json`, so there is nothing else to update.
 
 Then add the lab to the structured data (`application/ld+json`) and its sitemap to `robots.txt`.
 
