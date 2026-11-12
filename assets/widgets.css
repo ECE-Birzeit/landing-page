@@ -16,6 +16,7 @@
 .w-heat .row { display: flex; align-items: center; gap: 3px }
 .w-heat .row > span { flex: none; width: 34px; font: 400 11.5px var(--mono); color: var(--mu) }
 .w-heat .row i { flex: 1; min-width: 0; aspect-ratio: 1; border-radius: 3px; background: color-mix(in srgb, var(--ok) var(--v, 0%), var(--soft)) }
+.w-heat .ticks { display: flex; flex-direction: row; align-items: center; gap: 3px }
 .w-heat .ticks span { flex: 1; min-width: 0; width: auto; font: 400 11px var(--mono); color: var(--mu) }
 .w-heat .ticks > span:first-child { flex: none; width: 34px }
 
