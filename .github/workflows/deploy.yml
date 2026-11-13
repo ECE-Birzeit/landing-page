@@ -23,15 +23,20 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - uses: actions/configure-pages@v6
-      - name: Stamp last-updated date
-        # The footer date and sitemap lastmod come from the latest commit.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Build the site with Astro
+        # Pages come from src/, static files from public/; everything lands in dist/.
+        # The footer date is read from the latest commit at build time.
+        run: |
+          npm ci
+          npm run build
+      - name: Stamp the sitemap
         run: |
           d=$(git log -1 --format=%cs)
-          sed -i -E "s|(<time id=\"updated\" datetime=\")[^\"]*(\">)[^<]*|\1$d\2$d|" index.html
-          sed -i -E "s|<lastmod>[^<]*</lastmod>|<lastmod>$d</lastmod>|" sitemap.xml
-          mkdir _site
-          cp index.html CNAME og.png favicon.svg favicon.png favicon.ico apple-touch-icon.png sitemap.xml robots.txt _site/
-          cp -r v1 v2 legacy assets labs schedules timetable stats _site/
+          sed -i -E "s|<lastmod>[^<]*</lastmod>|<lastmod>$d</lastmod>|" dist/sitemap.xml
       - name: Sign in to Google Analytics
         # Keyless: GitHub's OIDC token is exchanged for the ga-reader service account
         # (project birzeit-me-stats). Skipped until the GA_PROPERTY_ID variable is set.
@@ -44,13 +49,15 @@ jobs:
         # Manuals, experiments and code listings from the four lab repos, plus visitors from Analytics
         run: |
           if [ -n "$GA_PROPERTY_ID" ]; then pip install --quiet google-auth requests; fi
-          python3 scripts/stats.py > _site/stats.json
-          cat _site/stats.json
+          python3 scripts/stats.py > dist/stats.json
+          cat dist/stats.json
         env:
           GITHUB_TOKEN: ${{ github.token }}
           GA_PROPERTY_ID: ${{ vars.GA_PROPERTY_ID }}
           # Visitors count from the semester's first teaching day, read from bzu-course-catalog
       - uses: actions/upload-pages-artifact@v5
+        with:
+          path: dist
 
   deploy:
     needs: build

@@ -1,0 +1,110 @@
+---
+// The frame every page shares: the <head> (meta, icons, fonts, analytics, the theme set before
+// first paint), the header with the nav, and the footer. Pages fill <main> through the default
+// slot, add to <head> through slot="head", and add footer links through slot="footer".
+import { execSync } from 'node:child_process';
+import '../styles/base.css';
+
+interface Props {
+  title: string;
+  description: string;
+  ogDescription?: string;
+  ogImageAlt?: string;
+  path: string;
+  nav?: 'labs' | 'schedules' | 'timetable' | 'stats' | '';
+  skip?: { href: string; text: string };
+  brandHref?: string;
+  showUpdated?: boolean;
+}
+
+const {
+  title, description, ogDescription = description, ogImageAlt, path, nav = '',
+  skip, brandHref = '/', showUpdated = false
+} = Astro.props;
+const url = new URL(path, Astro.site).href;
+
+// The footer date is the date of the latest commit, read when the site is built
+let updated = '';
+try { updated = execSync('git log -1 --format=%cs').toString().trim(); } catch { updated = new Date().toISOString().slice(0, 10); }
+
+const links = [
+  { href: '/labs/', label: 'Labs', id: 'labs' },
+  { href: '/schedules/', label: 'Schedules', id: 'schedules' },
+  { href: '/timetable/', label: 'Timetable', id: 'timetable' },
+  { href: '/stats/', label: 'Insights', id: 'stats' }
+];
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{title}</title>
+<meta name="description" content={description}>
+<meta property="og:title" content={title}>
+<meta property="og:description" content={ogDescription}>
+<meta property="og:url" content={url}>
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ECE Hub">
+<meta property="og:image" content="https://birzeit.me/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+{ogImageAlt && <meta property="og:image:alt" content={ogImageAlt}>}
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href={url}>
+<link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://api.fontshare.com" crossorigin>
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=switzer@1&display=swap">
+<slot name="head" />
+<script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-K834Q72PP9"></script>
+<script is:inline>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-K834Q72PP9');
+</script>
+<script is:inline>
+  (function () {
+    var saved = null;
+    try { saved = { paper: 'light', ink: 'dark' }[localStorage.getItem('ece-labs-theme')] || localStorage.getItem('ece-labs-theme'); } catch (e) {}
+    var mode = saved || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', mode);
+  })();
+</script>
+</head>
+<body>
+{skip && <a class="skip" href={skip.href}>{skip.text}</a>}
+
+<header>
+  <div class="wrap">
+    <a class="brand" href={brandHref}><b>ECE Hub</b><span>Birzeit University</span></a>
+    <nav aria-label="Primary">
+      {links.map((l) => <a href={l.href} aria-current={nav === l.id ? 'page' : undefined}>{l.label}</a>)}
+    </nav>
+    <button type="button" class="theme" role="switch" aria-checked="false" aria-label="Dark theme" title="Toggle dark theme">
+      <svg class="sun" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3 3l1.4 1.4M11.6 11.6L13 13M3 13l1.4-1.4M11.6 4.4L13 3"/></svg>
+      <svg class="moon" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z"/></svg>
+    </button>
+  </div>
+</header>
+
+<slot />
+
+<footer>
+  <div class="wrap">
+    <span class="grp">
+      <span class="dept">Electrical &amp; Computer Engineering, Birzeit University</span>
+      <span>Developed by <a href="https://mabushelbaia.com" target="_blank" rel="noopener">Mohammad Abu-Shelbaia<svg class="ext" viewBox="0 0 10 10" aria-hidden="true"><path d="M3 7l4-4M3.5 3H7v3.5"/></svg></a></span>
+    </span>
+    <span class="grp">
+      <slot name="footer" />
+      <a href="https://github.com/ECE-Birzeit" target="_blank" rel="noopener">GitHub<svg class="ext" viewBox="0 0 10 10" aria-hidden="true"><path d="M3 7l4-4M3.5 3H7v3.5"/></svg></a>
+      {showUpdated && <span class="date">Updated <time id="updated" datetime={updated}>{updated}</time></span>}
+    </span>
+  </div>
+</footer>
+</body>
+</html>
