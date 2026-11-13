@@ -308,6 +308,9 @@ import PageHead from '../../components/PageHead.astro';
       if (c.length && c.slice().sort().join() !== state.picked.slice().sort().join()) {
         state.picked = c; state.off = {}; state.after = 0; state.before = 0; state.free = {};
       }
+      // ?add=ENCS3320 (from the ⌘K box) adds one course to the saved ones instead of replacing them
+      var add = (u.get('add') || '').toUpperCase();
+      if (add && state.picked.indexOf(add) === -1) state.picked.push(add);
       return u.get('t') || '';
     }
     function sig(opt) { return opt.secs.map(function (x) { return x.code + '.' + x.sec.id; }).sort().join(','); }

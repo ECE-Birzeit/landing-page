@@ -3,6 +3,7 @@
 // first paint), the header with the nav, and the footer. Pages fill <main> through the default
 // slot, add to <head> through slot="head", and add footer links through slot="footer".
 import { execSync } from 'node:child_process';
+import Jump from '../components/Jump.astro';
 import '../styles/wa.css';
 import '../styles/base.css';
 
@@ -86,6 +87,7 @@ const links = [
     <nav aria-label="Primary">
       {links.map((l) => <a href={l.href} aria-current={nav === l.id ? 'page' : undefined}>{l.label}</a>)}
     </nav>
+    <Jump />
     <button type="button" class="theme" role="switch" aria-checked="false" aria-label="Dark theme" title="Toggle dark theme">
       <svg class="sun" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3 3l1.4 1.4M11.6 11.6L13 13M3 13l1.4-1.4M11.6 4.4L13 3"/></svg>
       <svg class="moon" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z"/></svg>
@@ -116,6 +118,7 @@ const links = [
   import '@awesome.me/webawesome/dist/components/input/input.js';
   import '@awesome.me/webawesome/dist/components/select/select.js';
   import '@awesome.me/webawesome/dist/components/option/option.js';
+  import '@awesome.me/webawesome/dist/components/dialog/dialog.js';
   const root = document.documentElement;
   const sync = () => { const dark = root.dataset.theme === 'dark'; root.classList.toggle('wa-dark', dark); root.classList.toggle('wa-light', !dark); };
   sync();
