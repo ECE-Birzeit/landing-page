@@ -1,33 +1,46 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
   <defs>
-    <style>@import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&amp;family=Geist+Mono:wght@400;500&amp;display=swap');</style>
-    <pattern id="dots" width="32" height="32" patternUnits="userSpaceOnUse"><circle cx="16" cy="16" r="1.2" fill="rgba(245,245,245,.09)"/></pattern>
-    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%"><feDropShadow dx="0" dy="9" stdDeviation="7" flood-color="#000" flood-opacity=".55"/></filter>
+    <style>@import url('https://api.fontshare.com/v2/css?f[]=switzer@1&amp;display=swap');</style>
   </defs>
-  <rect width="1200" height="630" fill="#0a0a0a"/>
-  <rect width="1200" height="630" fill="url(#dots)"/>
-  <g font-family="Geist, sans-serif" fill="#f5f5f5">
-    <text x="64" y="74" font-size="26" font-weight="600" letter-spacing="-.26">ECE Labs</text>
-    <text x="193" y="74" font-family="Geist Mono, monospace" font-size="19" fill="#a8a8a8">Birzeit University</text>
-    <text x="1136" y="74" text-anchor="end" font-family="Geist Mono, monospace" font-size="19" fill="#d4d4d4">birzeit.me</text>
-    <text x="64" y="176" font-family="Geist Mono, monospace" font-size="17" fill="#a8a8a8">Department of Electrical &amp; Computer Engineering</text>
-    <text font-size="104" font-weight="600" letter-spacing="-5.2"><tspan x="58" y="292">ECE Lab</tspan><tspan x="58" y="392">Manuals</tspan></text>
-    <text font-family="Geist Mono, monospace" font-size="20" fill="#a8a8a8"><tspan x="64" y="466">Setup guides and clean code listings,</tspan><tspan x="64" y="496">for every lab.</tspan></text>
-    <text y="584" font-family="Geist Mono, monospace" font-size="19" font-weight="500"><tspan x="64" fill="#f87171">ENCS4110</tspan><tspan x="177" fill="#38bdf8">ENCS4101</tspan><tspan x="290" fill="#fb923c">ENCS5150</tspan><tspan x="403" fill="#3cc5cb">ENCS5101</tspan></text>
+  <!-- Link preview for birzeit.me, in the site's light theme: warm paper, ink, one green accent.
+       Render at 1200 x 630 in a browser engine to make og.png -->
+  <rect width="1200" height="630" fill="#f3f2ec"/>
+  <g font-family="Switzer, sans-serif">
+    <text x="64" y="80" font-size="28" font-weight="600" fill="#1a1b19" letter-spacing="-.3">ECE Hub</text>
+    <text x="194" y="80" font-size="22" fill="#6b6c65">Birzeit University</text>
+    <text x="1136" y="80" text-anchor="end" font-size="22" fill="#45463f">birzeit.me</text>
+    <line x1="64" y1="112" x2="1136" y2="112" stroke="#dddbd2" stroke-width="1.5"/>
+
+    <text font-size="80" font-weight="500" fill="#1a1b19" letter-spacing="-2.8">
+      <tspan x="60" y="236">Lab manuals</tspan>
+      <tspan x="60" y="322">and schedules</tspan>
+      <tspan x="60" y="408">for Birzeit ECE</tspan>
+    </text>
+    <text font-size="24" fill="#45463f">
+      <tspan x="64" y="472">Lab manuals that work offline, every course and</tspan>
+      <tspan x="64" y="506">room's weekly schedule, and a schedule builder</tspan>
+    </text>
+
+    <g font-size="20" fill="#45463f">
+      <rect x="64" y="561" width="12" height="12" rx="3" fill="#dc2626"/><text x="86" y="573">ENCS4110</text>
+      <rect x="200" y="561" width="12" height="12" rx="3" fill="#0369a1"/><text x="222" y="573">ENCS4101</text>
+      <rect x="336" y="561" width="12" height="12" rx="3" fill="#c2410c"/><text x="358" y="573">ENCS5150</text>
+      <rect x="472" y="561" width="12" height="12" rx="3" fill="#00787f"/><text x="494" y="573">ENCS5101</text>
+    </g>
+
+    <rect x="772" y="160" width="364" height="412" rx="20" fill="#fbfaf6" stroke="#dddbd2" stroke-width="1.5"/>
+    <text x="804" y="208" font-size="20" font-weight="500" fill="#45463f">This semester, from Ritaj</text>
+    <line x1="804" y1="232" x2="1104" y2="232" stroke="#dddbd2" stroke-width="1.5"/>
+    <g font-weight="500" fill="#1a1b19" font-size="56" letter-spacing="-1.6">
+      <text x="802" y="310">1,171</text><text x="986" y="310">745</text>
+      <text x="802" y="436">260</text><text x="986" y="436">4</text>
+    </g>
+    <g font-size="20" fill="#6b6c65">
+      <text x="804" y="342">courses</text><text x="988" y="342">instructors</text>
+      <text x="804" y="468">rooms</text><text x="988" y="468">lab manuals</text>
+    </g>
+    <line x1="804" y1="504" x2="1104" y2="504" stroke="#dddbd2" stroke-width="1.5"/>
+    <rect x="804" y="530" width="12" height="12" rx="3" fill="#15803d"/>
+    <text x="826" y="542" font-size="20" fill="#45463f">Schedule builder, no clashes</text>
   </g>
-  <g transform="translate(704 324) rotate(-18) translate(-88.0 -88.0) scale(2.7500)" filter="url(#shadow)"><rect width="64" height="64" rx="12" fill="#dc2626"/>
-  
-  <g transform="translate(10 10) scale(1.8333)" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M18 4h2M18 8h2M18 12h2M18 16h2M18 20h2M4 4h2M4 8h2M4 12h2M4 16h2M4 20h2"/>
-    <path fill="#fca5a5" d="M8 2a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2h-1.5c-.276 0-.494.227-.562.495a2 2 0 0 1-3.876 0C9.994 2.227 9.776 2 9.5 2z"/>
-  </g></g>
-  <g transform="translate(820 264) rotate(-6) translate(-88.0 -88.0) scale(2.7500)" filter="url(#shadow)"><rect width="64" height="64" rx="12" fill="#0369a1"/>
-  <path transform="translate(10 10) scale(1.8333)" fill="#fff" d="M 23.818 5.61 L 6.402 5.61 C 5.125 5.609 3.968 6.362 3.452 7.529 L 0.014 15.811 C -0.036 15.931 0.052 16.063 0.182 16.061 L 8.046 16.061 C 8.601 16.061 8.848 15.523 8.412 15.093 L 5.524 12.388 C 4.008 10.9 4.658 7.45 7.81 7.45 L 23.206 7.45 C 23.283 7.451 23.352 7.402 23.378 7.329 L 23.987 5.857 C 23.996 5.835 24.001 5.811 24 5.787 C 23.997 5.689 23.917 5.61 23.818 5.61 M 22.082 9.826 L 19.126 9.826 C 18.932 9.825 18.756 9.94 18.681 10.118 L 15.369 18.118 C 15.355 18.144 15.347 18.173 15.347 18.202 C 15.348 18.302 15.429 18.383 15.529 18.381 L 16.632 18.381 C 17.93 18.387 19.105 17.613 19.612 16.418 L 22.244 10.063 C 22.252 10.042 22.257 10.019 22.257 9.996 C 22.253 9.902 22.176 9.828 22.082 9.826 M 16.271 10.005 C 16.271 9.905 16.189 9.825 16.089 9.825 L 7.706 9.825 C 7.251 9.825 6.853 10.38 7.335 10.825 L 10.104 13.404 C 10.104 13.404 11.224 14.437 10.984 15.916 C 10.778 17.219 9.889 18.016 9.241 18.302 C 9.208 18.31 9.196 18.351 9.219 18.376 C 9.23 18.387 9.246 18.392 9.261 18.388 L 12.489 18.388 C 12.683 18.39 12.859 18.275 12.934 18.095 L 16.256 10.068 C 16.266 10.049 16.271 10.027 16.271 10.005"/></g>
-  <g transform="translate(936 278) rotate(7) translate(-88.0 -88.0) scale(2.7500)" filter="url(#shadow)"><rect width="64" height="64" rx="12" fill="#ea580c"/>
-  <path d="M22 31 17 22M42 31l5-9" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
-  <path d="M13 45a19 19 0 0 1 38 0z" fill="#fff"/>
-  <circle cx="24.5" cy="37.5" r="2.5" fill="#ea580c"/>
-  <circle cx="39.5" cy="37.5" r="2.5" fill="#ea580c"/></g>
-  <g transform="translate(1034 350) rotate(19) translate(-88.0 -88.0) scale(2.7500)" filter="url(#shadow)"><rect width="64" height="64" rx="12" fill="#00878f"/>
-  <path transform="translate(10 10) scale(1.8333)" fill="#fff" d="M18.087 6.146c-.3 0-.607.017-.907.069-2.532.367-4.23 2.239-5.18 3.674-.95-1.435-2.648-3.307-5.18-3.674a6.49 6.49 0 0 0-.907-.069C2.648 6.146 0 8.77 0 12s2.656 5.854 5.913 5.854c.3 0 .607-.017.916-.069 2.531-.376 4.23-2.247 5.18-3.683.949 1.436 2.647 3.307 5.18 3.683.299.043.607.069.915.069C21.344 17.854 24 15.23 24 12s-2.656-5.854-5.913-5.854zM6.53 15.734a3.837 3.837 0 0 1-.625.043c-2.148 0-3.889-1.7-3.889-3.777 0-2.085 1.749-3.777 3.898-3.777.208 0 .416.017.624.043 2.39.35 3.847 2.768 4.347 3.734-.508.974-1.974 3.384-4.355 3.734zm11.558.043c-.208 0-.416-.017-.624-.043-2.39-.35-3.856-2.768-4.347-3.734.491-.966 1.957-3.384 4.347-3.734.208-.026.416-.043.624-.043 2.149 0 3.89 1.7 3.89 3.777 0 2.085-1.75 3.777-3.89 3.777zm1.65-4.404v1.134h-1.205v1.182h-1.156v-1.182H16.17v-1.134h1.206V10.19h1.156v1.183h1.206zM4.246 12.498H7.82v-1.125H4.245v1.125z"/></g>
 </svg>
