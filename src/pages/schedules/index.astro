@@ -1,5 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
+import PageHead from '../../components/PageHead.astro';
 ---
 <Base title="Weekly schedules · ECE Hub" description="Weekly schedules for every department at Birzeit University: browse by instructor, course or room, filtered by faculty and department. Updated daily from Ritaj." path="/schedules/" ogDescription="Browse Birzeit University schedules by department, instructor, course or room. Updated daily from Ritaj." nav="schedules" skip={{ href: "#week", text: "Skip to the schedule" }}>
 <Fragment slot="head">
@@ -19,23 +20,6 @@ import Base from '../../layouts/Base.astro';
   .bar .r { margin-inline-start: auto; white-space: nowrap }
 
   /* Page */
-  /* Page head: the title on the left, this page's live figures on the right */
-  .phead { border-bottom: 1px solid var(--line) }
-  .phead .wrap { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 28px 56px; padding-block: clamp(40px, 6vw, 72px) clamp(28px, 4vw, 44px) }
-  h1 { margin: 0; font: 500 clamp(40px, 5.6vw, 68px)/1.02 var(--display); letter-spacing: -.035em; text-wrap: balance }
-  .lede { max-width: 56ch; margin: 16px 0 0; font-size: 17px; line-height: 1.55; color: var(--mu2); text-wrap: pretty }
-  .lede a { text-underline-offset: 3px }
-  .pfacts { display: flex; flex-wrap: wrap; gap: 16px 0; margin: 0 }
-  .pfacts div { display: flex; flex-direction: column-reverse; padding: 2px 24px; border-inline-start: 1px solid var(--line) }
-  .pfacts div:last-child { padding-inline-end: 0 }
-  .pfacts dd { margin: 0; font: 500 30px/1.1 var(--display); letter-spacing: -.02em; font-variant-numeric: tabular-nums; white-space: nowrap }
-  .pfacts dt { margin-top: 6px; font: 400 12px var(--mono); color: var(--mu); white-space: nowrap }
-  @media (max-width: 860px) {
-    .phead .wrap { grid-template-columns: minmax(0, 1fr) }
-    .pfacts { gap: 16px 32px }
-    .pfacts div { padding: 0; border: 0 }
-    .pfacts dd { font-size: 24px }
-  }
   main > .wrap { display: flex; flex-direction: column; gap: 20px; padding-top: 28px; padding-bottom: 72px }
   /* Let wide children (the sections table) scroll inside their own box instead of widening the page */
   main > .wrap > * { min-width: 0; max-width: 100% }
@@ -43,6 +27,10 @@ import Base from '../../layouts/Base.astro';
   .seg { height: 48px; padding: 0 14px; border: 1px solid var(--line); border-radius: 8px; background: transparent; color: var(--mu2); font: 400 13px var(--mono); cursor: pointer; transition: border-color .15s, color .15s }
   .seg:hover { color: var(--i) }
   .seg[aria-pressed=true] { border-color: var(--i); color: var(--i) }
+  /* The view switch is three <wa-button>s; the pressed one gets a filled surface */
+  wa-button.seg { height: auto; padding: 0; border: 0; background: none }
+  wa-button.seg::part(button) { height: 48px; width: 100% }
+  wa-button.seg[aria-pressed=true]::part(button) { background: var(--soft); border-color: var(--i) }
   .tools { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px }
   /* The native select covers the whole box, so clicking anywhere on it (the › and the count too) opens the list */
   .pick { position: relative; display: block; overflow: hidden; width: min(600px, 100%); height: 48px; border: 1px solid var(--line2); border-radius: 10px; background: var(--card); cursor: pointer }
@@ -133,22 +121,14 @@ import Base from '../../layouts/Base.astro';
 </style>
 
 <main id="main" data-anim="all">
-  <section class="phead">
-    <div class="wrap">
-      <div>
-        <h1>Weekly schedules</h1>
-        <p class="lede">The teaching week of any instructor, course or room at Birzeit University, read from Ritaj every day. Planning your semester? <a href="/timetable/">Build your schedule</a>.</p>
-      </div>
-      <dl class="pfacts" id="pfacts" aria-live="polite"></dl>
-    </div>
-  </section>
+  <PageHead title="Weekly schedules">The teaching week of any instructor, course or room at Birzeit University, read from Ritaj every day. Planning your semester? <a href="/timetable/">Build your schedule</a>.</PageHead>
 
   <div class="wrap">
     <div class="tools">
       <div class="views" role="group" aria-label="Browse by">
-        <button type="button" class="seg" data-view="instructor" aria-pressed="true">Instructors</button>
-        <button type="button" class="seg" data-view="course" aria-pressed="false">Courses</button>
-        <button type="button" class="seg" data-view="room" aria-pressed="false">Rooms</button>
+        <wa-button appearance="outlined" size="l" class="seg" data-view="instructor" aria-pressed="true">Instructors</wa-button>
+        <wa-button appearance="outlined" size="l" class="seg" data-view="course" aria-pressed="false">Courses</wa-button>
+        <wa-button appearance="outlined" size="l" class="seg" data-view="room" aria-pressed="false">Rooms</wa-button>
       </div>
       <label class="pick dept"><b aria-hidden="true">⌂</b><select id="dept" aria-label="Department" disabled><option>Loading…</option></select><span class="caret" id="deptcount">▾</span></label>
       <label class="pick"><b aria-hidden="true">›</b><select id="pick" disabled><option>Loading…</option></select><span class="caret" id="optcount">▾</span></label>

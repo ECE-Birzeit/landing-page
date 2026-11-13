@@ -1,0 +1,55 @@
+/* Web Awesome: the default theme and colour variants (in their own cascade layers, so the
+   site's tokens below and in base.css win without !important) */
+@import '@awesome.me/webawesome/dist/styles/themes/default.css';
+@import '@awesome.me/webawesome/dist/styles/color/variants.css';
+
+/* Web Awesome's tokens, mapped onto the site's own: the same paper and ink, green as the brand,
+   Switzer for every label. Both themes follow, since the site's tokens change with data-theme */
+html[data-theme] {
+  --wa-font-family-body: var(--sans);
+  --wa-font-family-heading: var(--sans);
+  --wa-font-family-code: var(--code, ui-monospace, monospace);
+  --wa-font-weight-action: 500;
+  --wa-border-radius-scale: 1.6;
+  --wa-color-focus: var(--ok);
+  --wa-focus-ring-width: 2px;
+
+  --wa-color-surface-default: var(--card);
+  --wa-color-surface-raised: var(--card);
+  --wa-color-surface-lowered: var(--bar);
+  --wa-color-surface-border: var(--line);
+  --wa-color-text-normal: var(--i);
+  --wa-color-text-quiet: var(--mu);
+  --wa-color-text-link: var(--ok);
+
+  --wa-color-brand-fill-loud: var(--ok);
+  --wa-color-brand-fill-normal: color-mix(in srgb, var(--ok) 22%, var(--card));
+  --wa-color-brand-fill-quiet: color-mix(in srgb, var(--ok) 10%, var(--card));
+  --wa-color-brand-border-loud: var(--ok);
+  --wa-color-brand-border-normal: color-mix(in srgb, var(--ok) 60%, var(--card));
+  --wa-color-brand-border-quiet: color-mix(in srgb, var(--ok) 30%, var(--card));
+  --wa-color-brand-on-loud: var(--p);
+  --wa-color-brand-on-normal: var(--i);
+  --wa-color-brand-on-quiet: var(--ok);
+
+  --wa-color-neutral-fill-loud: var(--i);
+  --wa-color-neutral-fill-normal: var(--soft);
+  --wa-color-neutral-fill-quiet: var(--bar);
+  --wa-color-neutral-border-loud: color-mix(in srgb, var(--i) 30%, transparent);
+  --wa-color-neutral-border-normal: var(--line2);
+  --wa-color-neutral-border-quiet: var(--line);
+  --wa-color-neutral-on-loud: var(--p);
+  --wa-color-neutral-on-normal: var(--i);
+  --wa-color-neutral-on-quiet: var(--i);
+
+  --wa-form-control-background-color: var(--card);
+  --wa-form-control-border-color: var(--line2);
+  --wa-form-control-value-color: var(--i);
+  --wa-form-control-placeholder-color: var(--mu);
+  --wa-form-control-activated-color: var(--ok);
+}
+/* Buttons that are links keep the site's underline-free look */
+wa-button { text-decoration: none }
+/* Inside a select, the highlighted option is a quiet surface step, not a green block */
+wa-select { --wa-form-control-activated-color: var(--soft) }
+wa-option { --current-text-color: var(--i) }

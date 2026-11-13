@@ -1,5 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
+import PageHead from '../../components/PageHead.astro';
 ---
 <Base title="Timetable builder · ECE Hub" description="Pick your Birzeit University courses and get every clash-free timetable: filter by start time, days off and instructor, then export it to your calendar. Updated daily from Ritaj." path="/timetable/" ogDescription="Pick your courses and get every clash-free timetable for the semester at Birzeit University." nav="timetable" skip={{ href: "#out", text: "Skip to the timetable" }}>
 <Fragment slot="head">
@@ -22,23 +23,6 @@ import Base from '../../layouts/Base.astro';
   .bar .r { margin-inline-start: auto; white-space: nowrap }
 
   /* Page: courses and filters on the left, the timetables on the right */
-  /* Page head: the title on the left, this page's live figures on the right */
-  .phead { border-bottom: 1px solid var(--line) }
-  .phead .wrap { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 28px 56px; padding-block: clamp(40px, 6vw, 72px) clamp(28px, 4vw, 44px) }
-  h1 { margin: 0; font: 500 clamp(40px, 5.6vw, 68px)/1.02 var(--display); letter-spacing: -.035em; text-wrap: balance }
-  .lede { max-width: 56ch; margin: 16px 0 0; font-size: 17px; line-height: 1.55; color: var(--mu2); text-wrap: pretty }
-  .lede a { text-underline-offset: 3px }
-  .pfacts { display: flex; flex-wrap: wrap; gap: 16px 0; margin: 0 }
-  .pfacts div { display: flex; flex-direction: column-reverse; padding: 2px 24px; border-inline-start: 1px solid var(--line) }
-  .pfacts div:last-child { padding-inline-end: 0 }
-  .pfacts dd { margin: 0; font: 500 30px/1.1 var(--display); letter-spacing: -.02em; font-variant-numeric: tabular-nums; white-space: nowrap }
-  .pfacts dt { margin-top: 6px; font: 400 12px var(--mono); color: var(--mu); white-space: nowrap }
-  @media (max-width: 860px) {
-    .phead .wrap { grid-template-columns: minmax(0, 1fr) }
-    .pfacts { gap: 16px 32px }
-    .pfacts div { padding: 0; border: 0 }
-    .pfacts dd { font-size: 24px }
-  }
   main > .wrap { padding-top: 28px; padding-bottom: 72px }
   .cols { display: grid; grid-template-columns: 360px minmax(0, 1fr); gap: 24px; align-items: start }
   .side, .out { display: flex; flex-direction: column; gap: 16px; min-width: 0 }
@@ -88,7 +72,7 @@ import Base from '../../layouts/Base.astro';
   /* Filters */
   .filters { display: grid; gap: 14px; padding: 14px }
   .field { display: grid; gap: 6px; font: 400 12px var(--mono); color: var(--mu) }
-  .field select { height: 40px; padding: 0 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--card); font: 400 13px var(--mono) }
+  .field::part(form-control-label) { font-size: 12px; font-weight: 400; color: var(--mu) }
   .two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px }
   .daysoff { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px }
   .seg { height: 40px; padding: 0 14px; border: 1px solid color-mix(in srgb, var(--i) 26%, transparent); border-radius: 8px; background: var(--card); color: var(--i); font: 500 13px var(--sans); cursor: pointer; transition: border-color .15s, color .15s, background-color .15s }
@@ -166,15 +150,7 @@ import Base from '../../layouts/Base.astro';
 </style>
 
 <main id="main" data-anim="all">
-  <section class="phead">
-    <div class="wrap">
-      <div>
-        <h1>Timetable builder</h1>
-        <p class="lede">Add the courses you plan to take and get every combination of sections that doesn't clash, best first. To look up one instructor, course or room, use the <a href="/schedules/">weekly schedules</a>.</p>
-      </div>
-      <dl class="pfacts" id="pfacts" aria-live="polite"></dl>
-    </div>
-  </section>
+  <PageHead title="Timetable builder">Add the courses you plan to take and get every combination of sections that doesn't clash, best first. To look up one instructor, course or room, use the <a href="/schedules/">weekly schedules</a>.</PageHead>
 
   <div class="wrap">
     <div class="cols">
@@ -195,24 +171,18 @@ import Base from '../../layouts/Base.astro';
           <div class="bar"><i></i><i></i><i></i><span class="t">filters</span><span class="r"><button type="button" id="reset" class="kicker" style="border:0;background:none;cursor:pointer;padding:0" hidden>reset</button></span></div>
           <div class="filters">
             <div class="two">
-              <label class="field">No classes before
-                <select id="after"></select>
-              </label>
-              <label class="field">No classes after
-                <select id="before"></select>
-              </label>
+              <wa-select id="after" class="field" size="s" label="No classes before"></wa-select>
+              <wa-select id="before" class="field" size="s" label="No classes after"></wa-select>
             </div>
             <div class="field"><span id="dayslabel">Days I want free</span>
               <div class="daysoff" id="daysoff" role="group" aria-labelledby="dayslabel"></div>
             </div>
-            <label class="field">Show first
-              <select id="sort">
-                <option value="days">Fewest days on campus</option>
-                <option value="gaps">Shortest gaps between classes</option>
-                <option value="late">Latest start</option>
-                <option value="early">Earliest finish</option>
-              </select>
-            </label>
+            <wa-select id="sort" class="field" size="s" label="Show first" value="days">
+              <wa-option value="days">Fewest days on campus</wa-option>
+              <wa-option value="gaps">Shortest gaps between classes</wa-option>
+              <wa-option value="late">Latest start</wa-option>
+              <wa-option value="early">Earliest finish</wa-option>
+            </wa-select>
           </div>
         </div>
       </div>
@@ -220,10 +190,10 @@ import Base from '../../layouts/Base.astro';
       <div class="out" id="out">
         <div class="pager">
           <span class="count" id="count" aria-live="polite"></span>
-          <button type="button" class="seg" id="prev" aria-label="Previous timetable">‹ Prev</button>
-          <button type="button" class="seg" id="next" aria-label="Next timetable">Next ›</button>
-          <button type="button" class="seg" id="ics">Add to calendar</button>
-          <button type="button" class="seg" id="share">Copy link</button>
+          <wa-button appearance="outlined" size="s" id="prev" aria-label="Previous timetable">‹ Prev</wa-button>
+          <wa-button appearance="outlined" size="s" id="next" aria-label="Next timetable">Next ›</wa-button>
+          <wa-button appearance="outlined" size="s" id="ics">Add to calendar</wa-button>
+          <wa-button appearance="outlined" size="s" id="share">Copy link</wa-button>
         </div>
         <div class="sum" id="sum"></div>
 
@@ -393,11 +363,12 @@ import Base from '../../layouts/Base.astro';
 
     // Filter controls
     function fill() {
-      var opt = function (h, sel) { return '<option value="' + h * 60 + '"' + (h * 60 === sel ? ' selected' : '') + '>' + (h < 10 ? '0' : '') + h + ':00</option>'; };
-      var a = '<option value="0">Any time</option>', b = a, h;
+      var opt = function (h) { return '<wa-option value="' + h * 60 + '">' + (h < 10 ? '0' : '') + h + ':00</wa-option>'; };
+      var a = '<wa-option value="0">Any time</wa-option>', b = a, h;
       for (h = 9; h <= 13; h++) a += opt(h, state.after);
       for (h = 12; h <= 18; h++) b += opt(h, state.before);
       $('after').innerHTML = a; $('before').innerHTML = b;
+      $('after').value = String(state.after); $('before').value = String(state.before);
       $('sort').value = state.sort;
       $('daysoff').innerHTML = ALL_DAYS.map(function (d) {
         return '<button type="button" class="seg" data-day="' + d[0] + '" aria-pressed="' + !!state.free[d[0]] + '">' + d[1] + '</button>';

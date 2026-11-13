@@ -1,0 +1,14 @@
+---
+// The head of every inner page: its title, one line on what it does (the default slot), and a row
+// of live figures that the page's script writes into #pfacts. Styles live in base.css, so the
+// figures sit in the same grid, at the same place, on every page.
+interface Props { title: string }
+const { title } = Astro.props;
+---
+<section class="phead">
+  <div class="wrap">
+    <h1>{title}</h1>
+    <p class="lede"><slot /></p>
+    <dl class="pfacts" id="pfacts" aria-live="polite"></dl>
+  </div>
+</section>

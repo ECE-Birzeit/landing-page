@@ -71,3 +71,16 @@ footer .ext { flex: none; width: 10px; height: 10px; fill: none; stroke: current
 footer .date { color: var(--mu) }
 
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important } }
+
+/* Page head (src/components/PageHead.astro): title, intro, and the page's figures as one quiet
+   line of text under the intro ("1,171 courses · 745 instructors"), so nothing has to line up in a grid */
+.phead { border-bottom: 1px solid var(--line) }
+.phead .wrap { padding-block: clamp(40px, 6vw, 72px) clamp(32px, 4vw, 48px) }
+.phead h1 { margin: 0; font: 500 clamp(40px, 5.6vw, 68px)/1.02 var(--sans); letter-spacing: -.035em; text-wrap: balance }
+.phead .lede { max-width: 60ch; margin: 16px 0 0; font-size: 17px; line-height: 1.55; color: var(--mu2); text-wrap: pretty }
+.phead .lede a { text-underline-offset: 3px }
+.pfacts { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 0; min-height: 24px; margin: 16px 0 0; font-size: 15px; line-height: 1.5 }
+.pfacts div { display: flex; flex-direction: row-reverse; align-items: baseline; gap: 6px }
+.pfacts div + div::after { content: '·'; order: 9; margin-inline: 12px; color: var(--line2) }
+.pfacts dd { margin: 0; font-weight: 500; color: var(--i); white-space: nowrap }
+.pfacts dt { color: var(--mu); white-space: nowrap }

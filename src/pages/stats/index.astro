@@ -1,5 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
+import PageHead from '../../components/PageHead.astro';
 ---
 <Base title="Insights · ECE Hub" description="How Birzeit University ECE students use the lab sites this semester: students, experiment pages opened, busiest hours, devices and the most-opened experiments. Updated daily." path="/stats/" ogDescription="How ECE students use the lab sites this semester. Updated daily." nav="stats" skip={{ href: "#dash", text: "Skip to the insights" }}>
 <Fragment slot="head">
@@ -26,23 +27,6 @@ import Base from '../../layouts/Base.astro';
   .bar .r { margin-inline-start: auto; white-space: nowrap }
 
   /* Insights */
-  /* Page head: the title on the left, this page's live figures on the right */
-  .phead { border-bottom: 1px solid var(--line) }
-  .phead .wrap { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 28px 56px; padding-block: clamp(40px, 6vw, 72px) clamp(28px, 4vw, 44px) }
-  h1 { margin: 0; font: 500 clamp(40px, 5.6vw, 68px)/1.02 var(--display); letter-spacing: -.035em; text-wrap: balance }
-  .lede { max-width: 56ch; margin: 16px 0 0; font-size: 17px; line-height: 1.55; color: var(--mu2); text-wrap: pretty }
-  .lede a { text-underline-offset: 3px }
-  .pfacts { display: flex; flex-wrap: wrap; gap: 16px 0; margin: 0 }
-  .pfacts div { display: flex; flex-direction: column-reverse; padding: 2px 24px; border-inline-start: 1px solid var(--line) }
-  .pfacts div:last-child { padding-inline-end: 0 }
-  .pfacts dd { margin: 0; font: 500 30px/1.1 var(--display); letter-spacing: -.02em; font-variant-numeric: tabular-nums; white-space: nowrap }
-  .pfacts dt { margin-top: 6px; font: 400 12px var(--mono); color: var(--mu); white-space: nowrap }
-  @media (max-width: 860px) {
-    .phead .wrap { grid-template-columns: minmax(0, 1fr) }
-    .pfacts { gap: 16px 32px }
-    .pfacts div { padding: 0; border: 0 }
-    .pfacts dd { font-size: 24px }
-  }
   main > .wrap { display: flex; flex-direction: column; gap: 18px; padding-top: 28px; padding-bottom: 76px }
   #body { display: flex; flex-direction: column; gap: 18px }
   .row2 { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 18px }
@@ -78,15 +62,7 @@ import Base from '../../layouts/Base.astro';
 </style>
 
 <main>
-  <section class="phead">
-    <div class="wrap">
-      <div>
-        <h1>How the labs are used</h1>
-        <p class="lede">Who reads the lab sites this semester, when and on what, from the sites' analytics. Counted again every day.</p>
-      </div>
-      <dl class="pfacts" id="pfacts" aria-live="polite"></dl>
-    </div>
-  </section>
+  <PageHead title="How the labs are used">Who reads the lab sites this semester, when and on what, from the sites' analytics. Counted again every day.</PageHead>
 
   <div class="wrap" id="dash">
 

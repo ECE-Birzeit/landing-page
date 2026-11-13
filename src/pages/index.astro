@@ -94,20 +94,6 @@ import Base from '../layouts/Base.astro';
 </Fragment>
 <style is:global>
   /* Buttons: one primary, one secondary */
-  .cta { display: inline-flex; align-items: center; gap: 12px; height: 48px; padding: 0 20px; border: 1px solid color-mix(in srgb, var(--i) 30%, transparent); border-radius: 10px; background: var(--card); color: var(--i); font: 500 15px var(--sans); text-decoration: none; white-space: nowrap; transition: background-color .15s var(--ease), border-color .15s var(--ease), color .15s var(--ease), transform .15s var(--ease) }
-  .cta span { color: var(--mu); transition: transform .2s var(--ease) }
-  .cta:hover { border-color: var(--i); background: var(--soft) }
-  .cta:hover span { transform: translateX(2px) }
-  .cta:active { transform: scale(.98) }
-  .cta-ext { width: 12px; height: 12px; fill: none; stroke: var(--mu); stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round }
-  .cta.primary { border-color: var(--ok); background: var(--ok); color: var(--p) }
-  .cta.primary span { color: inherit; opacity: .7 }
-  .cta.primary:hover { border-color: color-mix(in srgb, var(--ok) 84%, var(--i)); background: color-mix(in srgb, var(--ok) 84%, var(--i)) }
-  .cta.primary:hover span { transform: translateY(2px) }
-  .link { display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 16px; border: 1px solid color-mix(in srgb, var(--i) 30%, transparent); border-radius: 10px; background: var(--card); font: 500 14px var(--sans); color: var(--i); text-decoration: none; white-space: nowrap; transition: border-color .15s var(--ease) }
-  .link span { color: var(--mu); transition: transform .2s var(--ease) }
-  .link:hover { border-color: var(--i); background: var(--soft) }
-  .link:hover span { transform: translateX(2px) }
 
   /* Section heads: the heading and, on the right, where to go for more */
   .sec { border-bottom: 1px solid var(--line) }
@@ -195,12 +181,16 @@ import Base from '../layouts/Base.astro';
   .rail.dragging { cursor: grabbing; scroll-snap-type: none; user-select: none }
   .rail .lab { flex: 0 0 clamp(272px, 28vw, 332px); scroll-snap-align: start }
   .rail-ctl { display: flex; align-items: center; gap: 8px }
-  .arrow { width: 44px; height: 44px; display: grid; place-items: center; padding: 0; border: 1px solid color-mix(in srgb, var(--i) 30%, transparent); border-radius: 10px; background: var(--card); color: var(--i); cursor: pointer; transition: border-color .15s var(--ease), background-color .15s var(--ease), opacity .15s var(--ease) }
-  .arrow:hover:not(:disabled) { border-color: var(--i); background: var(--soft) }
-  .arrow:active:not(:disabled) { transform: scale(.97) }
-  .arrow:disabled { opacity: .35; cursor: default }
-  .arrow svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round }
   .rail-pos { min-width: 56px; font-size: 13px; color: var(--mu); text-align: center; font-variant-numeric: tabular-nums }
+  /* Buttons are Web Awesome's <wa-button>, themed in wa.css; these only size them in their layouts */
+  .arrow::part(label) { display: grid; place-items: center }
+  .arrow svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round }
+  .lab-links wa-button.open { flex: 1 }
+  .lab-links wa-button.open::part(button) { width: 100% }
+  .lab-links wa-button.open::part(label) { flex: 1; text-align: start }
+  .lab.ask .lab-links wa-button.open { --wa-color-neutral-fill-loud: var(--ok); --wa-color-neutral-on-loud: var(--p) }
+  .codeblock wa-copy-button { color: #c9c6be }
+  wa-button [slot=end] svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round }
   @media (hover: none) { .arrow { display: none } }
   .rail-ctl.static .arrow, .rail-ctl.static .rail-pos { display: none }
   /* The usage line keeps its space before the numbers load, so every card is the same height from the start */
@@ -222,10 +212,6 @@ import Base from '../layouts/Base.astro';
   .lab-use { display: grid; grid-template-columns: auto auto; justify-content: start; gap: 4px 16px; min-height: 61px; margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--line); font-size: 13px; color: var(--mu); font-variant-numeric: tabular-nums }
   .lab-use b { color: var(--i); font-weight: 500 }
   .lab-links { position: relative; z-index: 1; display: flex; gap: 8px; margin-top: auto; padding-top: 24px }
-  .lab-links a { height: 40px; display: flex; align-items: center; justify-content: center; padding: 0 12px; border: 1px solid color-mix(in srgb, var(--i) 30%, transparent); border-radius: 8px; font: 500 13px var(--sans); text-decoration: none; color: var(--i); transition: background-color .15s var(--ease), border-color .15s var(--ease), color .15s var(--ease) }
-  .lab-links a:hover { border-color: var(--i); background: var(--soft) }
-  .lab-links .open { flex: 1; justify-content: space-between; padding: 0 16px; border-color: var(--i); background: var(--i); color: var(--p) }
-  .lab-links a.open:hover { border-color: var(--a); background: var(--a); color: var(--p) }
 
   /* ---- This semester in numbers (/stats.json, written daily by the deploy) ------------------- */
   .panel { border: 1px solid var(--line); border-radius: 16px; background: var(--card); box-shadow: var(--sh); overflow: hidden }
@@ -279,8 +265,6 @@ import Base from '../layouts/Base.astro';
   .dresults p { margin: 4px 0 0; font-size: 15px; line-height: 1.5 }
   .codeblock { border-radius: 10px; background: #141311; color: #e8e6e1; overflow: hidden; border: 1px solid #2a2b29 }
   .codeblock-bar { display: flex; align-items: center; justify-content: space-between; height: 40px; padding: 4px 8px 4px 16px; border-bottom: 1px solid #2a2b29; font: 400 12px var(--code); color: #8d8f89 }
-  .copy { height: 28px; padding: 0 10px; border: 1px solid #3a3b39; border-radius: 6px; background: transparent; color: #e8e6e1; font: 500 12px var(--sans); cursor: pointer; transition: background-color .15s var(--ease) }
-  .copy:hover { background: #1d1e1c }
   .codeblock pre { margin: 0; padding: 16px; font: 400 13px/1.7 var(--code); white-space: pre; overflow-x: auto }
   .codeblock .c { color: #7d8f73 }
   .log { margin: 0; padding: 0; list-style: none }
@@ -313,8 +297,8 @@ import Base from '../layouts/Base.astro';
         <h1>Lab manuals and schedules for Birzeit ECE</h1>
         <p class="lede">Lab manuals that work offline, the weekly schedule of every course and room from Ritaj, and a schedule builder for registration</p>
         <div class="ctas">
-          <a class="cta primary" href="#labs">Browse the labs <span aria-hidden="true">↓</span></a>
-          <a class="cta" href="/timetable/">Build your schedule <span aria-hidden="true">→</span></a>
+          <wa-button variant="brand" size="l" href="#labs">Browse the labs <span slot="end" aria-hidden="true">↓</span></wa-button>
+          <wa-button appearance="outlined" size="l" href="/timetable/">Build your schedule <span slot="end" aria-hidden="true">→</span></wa-button>
         </div>
       </div>
 
@@ -341,10 +325,10 @@ import Base from '../layouts/Base.astro';
           <p>Each manual is its own site, with experiments, code listings and a setup guide for the boards and tools it uses</p>
         </div>
         <div class="rail-ctl">
-          <button type="button" class="arrow" id="rail-prev" aria-label="Previous labs"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M11 4 6 9l5 5"/></svg></button>
+          <wa-button appearance="outlined" class="arrow" id="rail-prev" aria-label="Previous labs"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M11 4 6 9l5 5"/></svg></wa-button>
           <span class="rail-pos" id="rail-pos" aria-live="polite"></span>
-          <button type="button" class="arrow" id="rail-next" aria-label="Next labs"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="m7 4 5 5-5 5"/></svg></button>
-          <a class="link" href="/labs/">All labs <span aria-hidden="true">→</span></a>
+          <wa-button appearance="outlined" class="arrow" id="rail-next" aria-label="Next labs"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="m7 4 5 5-5 5"/></svg></wa-button>
+          <wa-button appearance="outlined" href="/labs/">All labs <span slot="end" aria-hidden="true">→</span></wa-button>
         </div>
       </div>
       <div class="rail" id="rail" tabindex="0" aria-label="Laboratories, scroll sideways for more">
@@ -355,9 +339,9 @@ import Base from '../layouts/Base.astro';
           <span class="lab-plat">TM4C123 · ARM Cortex-M4</span>
           <div class="lab-use" data-use="encs4110" hidden><span><b data-u="students"></b> students</span><span><b data-u="experiment_views"></b> page views</span><span><b data-u="experiments"></b> experiments</span></div>
           <div class="lab-links">
-            <a class="open" href="https://encs4110.birzeit.me/" aria-label="Start the ENCS4110 lab" target="_blank" rel="noopener">Start <span aria-hidden="true">→</span></a>
-            <a href="https://encs4110.birzeit.me/manual/encs4110_manual.pdf" aria-label="ENCS4110 manual PDF" target="_blank" rel="noopener">PDF</a>
-            <a href="https://encs4110.birzeit.me/setup/" aria-label="ENCS4110 setup guide" target="_blank" rel="noopener">Setup</a>
+            <wa-button class="open" variant="neutral" appearance="accent" size="s" href="https://encs4110.birzeit.me/" aria-label="Start the ENCS4110 lab" target="_blank" rel="noopener">Start <span slot="end" aria-hidden="true">→</span></wa-button>
+            <wa-button appearance="outlined" size="s" href="https://encs4110.birzeit.me/manual/encs4110_manual.pdf" aria-label="ENCS4110 manual PDF" target="_blank" rel="noopener">PDF</wa-button>
+            <wa-button appearance="outlined" size="s" href="https://encs4110.birzeit.me/setup/" aria-label="ENCS4110 setup guide" target="_blank" rel="noopener">Setup</wa-button>
           </div>
         </article>
         <article class="lab" data-lab="encs4101" data-code="ENCS4101">
@@ -367,9 +351,9 @@ import Base from '../layouts/Base.astro';
           <span class="lab-plat">STM32 · CubeIDE · HAL</span>
           <div class="lab-use" data-use="encs4101" hidden><span><b data-u="students"></b> students</span><span><b data-u="experiment_views"></b> page views</span><span><b data-u="experiments"></b> experiments</span></div>
           <div class="lab-links">
-            <a class="open" href="https://encs4101.birzeit.me/" aria-label="Start the ENCS4101 lab" target="_blank" rel="noopener">Start <span aria-hidden="true">→</span></a>
-            <a href="https://encs4101.birzeit.me/ENCS4101-Manual.pdf" aria-label="ENCS4101 manual PDF" target="_blank" rel="noopener">PDF</a>
-            <a href="https://encs4101.birzeit.me/setup/" aria-label="ENCS4101 setup guide" target="_blank" rel="noopener">Setup</a>
+            <wa-button class="open" variant="neutral" appearance="accent" size="s" href="https://encs4101.birzeit.me/" aria-label="Start the ENCS4101 lab" target="_blank" rel="noopener">Start <span slot="end" aria-hidden="true">→</span></wa-button>
+            <wa-button appearance="outlined" size="s" href="https://encs4101.birzeit.me/ENCS4101-Manual.pdf" aria-label="ENCS4101 manual PDF" target="_blank" rel="noopener">PDF</wa-button>
+            <wa-button appearance="outlined" size="s" href="https://encs4101.birzeit.me/setup/" aria-label="ENCS4101 setup guide" target="_blank" rel="noopener">Setup</wa-button>
           </div>
         </article>
         <article class="lab" data-lab="encs5150" data-code="ENCS5150">
@@ -379,9 +363,9 @@ import Base from '../layouts/Base.astro';
           <span class="lab-plat">Android (Java) · Spring Boot</span>
           <div class="lab-use" data-use="encs5150" hidden><span><b data-u="students"></b> students</span><span><b data-u="experiment_views"></b> page views</span><span><b data-u="experiments"></b> experiments</span></div>
           <div class="lab-links">
-            <a class="open" href="https://encs5150.birzeit.me/" aria-label="Start the ENCS5150 lab" target="_blank" rel="noopener">Start <span aria-hidden="true">→</span></a>
-            <a href="https://encs5150.birzeit.me/ENCS515-Manual-2025.pdf" aria-label="ENCS5150 manual PDF" target="_blank" rel="noopener">PDF</a>
-            <a href="https://encs5150.birzeit.me/setup/" aria-label="ENCS5150 setup guide" target="_blank" rel="noopener">Setup</a>
+            <wa-button class="open" variant="neutral" appearance="accent" size="s" href="https://encs5150.birzeit.me/" aria-label="Start the ENCS5150 lab" target="_blank" rel="noopener">Start <span slot="end" aria-hidden="true">→</span></wa-button>
+            <wa-button appearance="outlined" size="s" href="https://encs5150.birzeit.me/ENCS515-Manual-2025.pdf" aria-label="ENCS5150 manual PDF" target="_blank" rel="noopener">PDF</wa-button>
+            <wa-button appearance="outlined" size="s" href="https://encs5150.birzeit.me/setup/" aria-label="ENCS5150 setup guide" target="_blank" rel="noopener">Setup</wa-button>
           </div>
         </article>
         <article class="lab" data-lab="encs5101" data-code="ENCS5101">
@@ -391,9 +375,9 @@ import Base from '../layouts/Base.astro';
           <span class="lab-plat">Cortex-M4 · Arduino Mega · Raspberry Pi</span>
           <div class="lab-use" data-use="encs5101" hidden><span><b data-u="students"></b> students</span><span><b data-u="experiment_views"></b> page views</span><span><b data-u="experiments"></b> experiments</span></div>
           <div class="lab-links">
-            <a class="open" href="https://encs5101.birzeit.me/" aria-label="Start the ENCS5101 lab" target="_blank" rel="noopener">Start <span aria-hidden="true">→</span></a>
-            <a href="https://encs5101.birzeit.me/ENCS5101-Manual.pdf" aria-label="ENCS5101 manual PDF" target="_blank" rel="noopener">PDF</a>
-            <a href="https://encs5101.birzeit.me/setup/" aria-label="ENCS5101 setup guide" target="_blank" rel="noopener">Setup</a>
+            <wa-button class="open" variant="neutral" appearance="accent" size="s" href="https://encs5101.birzeit.me/" aria-label="Start the ENCS5101 lab" target="_blank" rel="noopener">Start <span slot="end" aria-hidden="true">→</span></wa-button>
+            <wa-button appearance="outlined" size="s" href="https://encs5101.birzeit.me/ENCS5101-Manual.pdf" aria-label="ENCS5101 manual PDF" target="_blank" rel="noopener">PDF</wa-button>
+            <wa-button appearance="outlined" size="s" href="https://encs5101.birzeit.me/setup/" aria-label="ENCS5101 setup guide" target="_blank" rel="noopener">Setup</wa-button>
           </div>
         </article>
         <article class="lab ask" data-lab="ask">
@@ -403,8 +387,8 @@ import Base from '../layouts/Base.astro';
           <span class="lab-plat">Any lab in the department</span>
           <div class="lab-use"><span>It becomes a site like these, with pages that work offline and code you can copy</span></div>
           <div class="lab-links">
-            <a class="open" href="mailto:support@birzeit.me?subject=New%20lab%20manual">Get in touch <span aria-hidden="true">→</span></a>
-            <a href="https://github.com/ECE-Birzeit" target="_blank" rel="noopener">GitHub</a>
+            <wa-button class="open" variant="neutral" appearance="accent" size="s" href="mailto:support@birzeit.me?subject=New%20lab%20manual">Get in touch <span slot="end" aria-hidden="true">→</span></wa-button>
+            <wa-button appearance="outlined" size="s" href="https://github.com/ECE-Birzeit" target="_blank" rel="noopener">GitHub</wa-button>
           </div>
         </article>
       </div>
@@ -456,8 +440,8 @@ import Base from '../layouts/Base.astro';
 
             <div class="dpanel" role="tabpanel" id="dp-copy" aria-labelledby="ft-copy" hidden>
               <div class="codeblock">
-                <div class="codeblock-bar"><span>main.c</span><button type="button" class="copy">Copy</button></div>
-<pre><code><span class="c">/* Start PWM on TIM2, channel 1 */</span>
+                <div class="codeblock-bar"><span>main.c</span><wa-copy-button from="code-pwm" copy-label="Copy" success-label="Copied"></wa-copy-button></div>
+<pre id="code-pwm"><code><span class="c">/* Start PWM on TIM2, channel 1 */</span>
 HAL_TIM_PWM_Start(&amp;htim2, TIM_CHANNEL_1);
 
 <span class="c">/* duty: 0..999 maps to 0..100 % */</span>
@@ -490,7 +474,7 @@ __HAL_TIM_SET_COMPARE(&amp;htim2, TIM_CHANNEL_1, duty);</code></pre>
             <div><dt>instructors</dt><dd data-count="instructor">745</dd></div>
             <div><dt>rooms</dt><dd data-count="room">260</dd></div>
           </dl>
-          <a class="link" href="/schedules/">Open the schedules <span aria-hidden="true">→</span></a>
+          <wa-button appearance="outlined" href="/schedules/">Open the schedules <span slot="end" aria-hidden="true">→</span></wa-button>
         </div>
         <a class="preview" href="/schedules/?view=room&amp;q=Masri207" aria-label="Example: the week of room Masri207">
           <div class="pv-top"><span class="seg">Instructors</span><span class="seg">Courses</span><span class="seg on">Rooms</span><span class="pick">Masri207</span></div>
@@ -511,7 +495,7 @@ __HAL_TIM_SET_COMPARE(&amp;htim2, TIM_CHANNEL_1, duty);</code></pre>
             <li>Filter by start time, end time and days off</li>
             <li>A link that opens the same timetable</li>
           </ul>
-          <a class="link" href="/timetable/">Build your schedule <span aria-hidden="true">→</span></a>
+          <wa-button appearance="outlined" href="/timetable/">Build your schedule <span slot="end" aria-hidden="true">→</span></wa-button>
         </div>
         <a class="preview" href="/timetable/?c=ENCS4110,ENCS3320,ENEE2360" aria-label="Example: three courses fitted into two days">
           <div class="pv-top"><span class="chip on">ENCS4110</span><span class="chip alt">ENCS3320</span><span class="chip mu">ENEE2360</span><span class="pv-count">1 of <b>108</b></span></div>
@@ -528,7 +512,7 @@ __HAL_TIM_SET_COMPARE(&amp;htim2, TIM_CHANNEL_1, duty);</code></pre>
           <h2 id="numbers-h">This semester in numbers</h2>
           <p id="numbers-note">Counted every day from the four lab sites and their analytics</p>
         </div>
-        <a class="link" href="/stats/">All insights <span aria-hidden="true">→</span></a>
+        <wa-button appearance="outlined" href="/stats/">All insights <span slot="end" aria-hidden="true">→</span></wa-button>
       </div>
       <div class="panel">
         <div class="stats-grid" id="stats-grid">
@@ -557,8 +541,8 @@ __HAL_TIM_SET_COMPARE(&amp;htim2, TIM_CHANNEL_1, duty);</code></pre>
           </div>
         </div>
         <div class="ctas">
-          <a class="cta primary" href="mailto:support@birzeit.me?subject=New%20lab%20manual">Bring your manual <span aria-hidden="true">→</span></a>
-          <a class="cta" href="https://github.com/ECE-Birzeit" target="_blank" rel="noopener">GitHub <svg class="cta-ext" viewBox="0 0 10 10" aria-hidden="true"><path d="M3 7l4-4M3.5 3H7v3.5"/></svg></a>
+          <wa-button variant="brand" size="l" href="mailto:support@birzeit.me?subject=New%20lab%20manual">Bring your manual <span slot="end" aria-hidden="true">→</span></wa-button>
+          <wa-button appearance="outlined" size="l" href="https://github.com/ECE-Birzeit" target="_blank" rel="noopener">GitHub <span slot="end" aria-hidden="true"><svg class="cta-ext" viewBox="0 0 10 10" aria-hidden="true"><path d="M3 7l4-4M3.5 3H7v3.5"/></svg></span></wa-button>
         </div>
       </div>
     </div>
@@ -592,7 +576,7 @@ __HAL_TIM_SET_COMPARE(&amp;htim2, TIM_CHANNEL_1, duty);</code></pre>
 
     // Which lab and which link people use; GA treats the lab subdomains as internal links
     document.getElementById('labs').addEventListener('click', function (e) {
-      var a = e.target.closest('a'), lab = a && a.closest('[data-code]');
+      var a = e.target.closest('a, wa-button'), lab = a && a.closest('[data-code]');
       if (!lab || typeof gtag !== 'function') return;
       var kind = a.classList.contains('open') ? 'manual' : a.closest('h3') ? 'title' : a.textContent.trim().toLowerCase();
       gtag('event', 'lab_click', { lab: lab.dataset.code, link_type: kind, link_url: a.href });

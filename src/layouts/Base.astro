@@ -3,6 +3,7 @@
 // first paint), the header with the nav, and the footer. Pages fill <main> through the default
 // slot, add to <head> through slot="head", and add footer links through slot="footer".
 import { execSync } from 'node:child_process';
+import '../styles/wa.css';
 import '../styles/base.css';
 
 interface Props {
@@ -35,7 +36,7 @@ const links = [
 ];
 ---
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="wa-theme-default wa-palette-default">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -72,6 +73,7 @@ const links = [
     try { saved = { paper: 'light', ink: 'dark' }[localStorage.getItem('ece-labs-theme')] || localStorage.getItem('ece-labs-theme'); } catch (e) {}
     var mode = saved || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
     document.documentElement.setAttribute('data-theme', mode);
+    document.documentElement.classList.add(mode === 'dark' ? 'wa-dark' : 'wa-light');
   })();
 </script>
 </head>
@@ -106,5 +108,18 @@ const links = [
     </span>
   </div>
 </footer>
+<script>
+  // Web Awesome components used on the site, bundled with the page (no CDN). Its light/dark classes
+  // follow the site's data-theme, which each page's theme switch sets.
+  import '@awesome.me/webawesome/dist/components/button/button.js';
+  import '@awesome.me/webawesome/dist/components/copy-button/copy-button.js';
+  import '@awesome.me/webawesome/dist/components/input/input.js';
+  import '@awesome.me/webawesome/dist/components/select/select.js';
+  import '@awesome.me/webawesome/dist/components/option/option.js';
+  const root = document.documentElement;
+  const sync = () => { const dark = root.dataset.theme === 'dark'; root.classList.toggle('wa-dark', dark); root.classList.toggle('wa-light', !dark); };
+  sync();
+  new MutationObserver(sync).observe(root, { attributes: true, attributeFilter: ['data-theme'] });
+</script>
 </body>
 </html>

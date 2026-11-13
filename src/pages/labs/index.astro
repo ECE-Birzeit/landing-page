@@ -1,5 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
+import PageHead from '../../components/PageHead.astro';
 ---
 <Base title="All labs · ECE Hub" description="Every lab of the Department of Electrical & Computer Engineering at Birzeit University: filter by hardware or software, language and year, and open the manual, the PDF or the setup guide." path="/labs/" ogDescription="Every ECE lab at Birzeit University, with filters for type, language and year." nav="labs" skip={{ href: "#grid", text: "Skip to the labs" }}>
 <style is:global>
@@ -16,23 +17,6 @@ import Base from '../../layouts/Base.astro';
   .bar .t { margin-inline-start: 8px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis }
   .bar .r { margin-inline-start: auto; white-space: nowrap }
 
-  /* Page head: the title on the left, this page's live figures on the right */
-  .phead { border-bottom: 1px solid var(--line) }
-  .phead .wrap { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 28px 56px; padding-block: clamp(40px, 6vw, 72px) clamp(28px, 4vw, 44px) }
-  h1 { margin: 0; font: 500 clamp(40px, 5.6vw, 68px)/1.02 var(--display); letter-spacing: -.035em; text-wrap: balance }
-  .lede { max-width: 56ch; margin: 16px 0 0; font-size: 17px; line-height: 1.55; color: var(--mu2); text-wrap: pretty }
-  .lede a { text-underline-offset: 3px }
-  .pfacts { display: flex; flex-wrap: wrap; gap: 16px 0; margin: 0 }
-  .pfacts div { display: flex; flex-direction: column-reverse; padding: 2px 24px; border-inline-start: 1px solid var(--line) }
-  .pfacts div:last-child { padding-inline-end: 0 }
-  .pfacts dd { margin: 0; font: 500 30px/1.1 var(--display); letter-spacing: -.02em; font-variant-numeric: tabular-nums; white-space: nowrap }
-  .pfacts dt { margin-top: 6px; font: 400 12px var(--mono); color: var(--mu); white-space: nowrap }
-  @media (max-width: 860px) {
-    .phead .wrap { grid-template-columns: minmax(0, 1fr) }
-    .pfacts { gap: 16px 32px }
-    .pfacts div { padding: 0; border: 0 }
-    .pfacts dd { font-size: 24px }
-  }
 
   /* Page */
   main .wrap { display: flex; flex-direction: column; gap: 16px; padding-top: 28px; padding-bottom: 72px }
@@ -40,16 +24,9 @@ import Base from '../../layouts/Base.astro';
 
   /* Search and filters */
   .tools { display: grid; grid-template-columns: minmax(0, 2fr) repeat(3, minmax(0, 1fr)); gap: 10px }
-  .find, .pick { position: relative; display: block; height: 48px; border: 1px solid var(--line2); border-radius: 10px; background: var(--card) }
-  .find:hover, .find:focus-within, .pick:hover, .pick:focus-within { border-color: var(--i) }
-  .find input, .pick select { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; border-radius: inherit; outline: 0; background: transparent; font: 400 14px var(--mono) }
-  .find input { padding: 0 14px 0 38px }
-  .find input::placeholder { color: var(--mu) }
-  .find b { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); font: 600 15px var(--display); color: var(--ok); pointer-events: none }
-  .pick select { padding: 0 34px 0 14px; text-overflow: ellipsis; appearance: none; -webkit-appearance: none; cursor: pointer }
-  .pick select option { background: var(--card); color: var(--i) }
-  .pick::after { content: ''; position: absolute; right: 16px; top: 50%; width: 7px; height: 7px; margin-top: -6px; border: solid var(--mu); border-width: 0 1.5px 1.5px 0; transform: rotate(45deg); pointer-events: none }
-  @media (max-width: 860px) { .tools { grid-template-columns: 1fr 1fr } .tools .find { grid-column: 1 / -1 } .tools .pick:last-child { grid-column: 1 / -1 } }
+  /* The search box and filters are Web Awesome's <wa-input> and <wa-select>, themed in wa.css */
+  .tools .ico { width: 16px; height: 16px; fill: none; stroke: var(--mu); stroke-width: 1.5; stroke-linecap: round }
+  @media (max-width: 860px) { .tools { grid-template-columns: 1fr 1fr } .tools .find { grid-column: 1 / -1 } .tools wa-select:last-child { grid-column: 1 / -1 } }
 
   /* The catalog: one row per lab. Code, what it covers, its facts, then where to go */
   .bar button { margin-inline-start: 14px; padding: 0; border: 0; background: none; color: var(--mu2); font: inherit; text-decoration: underline; text-underline-offset: 3px; cursor: pointer }
@@ -69,10 +46,8 @@ import Base from '../../layouts/Base.astro';
   .spec dt { color: var(--mu) }
   .spec dd { margin: 0; color: var(--i) }
   .go { display: flex; gap: 6px }
-  .go a { display: inline-flex; align-items: center; justify-content: center; gap: 14px; height: 40px; padding: 0 13px; border: 1px solid var(--line); border-radius: 8px; font: 500 13px var(--sans); color: var(--mu2); text-decoration: none; white-space: nowrap; transition: border-color .15s, color .15s, background .15s }
-  .go a:hover { border-color: var(--i); color: var(--i) }
-  .go .open { padding: 0 16px; border-color: var(--i); background: var(--i); color: var(--p); font-weight: 600 }
-  .go .open:hover { border-color: var(--a); background: var(--a); color: var(--p) }
+  .go .open { --wa-color-neutral-fill-loud: var(--i) }
+  .go .open:hover { --wa-color-neutral-fill-loud: var(--a) }
   .status { padding: 36px 28px; font: 400 13px/1.7 var(--mono); color: var(--mu) }
   .invite { align-self: flex-end; font: 500 13px var(--sans); color: var(--mu2); text-decoration: none }
   .invite b { color: var(--i); font-weight: 600 }
@@ -88,7 +63,8 @@ import Base from '../../layouts/Base.astro';
     .code { font-size: 44px }
     .spec, .go { grid-column: 1; grid-row: auto }
     .spec { grid-template-columns: auto minmax(0, 1fr) }
-    .go a { flex: 1 }
+    .go wa-button { flex: 1 }
+    .go wa-button::part(button) { width: 100% }
     .go .open { flex: 2 }
     .invite { align-self: flex-start }
   }
@@ -105,22 +81,14 @@ import Base from '../../layouts/Base.astro';
 </style>
 
 <main id="main">
-  <section class="phead">
-    <div class="wrap">
-      <div>
-        <h1>All labs</h1>
-        <p class="lede">Every lab manual on ECE Hub. Filter by type, language or year, or search for a board or a topic such as PWM or SQLite.</p>
-      </div>
-      <dl class="pfacts" id="pfacts" aria-live="polite"></dl>
-    </div>
-  </section>
+  <PageHead title="All labs">Every lab manual on ECE Hub. Filter by type, language or year, or search for a board or a topic such as PWM or SQLite.</PageHead>
 
   <div class="wrap">
     <div class="tools">
-      <label class="find"><b aria-hidden="true">›</b><input id="q" type="search" placeholder="Search codes, boards, topics" aria-label="Search labs" autocomplete="off" spellcheck="false"></label>
-      <label class="pick"><select id="kind" aria-label="Type"></select></label>
-      <label class="pick"><select id="lang" aria-label="Language"></select></label>
-      <label class="pick"><select id="year" aria-label="Year"></select></label>
+      <wa-input id="q" class="find" type="search" size="l" placeholder="Search codes, boards, topics" aria-label="Search labs" autocomplete="off" spellcheck="false" with-clear><svg slot="start" class="ico" viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="4.5"/><path d="m10.5 10.5 3 3"/></svg></wa-input>
+      <wa-select id="kind" size="l" aria-label="Type"></wa-select>
+      <wa-select id="lang" size="l" aria-label="Language"></wa-select>
+      <wa-select id="year" size="l" aria-label="Year"></wa-select>
     </div>
 
     <div class="win">
@@ -210,20 +178,23 @@ import Base from '../../layouts/Base.astro';
     }
 
     // Each picker lists the values in the data with how many labs have them
+    var picks = {};
     function options() {
       var fill = function (id, label, values) {
         var count = {};
         values.forEach(function (v) { if (v) count[v] = (count[v] || 0) + 1; });
         var keys = Object.keys(count).sort(function (a, b) { return a.localeCompare(b, undefined, { numeric: true }); });
         if (state[id] && !count[state[id]]) state[id] = '';
-        $(id).innerHTML = '<option value="">' + label + '</option>' + keys.map(function (k) {
-          return '<option value="' + esc(k) + '">' + esc(k) + ' (' + count[k] + ')</option>';
+        // <wa-option> values cannot hold spaces, so each option's value is its index in keys
+        picks[id] = keys;
+        $(id).innerHTML = '<wa-option value="all">' + label + '</wa-option>' + keys.map(function (k, i) {
+          return '<wa-option value="k' + i + '">' + esc(k) + ' (' + count[k] + ')</wa-option>';
         }).join('');
-        $(id).value = state[id];
+        $(id).value = state[id] ? 'k' + keys.indexOf(state[id]) : 'all';
       };
-      fill('kind', 'Hardware and software', all.map(function (l) { return l.kind; }));
-      fill('lang', 'Every language', all.reduce(function (a, l) { return a.concat(l.langs); }, []));
-      fill('year', 'Every year', all.map(function (l) { return l.year; }));
+      fill('kind', 'All types', all.map(function (l) { return l.kind; }));
+      fill('lang', 'All languages', all.reduce(function (a, l) { return a.concat(l.langs); }, []));
+      fill('year', 'All years', all.map(function (l) { return l.year; }));
       $('q').value = state.q;
     }
 
@@ -256,9 +227,9 @@ import Base from '../../layouts/Base.astro';
           (l.topics.length ? '<p class="topics">' + esc(l.topics.join(', ')) + '</p>' : '') + '</div>' +
           '<dl class="spec">' + spec.map(function (x) { return '<dt>' + x[0] + '</dt><dd>' + esc(x[1]) + '</dd>'; }).join('') + '</dl>' +
           '<div class="go">' +
-          (l.url ? '<a class="open" href="' + esc(l.url) + '" target="_blank" rel="noopener" aria-label="Start the ' + esc(l.code) + ' lab">Start <span aria-hidden="true">→</span></a>' : '') +
-          (l.pdf ? '<a href="' + esc(l.pdf) + '" target="_blank" rel="noopener" aria-label="' + esc(l.code) + ' manual PDF">PDF</a>' : '') +
-          (l.setup ? '<a href="' + esc(l.setup) + '" target="_blank" rel="noopener" aria-label="' + esc(l.code) + ' setup guide">Setup</a>' : '') +
+          (l.url ? '<wa-button class="open" variant="neutral" appearance="accent" href="' + esc(l.url) + '" target="_blank" rel="noopener" aria-label="Start the ' + esc(l.code) + ' lab">Start <span slot="end" aria-hidden="true">→</span></wa-button>' : '') +
+          (l.pdf ? '<wa-button appearance="outlined" href="' + esc(l.pdf) + '" target="_blank" rel="noopener" aria-label="' + esc(l.code) + ' manual PDF">PDF</wa-button>' : '') +
+          (l.setup ? '<wa-button appearance="outlined" href="' + esc(l.setup) + '" target="_blank" rel="noopener" aria-label="' + esc(l.code) + ' setup guide">Setup</wa-button>' : '') +
           '</div></li>';
       }).join('');
     }
@@ -270,7 +241,8 @@ import Base from '../../layouts/Base.astro';
       clearTimeout(timer);
       timer = setTimeout(function () { state.q = v.trim(); render(); }, 120);
     });
-    ['kind', 'lang', 'year'].forEach(function (id) { $(id).addEventListener('change', function () { state[id] = this.value; render(); }); });
+    ['kind', 'lang', 'year'].forEach(function (id) { $(id).addEventListener('change', function () { state[id] = this.value === 'all' || !this.value ? '' : picks[id][+this.value.slice(1)]; render(); }); });
+    $('q').addEventListener('wa-clear', function () { state.q = ''; render(); });
     $('clear').addEventListener('click', function () { state = { q: '', kind: '', lang: '', year: '' }; options(); render(); $('q').focus(); });
     readUrl();
     load();
