@@ -212,7 +212,9 @@ import PageHead from '../../components/PageHead.astro';
     function prefixOf(code) { return (code.match(/^[A-Za-z]*/) || [''])[0]; }
     function inDept(code) { var u = units[state.dept]; return !u || !u.prefixes || u.prefixes[prefixOf(code)] === 1; }
     function mins(t) { var p = t.split(':'); return +p[0] * 60 + +p[1]; }
-    function short(n) { var p = n.split(' '); return p.length > 2 ? p[0] + ' ' + p[p.length - 1] : n; }
+    // Ritaj lists a co-taught section's instructors in one field, separated by commas
+    function people(n) { return String(n || '').split(/\s*,\s*/).filter(function (x) { return x && x !== 'TBA'; }); }
+    function short(n) { return people(n).map(function (x) { var p = x.split(' '); return p.length > 2 ? p[0] + ' ' + p[p.length - 1] : x; }).join(', ') || n; }
     function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
     function color(code) {
       var dark = root.getAttribute('data-theme') === 'dark';
@@ -286,7 +288,7 @@ import PageHead from '../../components/PageHead.astro';
           c.sections.forEach(function (s) {
             s.meetings.forEach(function (m) {
               if (m.start && m.end && ALL_DAYS.some(function (x) { return x[0] === m.day; }))
-                rows.push({ code: c.code, sec: s.number, inst: s.instructor || 'TBA', day: m.day, start: m.start, end: m.end, room: m.room || 'TBA', enr: s.enrolled });
+                rows.push({ code: c.code, sec: s.number, inst: s.instructor || 'TBA', insts: people(s.instructor), day: m.day, start: m.start, end: m.end, room: m.room || 'TBA', enr: s.enrolled });
             });
           });
         });
@@ -325,7 +327,7 @@ import PageHead from '../../components/PageHead.astro';
       var mine = rows.filter(function (r) { return inDept(r.code); });
       Object.keys(KEY).forEach(function (v) {
         var count = {};
-        (v === 'room' ? rows : mine).forEach(function (r) { var x = r[KEY[v]]; if (x && x !== 'TBA') count[x] = 1; });
+        (v === 'room' ? rows : mine).forEach(function (r) { (v === 'instructor' ? r.insts : [r[KEY[v]]]).forEach(function (x) { if (x && x !== 'TBA') count[x] = 1; }); });
         lists[v] = Object.keys(count).sort(function (a, b) { return a.localeCompare(b); });
       });
       $('dept').value = state.dept;
@@ -380,7 +382,7 @@ import PageHead from '../../components/PageHead.astro';
       pick.style.setProperty('--caret-w', ($('optcount').offsetWidth + 28) + 'px');
 
       // A week shows everything the instructor teaches or the room holds, whatever the department
-      var mine = rows.filter(function (r) { return r[KEY[view]] === sel; }).map(function (r) {
+      var mine = rows.filter(function (r) { return view === 'instructor' ? r.insts.indexOf(sel) !== -1 : r[KEY[view]] === sel; }).map(function (r) {
         return r;
       }).sort(function (a, b) {
         return 'SUMTWR'.indexOf(a.day) - 'SUMTWR'.indexOf(b.day) || mins(a.start) - mins(b.start);

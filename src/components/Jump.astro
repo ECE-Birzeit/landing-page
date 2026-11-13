@@ -1,0 +1,221 @@
+---
+// Jump (⌘K / Ctrl+K, or /): one box that finds any page, lab, course, instructor or room and goes
+// there. Pages and labs are there at once; courses, instructors and rooms come from the same
+// bzu-course-catalog file the schedules use, loaded the first time the box opens.
+---
+<button type="button" class="jump-btn" id="jump-open" aria-haspopup="dialog" aria-keyshortcuts="Meta+K Control+K">
+  <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="4.5"/><path d="m10.5 10.5 3 3"/></svg>
+  <span class="jump-label">Search</span>
+  <kbd class="jump-key" aria-hidden="true">⌘K</kbd>
+</button>
+
+<wa-dialog id="jump" label="Jump to a page, lab, course, instructor or room" without-header light-dismiss>
+  <div class="jump-field">
+    <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="4.5"/><path d="m10.5 10.5 3 3"/></svg>
+    <input id="jump-q" type="text" role="combobox" aria-expanded="true" aria-controls="jump-list" aria-autocomplete="list"
+      aria-label="Course, instructor, room or lab" placeholder="Course, instructor, room or lab" autocomplete="off" spellcheck="false">
+    <kbd aria-hidden="true">Esc</kbd>
+  </div>
+  <ul id="jump-list" role="listbox" aria-label="Results"></ul>
+  <div class="jump-foot" aria-hidden="true">
+    <span><kbd>↑</kbd><kbd>↓</kbd> move</span>
+    <span><kbd>↵</kbd> open</span>
+    <span class="jump-alt"><kbd class="jump-mod">⌘</kbd><kbd>↵</kbd> add a course to your schedule</span>
+    <span class="jump-note" id="jump-note"></span>
+  </div>
+</wa-dialog>
+
+<style is:global>
+  /* The header button */
+  .jump-btn { flex: none; display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 8px 0 12px; border: 1px solid var(--line); border-radius: 10px; background: transparent; color: var(--mu2); font: 400 14px var(--sans); cursor: pointer; transition: color .15s var(--ease), border-color .15s var(--ease) }
+  .jump-btn:hover { color: var(--i); border-color: var(--line2) }
+  .jump-btn svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round }
+  .jump-btn .jump-label { margin-inline-end: 12px }
+  kbd { display: inline-grid; place-items: center; min-width: 22px; height: 22px; padding: 0 5px; border: 1px solid var(--line2); border-bottom-width: 2px; border-radius: 5px; background: var(--card); font: 500 11px/1 var(--sans); color: var(--mu) }
+  @media (max-width: 640px) {
+    header .wrap .jump-btn { order: 2; margin-inline-start: auto; padding: 0; width: 40px; justify-content: center }
+    header .wrap .theme { margin-inline-start: 0 }
+    .jump-btn .jump-label, .jump-btn .jump-key { display: none }
+  }
+
+  /* The box */
+  #jump { --width: min(640px, calc(100vw - 32px)); --spacing: 0 }
+  #jump::part(dialog) { margin-block-start: min(12vh, 120px); border: 1px solid var(--line2); border-radius: 16px; background: var(--card); box-shadow: 0 24px 64px -24px rgba(0, 0, 0, .45) }
+  #jump::part(body) { padding: 0 }
+  .jump-field { display: flex; align-items: center; gap: 12px; padding: 0 16px; border-bottom: 1px solid var(--line) }
+  .jump-field svg { flex: none; width: 18px; height: 18px; fill: none; stroke: var(--mu); stroke-width: 1.5; stroke-linecap: round }
+  .jump-field input { flex: 1; min-width: 0; height: 56px; border: 0; outline: 0; background: transparent; color: var(--i); font: 400 17px var(--sans) }
+  .jump-field input::placeholder { color: var(--mu) }
+  #jump-list { max-height: min(56vh, 440px); margin: 0; padding: 8px; overflow-y: auto; list-style: none; overscroll-behavior: contain }
+  #jump-list .jump-group { padding: 12px 12px 4px; font-size: 12px; color: var(--mu) }
+  #jump-list [role=option] { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 2px 16px; padding: 10px 12px; border-radius: 10px; cursor: pointer }
+  #jump-list [role=option][aria-selected=true] { background: var(--soft) }
+  #jump-list b { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-weight: 500; color: var(--i) }
+  #jump-list small { grid-column: 1; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-size: 13px; color: var(--mu) }
+  #jump-list .go { grid-column: 2; grid-row: 1 / span 2; font-size: 13px; color: var(--mu) }
+  #jump-list [aria-selected=true] .go { color: var(--i) }
+  #jump-list .empty { padding: 24px 12px; color: var(--mu); font-size: 14px }
+  .jump-foot { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 20px; padding: 10px 16px; border-top: 1px solid var(--line); background: var(--bar); border-radius: 0 0 16px 16px; font-size: 12px; color: var(--mu) }
+  .jump-foot span { display: inline-flex; align-items: center; gap: 4px }
+  .jump-foot .jump-note { margin-inline-start: auto }
+  @media (max-width: 640px) { .jump-foot { display: none } #jump-list .go { display: none } #jump-list [role=option] { grid-template-columns: minmax(0, 1fr) } }
+</style>
+
+<script>
+  const CATALOG = 'https://raw.githubusercontent.com/mabushelbaia/bzu-course-catalog/main/data/';
+  const RECENT = 'ece-jump-recent';
+  const KIND_ORDER = { Page: 0, Lab: 1, Course: 2, Instructor: 3, Room: 4 };
+  type Item = { kind: string; title: string; sub: string; url: string; alt?: string; external?: boolean; hay: string; t: string };
+
+  const $ = (id: string) => document.getElementById(id)!;
+  const dialog = $('jump') as HTMLElement & { open: boolean };
+  const input = $('jump-q') as HTMLInputElement;
+  const list = $('jump-list');
+  const note = $('jump-note');
+  const mac = /Mac|iPhone|iPad/.test(navigator.platform);
+  if (!mac) { document.querySelectorAll('.jump-key').forEach((k) => (k.textContent = 'Ctrl K')); document.querySelectorAll('.jump-mod').forEach((k) => (k.textContent = 'Ctrl')); }
+
+  // Lowercase, no accents, no spaces or punctuation: "Masri 207", "masri207" and "MASRI-207" all match
+  const norm = (s: string) => s.toLowerCase().normalize('NFKD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9؀-ۿ]+/g, '');
+  const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]!));
+  const make = (kind: string, title: string, sub: string, url: string, extra: Partial<Item> = {}): Item =>
+    ({ kind, title, sub, url, hay: norm(title + ' ' + sub), t: norm(title), ...extra });
+  const titleCase = (s: string) => s.toLowerCase().replace(/(^|[\s(/-])(\p{L})/gu, (m, a, b) => a + b.toUpperCase());
+
+  const items: Item[] = [
+    make('Page', 'Home', 'ECE Hub', '/'),
+    make('Page', 'All labs', 'Every lab manual, with filters', '/labs/'),
+    make('Page', 'Weekly schedules', 'Any instructor, course or room', '/schedules/'),
+    make('Page', 'Schedule builder', 'Every clash-free combination of sections', '/timetable/'),
+    make('Page', 'Insights', 'How the lab sites are used', '/stats/')
+  ];
+  let loading: Promise<void> | null = null;
+  let shown: Item[] = [];
+  let at = 0;
+
+  function load() {
+    if (loading) return loading;
+    note.textContent = 'Loading the catalog…';
+    const labs = fetch('/labs/labs.json').then((r) => r.json()).then((ls: any[]) => {
+      ls.forEach((l) => items.push(make('Lab', l.code + ' ' + l.name, l.platform || '', l.url, { external: true })));
+    }).catch(() => {});
+    const catalog = fetch(CATALOG + 'index.json').then((r) => r.json()).then((idx) => {
+      const term = (idx.published_terms || Object.keys(idx.terms))[0];
+      return fetch(CATALOG + term + '.json').then((r) => r.json());
+    }).then((d) => {
+      const inst = new Map<string, Set<string>>(), rooms = new Map<string, number>();
+      d.courses.forEach((c: any) => {
+        items.push(make('Course', c.code, titleCase(c.name), '/schedules/?dept=all&view=course&q=' + encodeURIComponent(c.code), { alt: '/timetable/?add=' + encodeURIComponent(c.code) }));
+        c.sections.forEach((s: any) => {
+          // A co-taught section lists its instructors in one field, separated by commas: one entry each
+          String(s.instructor || '').split(/\s*,\s*/).forEach((n: string) => {
+            if (!n || n === 'TBA') return;
+            if (!inst.has(n)) inst.set(n, new Set());
+            inst.get(n)!.add(c.code);
+          });
+          s.meetings.forEach((m: any) => { if (m.room && m.room !== 'TBA') rooms.set(m.room, (rooms.get(m.room) || 0) + 1); });
+        });
+      });
+      inst.forEach((cs, name) => {
+        const codes = [...cs].sort();
+        items.push(make('Instructor', name, codes.slice(0, 3).join(', ') + (codes.length > 3 ? ' and ' + (codes.length - 3) + ' more' : ''), '/schedules/?dept=all&view=instructor&q=' + encodeURIComponent(name)));
+      });
+      rooms.forEach((n, room) => items.push(make('Room', room, n + (n === 1 ? ' class a week' : ' classes a week'), '/schedules/?view=room&q=' + encodeURIComponent(room))));
+      note.textContent = d.name;
+    }).catch(() => { note.textContent = 'Courses, instructors and rooms could not load'; });
+    loading = Promise.all([labs, catalog]).then(() => { render(); });
+    return loading;
+  }
+
+  function recent(): Item[] {
+    try { return (JSON.parse(localStorage.getItem(RECENT) || '[]') as Item[]).slice(0, 5); } catch { return []; }
+  }
+  function remember(it: Item) {
+    try { localStorage.setItem(RECENT, JSON.stringify([it, ...recent().filter((r) => r.url !== it.url)].slice(0, 5))); } catch {}
+  }
+
+  // Every word of the query must appear; titles that start with it come first, then pages, labs,
+  // courses, instructors and rooms, then shorter titles
+  function search(q: string): Item[] {
+    const words = q.split(/\s+/).map(norm).filter(Boolean);
+    if (!words.length) return [];
+    const first = words[0], joined = words.join('');
+    const scored: [number, Item][] = [];
+    for (const it of items) {
+      if (!words.every((w) => it.hay.includes(w)) && !it.hay.includes(joined)) continue;
+      const s = it.t.startsWith(joined) ? 0 : it.t.startsWith(first) ? 1 : norm(it.title.split(/\s+/).slice(1).join(' ')).includes(first) ? 2 : 3;
+      scored.push([s * 10 + KIND_ORDER[it.kind as keyof typeof KIND_ORDER], it]);
+    }
+    return scored.sort((a, b) => a[0] - b[0] || a[1].title.length - b[1].title.length).slice(0, 40).map((x) => x[1]);
+  }
+
+  function render() {
+    const q = input.value.trim();
+    let html = '';
+    if (!q) {
+      const r = recent();
+      shown = r.concat(items.filter((it) => it.kind === 'Page' || it.kind === 'Lab').filter((it) => !r.some((x) => x.url === it.url)));
+      html = (r.length ? '<li class="jump-group" role="presentation">Recent</li>' + r.map(row).join('') : '') +
+        '<li class="jump-group" role="presentation">Go to</li>' + shown.slice(r.length).map((it, i) => row(it, i + r.length)).join('');
+    } else {
+      shown = search(q);
+      html = shown.length ? shown.map(row).join('') : '<li class="empty" role="presentation">' + (loading && note.textContent?.startsWith('Loading') ? 'Loading the catalog…' : 'Nothing matches “' + esc(q) + '”') + '</li>';
+    }
+    at = Math.min(at, Math.max(0, shown.length - 1));
+    list.innerHTML = html;
+    mark();
+  }
+  function row(it: Item, i: number) {
+    const go = it.external ? 'Open ↗' : it.kind === 'Page' ? 'Go' : 'Schedule';
+    return '<li role="option" id="jump-' + i + '" data-i="' + i + '" aria-selected="' + (i === at) + '"><b>' + esc(it.title) + '</b><span class="go">' + it.kind + ' · ' + go + '</span><small>' + esc(it.sub) + '</small></li>';
+  }
+  function mark() {
+    list.querySelectorAll('[role=option]').forEach((o) => o.setAttribute('aria-selected', String(Number((o as HTMLElement).dataset.i) === at)));
+    const cur = document.getElementById('jump-' + at);
+    if (cur) { input.setAttribute('aria-activedescendant', cur.id); cur.scrollIntoView({ block: 'nearest' }); } else input.removeAttribute('aria-activedescendant');
+  }
+  function go(it: Item | undefined, alt = false) {
+    if (!it) return;
+    remember({ ...it });
+    const url = alt && it.alt ? it.alt : it.url;
+    dialog.open = false;
+    if (it.external) window.open(url, '_blank', 'noopener'); else location.href = url;
+  }
+  function open() {
+    if (dialog.open) return;
+    input.value = ''; at = 0;
+    render();
+    dialog.open = true;
+    load();
+  }
+
+  $('jump-open').addEventListener('click', open);
+  dialog.addEventListener('wa-after-show', () => { input.focus(); });
+  input.addEventListener('input', () => { at = 0; render(); });
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (!shown.length) return;
+      at = (at + (e.key === 'ArrowDown' ? 1 : shown.length - 1)) % shown.length;
+      mark();
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      go(shown[at], e.metaKey || e.ctrlKey);
+    }
+  });
+  list.addEventListener('mousemove', (e) => {
+    const o = (e.target as HTMLElement).closest('[role=option]') as HTMLElement | null;
+    if (o && Number(o.dataset.i) !== at) { at = Number(o.dataset.i); mark(); }
+  });
+  list.addEventListener('click', (e) => {
+    const o = (e.target as HTMLElement).closest('[role=option]') as HTMLElement | null;
+    if (o) go(shown[Number(o.dataset.i)], e.metaKey || e.ctrlKey);
+  });
+  // ⌘K / Ctrl+K anywhere; / when not typing in a field
+  document.addEventListener('keydown', (e) => {
+    const t = e.target instanceof Element ? e.target : null;
+    const typing = t && t.closest('input, textarea, select, [contenteditable], wa-input, wa-select');
+    if ((e.key === 'k' || e.key === 'K') && (e.metaKey || e.ctrlKey)) { e.preventDefault(); dialog.open ? (dialog.open = false) : open(); }
+    else if (e.key === '/' && !typing && !e.metaKey && !e.ctrlKey && !e.altKey) { e.preventDefault(); open(); }
+  });
+</script>
