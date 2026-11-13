@@ -1,2 +1,5 @@
 .impeccable/
 .claude/
+node_modules/
+dist/
+.astro/

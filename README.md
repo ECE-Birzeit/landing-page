@@ -1,59 +1,56 @@
-<a href="https://birzeit.me"><img src="og.png" alt="ECE Labs, Birzeit University: every ECE lab, in one place." width="100%"></a>
+<a href="https://birzeit.me"><img src="public/og.png" alt="ECE Hub, Birzeit University: lab manuals and schedules for ECE students." width="100%"></a>
 
-# ECE Labs · birzeit.me
+# ECE Hub · birzeit.me
 
-The landing page at [birzeit.me](https://birzeit.me) that lists every lab of the Department of Electrical & Computer Engineering at Birzeit University, with search across lab codes, boards and topics.
+The site at [birzeit.me](https://birzeit.me) for students of the Department of Electrical & Computer Engineering at Birzeit University: the lab manuals, the weekly schedule of every course, instructor and room, and a schedule builder for registration.
 
 **[Open birzeit.me](https://birzeit.me)** · [ENCS4110](https://encs4110.birzeit.me) · [ENCS4101](https://encs4101.birzeit.me) · [ENCS5150](https://encs5150.birzeit.me) · [ENCS5101](https://encs5101.birzeit.me)
 
 ## Run it locally
 
-There is no build step. Open `index.html` in a browser, or serve the folder:
+The site is built with [Astro](https://astro.build) (Node 22 or later):
 
 ```sh
 git clone https://github.com/ECE-Birzeit/landing-page.git
 cd landing-page
-python3 -m http.server 8000   # http://localhost:8000
+npm install
+npm run dev       # http://localhost:4321, reloads as you edit
+npm run build     # the finished site in dist/
+npm run preview   # serve dist/
 ```
+
+`/stats.json` is written by the deploy, so the numbers on the home and insights pages fall back to their defaults locally. Copy `https://birzeit.me/stats.json` into `dist/` (or `public/`) to see real ones.
 
 ## Project layout
 
 | Path | Contents |
 |:--|:--|
-| `index.html` | The home page at `/`: the hero with its chip mark, the five tools as a pin header, the lab cards, this semester's numbers, what the web manuals do, and the call for manuals. Motion uses [GSAP](https://gsap.com) 3.12.5 and ScrollTrigger from cdnjs with integrity hashes: the chip's traces route out on load and a signal runs down the trace nearest the pointer; sections rise in once as they scroll into view. Nothing moves for reduced motion, and the page is complete without the scripts |
-| `scripts/stats.py` | Writes `/stats.json` daily in the deploy: manuals, experiments and code listings from the four lab repos, plus visitors from Google Analytics (keyless sign-in) counted from the semester's first teaching day, which comes from bzu-course-catalog |
-| `stats/index.html` | The insights page at `/stats/`: students, experiment pages opened, students per day, busiest hours, devices, most-opened experiments and every lab, all drawn from `/stats.json` |
-| `assets/widgets.js`, `assets/widgets.css` | The chart widgets shared by the home page's "This semester in numbers" section and the insights page |
-| `schedules/index.html` | The ECE weekly schedules at `/schedules/`: browse by instructor, course or room, with a sortable sections table. Reads the live JSON from [bzu-course-catalog](https://github.com/mabushelbaia/bzu-course-catalog) in the browser, so it stays current without redeploys |
-| `labs/index.html`, `labs/labs.json` | Every lab at `/labs/`, with search and filters for type (hardware or software), language and year. The cards are drawn from `labs.json`; the home page features a few of them in its carousel |
-| `timetable/index.html` | The timetable builder at `/timetable/`: pick courses and step through every clash-free combination of sections, with filters (start and end hours, days off), per-section switches, a calendar (`.ics`) export and a shareable link. Reads the same catalog JSON; choices are kept in `localStorage` under `ece-timetable` |
-| `v1/index.html` | The first design, frozen at `/v1/` (not indexed by search engines) |
-| `v2/index.html` | The second design, frozen at `/v2/` (not indexed by search engines) |
-| `legacy/index.html` | Redirects `/legacy/` to `/v1/` |
-| `og.png`, `og.svg` | Link-preview image and its source (render `og.svg` at 1200×630 in a browser engine, which loads Geist from Google Fonts) |
-| `favicon.svg`, `favicon.ico`, `favicon.png`, `apple-touch-icon.png` | Icons: the SVG source, a 16/32/48 px `.ico` (Safari looks for it), a 32 px PNG and the 180 px iOS icon |
-| `sitemap.xml`, `robots.txt` | Search engine files, with sitemaps for all four sites |
-| `CNAME` | `birzeit.me` |
-| `.github/workflows/deploy.yml` | Stamps the last-updated date and deploys to GitHub Pages |
+| `src/layouts/Base.astro` | What every page shares: the `<head>` (meta and link-preview tags, icons, fonts, analytics, the theme set before first paint), the header with the nav, and the footer. Pages pass their title, description, path and nav item, add to the head through `slot="head"` and add footer links through `slot="footer"` |
+| `src/styles/base.css` | Shared styles: reset, the colour tokens for the light and dark themes, type, the header and the footer. One font, Switzer, on every page |
+| `src/pages/index.astro` | The home page at `/`: a text hero with this semester's panel (week, bar to the exams, the hub's counts), the featured laboratories as a sideways row of cards, what the web manuals do, the schedules and the schedule builder with real examples, this semester in numbers, and the call for manuals. Motion uses [GSAP](https://gsap.com) 3.12.5 and ScrollTrigger from cdnjs with integrity hashes; nothing moves for reduced motion, and the page is complete without the scripts |
+| `src/pages/labs/index.astro` | Every lab at `/labs/`, with search and filters for type, language and year, drawn from `public/labs/labs.json` |
+| `src/pages/schedules/index.astro` | The weekly schedules at `/schedules/`: browse by instructor, course or room, with a sortable sections table. Reads the live JSON from [bzu-course-catalog](https://github.com/mabushelbaia/bzu-course-catalog) in the browser, so it stays current without redeploys |
+| `src/pages/timetable/index.astro` | The schedule builder at `/timetable/`: pick courses and step through every clash-free combination of sections, with filters, per-section switches, a calendar (`.ics`) export and a shareable link. Choices are kept in `localStorage` under `ece-timetable` |
+| `src/pages/stats/index.astro` | The insights page at `/stats/`, drawn from `/stats.json` |
+| `public/` | Files served as they are: icons, `og.png` and its source `og.svg`, `sitemap.xml`, `robots.txt`, `CNAME`, `labs/labs.json`, the chart widgets in `assets/` (shared by the home and insights pages), and the frozen old designs in `v1/`, `v2/` and `legacy/` |
+| `scripts/stats.py` | Writes `/stats.json` during the deploy: manuals, experiments and code listings from the four lab repos, plus visitors from Google Analytics (keyless sign-in) counted from the semester's first teaching day |
+| `.github/workflows/deploy.yml` | Builds the site, stamps the sitemap, writes `stats.json` and deploys to GitHub Pages |
 
-### Versions
-
-Each design lives in its own folder and is served as is. To freeze the current page before a redesign, copy `index.html` to `vN/index.html`, add `<meta name="robots" content="noindex">` and add the folder to the `cp` line in the deploy workflow. Old designs stay reachable at their folder but are not linked from the page.
+The pages keep their scripts as plain JavaScript (`<script is:inline>`) and their styles as global CSS (`<style is:global>`), because most of what they style is drawn by those scripts at run time.
 
 ### Adding a lab
 
-Add it to `labs/labs.json` (`id`, `code`, `name`, `url`, `pdf`, `setup`, `kind`, `langs`, `platform`, `boards`, `topics` and its `accent` colours for the light and dark theme) so it shows on `/labs/`. To feature it on the home page as well:
+1. Add it to `public/labs/labs.json` (`id`, `code`, `name`, `url`, `pdf`, `setup`, `kind`, `langs`, `platform`, `boards`, `topics` and its `accent` colours for the light and dark theme) so it shows on `/labs/`.
+2. To feature it on the home page, copy one of the `<article class="lab">` cards in `src/pages/index.astro` and change its `data-lab`, `data-code`, number, name, platform line and three links; add its accent colours to the `[data-lab=…]` rules in `src/styles/base.css`. The row, its counts and the usage numbers follow on their own.
+3. Add it to the structured data (`application/ld+json`) in `src/pages/index.astro` and its sitemap to `public/robots.txt`.
 
-Copy one of the `<article class="lab">` blocks in `index.html` and update:
+### Versions
 
-- `data-lab`, `data-code`, `data-url`, and `data-langs`, the languages students write in that lab, comma-separated (`Assembly,C`). They show on the card's title bar, and the search box matches them
-- `data-search`, the words the search box matches
-- the course number in `.lab-num`, the name, the platform line and the three links
-- the lab's accent colors, in the two `[data-lab=…]` rules (light and dark theme)
+Old designs are frozen as plain files in `public/vN/` with `<meta name="robots" content="noindex">`, reachable at their folder but not linked from the site.
 
-The home page shows every lab as a card in a grid (4 across on wide screens, 2 on tablets, 1 on phones); the cards share rows through CSS subgrid, so numbers, names and links line up whatever the title length. The counts and usage numbers on the page come from the cards and from `/stats.json`, so there is nothing else to update.
+### Link preview
 
-Then add the lab to the structured data (`application/ld+json`) and its sitemap to `robots.txt`.
+`public/og.png` is rendered from `public/og.svg` at 1200×630 in a browser engine, which loads Switzer from Fontshare.
 
 ## Contributing
 
@@ -61,7 +58,7 @@ Then add the lab to the structured data (`application/ld+json`) and its sitemap 
 
 ## Deployment
 
-On every push to `main`, `.github/workflows/deploy.yml` writes the latest commit date into the footer and the sitemap, then deploys to GitHub Pages at [birzeit.me](https://birzeit.me).
+On every push to `main`, and once a day, `.github/workflows/deploy.yml` builds the site with Astro, writes the latest commit date into the sitemap, counts the platform into `stats.json` and deploys `dist/` to GitHub Pages at [birzeit.me](https://birzeit.me). The footer's "Updated" date is the latest commit's, read at build time.
 
 ## License
 

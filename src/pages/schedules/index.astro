@@ -1,80 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Weekly schedules · ECE Hub</title>
-<meta name="description" content="Weekly schedules for every department at Birzeit University: browse by instructor, course or room, filtered by faculty and department. Updated daily from Ritaj.">
-<meta property="og:title" content="Weekly schedules · ECE Hub">
-<meta property="og:description" content="Browse Birzeit University schedules by department, instructor, course or room. Updated daily from Ritaj.">
-<meta property="og:url" content="https://birzeit.me/schedules/">
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="ECE Hub">
-<meta property="og:image" content="https://birzeit.me/og.png">
-<meta name="twitter:card" content="summary_large_image">
-<link rel="canonical" href="https://birzeit.me/schedules/">
-<link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
-<link rel="icon" type="image/svg+xml" href="/favicon.svg">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preconnect" href="https://api.fontshare.com" crossorigin>
-<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=switzer@1&display=swap">
-<link rel="preconnect" href="https://raw.githubusercontent.com" crossorigin>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-K834Q72PP9"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-K834Q72PP9');
-</script>
-<script>
-  (function () {
-    var saved = null;
-    try { saved = { paper: 'light', ink: 'dark' }[localStorage.getItem('ece-labs-theme')] || localStorage.getItem('ece-labs-theme'); } catch (e) {}
-    var mode = saved || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-    document.documentElement.setAttribute('data-theme', mode);
-  })();
-</script>
-<style>
-  html, body { margin: 0 }
-  * { box-sizing: border-box }
-  a { color: inherit }
-  [hidden] { display: none !important }
-  :root { --g: clamp(20px, 4vw, 48px); --display: 'Switzer', ui-sans-serif, sans-serif; --sans: 'Switzer', ui-sans-serif, sans-serif; --mono: var(--sans) }
-  [data-theme=dark] { --p: #1a1917; --card: #22211e; --bar: #1f1e1b; --i: #e4e0d6; --mu: #9d988c; --mu2: #c2bdb1; --line: #34322e; --line2: #4a4842; --soft: #2a2926; --ok: #5fcf86 }
-  [data-theme=light] { --p: #f3f2ec; --card: #fff; --bar: #f7f6f1; --i: #1a1b19; --mu: #64655e; --mu2: #45463f; --line: #dddbd2; --line2: #c9c7bd; --soft: #ebe9e1; --ok: #15803d }
-  body { min-height: 100vh; background: var(--p); color: var(--i); font-family: var(--sans); font-weight: 400; font-variant-numeric: tabular-nums; font-synthesis: none; transition: background .25s, color .25s }
-  :focus-visible { outline: 2px solid currentColor; outline-offset: 3px }
-  .wrap { max-width: 1280px; margin: 0 auto; padding-inline: var(--g) }
+---
+import Base from '../../layouts/Base.astro';
+import PageHead from '../../components/PageHead.astro';
+---
+<Base title="Weekly schedules · ECE Hub" description="Weekly schedules for every department at Birzeit University: browse by instructor, course or room, filtered by faculty and department. Updated daily from Ritaj." path="/schedules/" ogDescription="Browse Birzeit University schedules by department, instructor, course or room. Updated daily from Ritaj." nav="schedules" skip={{ href: "#week", text: "Skip to the schedule" }}>
+<Fragment slot="head">
+  <link rel="preconnect" href="https://raw.githubusercontent.com" crossorigin>
+</Fragment>
+<style is:global>
   .kicker { font: 400 12.5px var(--mono); color: var(--mu) }
-  .skip { position: absolute; inset-inline-start: -9999px }
-  .skip:focus { inset-inline-start: 16px; top: 16px; z-index: 10; padding: 10px 14px; background: var(--i); color: var(--p) }
   .btn { cursor: pointer; transition: background .15s, border-color .15s, color .15s }
   .btn:hover { background: var(--soft) }
 
-  /* Header: the same on every page */
-  header { position: sticky; top: 0; z-index: 20; background: var(--p); border-bottom: 1px solid var(--line); transition: background-color .25s }
-  header .wrap { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 32px; min-height: 64px; padding-block: 8px }
-  .brand { flex: none; display: flex; align-items: baseline; gap: 12px; text-decoration: none; white-space: nowrap }
-  .brand b { font: 600 18px var(--sans); letter-spacing: -.01em }
-  .brand span { font: 400 13px var(--sans); color: var(--mu) }
-  nav { display: flex; gap: 4px; margin-inline-start: auto; font: 500 14px var(--sans) }
-  nav a { padding: 8px 12px; border-radius: 8px; text-decoration: none; color: var(--mu2); transition: color .15s var(--ease), background-color .15s var(--ease) }
-  nav a:hover { color: var(--i); background: var(--soft) }
-  nav a[aria-current=page] { color: var(--i); box-shadow: inset 0 -2px 0 var(--ok); border-radius: 0; background: transparent }
-  .theme { flex: none; width: 40px; height: 40px; display: grid; place-items: center; padding: 0; border: 1px solid var(--line); border-radius: 10px; background: transparent; color: var(--mu2); cursor: pointer; transition: color .15s var(--ease), border-color .15s var(--ease) }
-  .theme:hover { color: var(--i); border-color: var(--line2) }
-  .theme svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round }
-  [data-theme=light] .theme .moon, [data-theme=dark] .theme .sun { display: none }
-  @media (max-width: 640px) {
-    header { position: static }
-    header .wrap { gap: 4px 12px }
-    header .theme { order: 2; margin-inline-start: auto }
-    nav { order: 3; flex-basis: 100%; margin: 0 -8px; justify-content: space-between; font-size: 13px }
-    nav a { padding-inline: 8px }
-  }
 
   /* Terminal window */
   .win { border: 1px solid var(--line); border-radius: 12px; background: var(--card); overflow: hidden }
@@ -84,23 +20,6 @@
   .bar .r { margin-inline-start: auto; white-space: nowrap }
 
   /* Page */
-  /* Page head: the title on the left, this page's live figures on the right */
-  .phead { border-bottom: 1px solid var(--line) }
-  .phead .wrap { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 28px 56px; padding-block: clamp(40px, 6vw, 72px) clamp(28px, 4vw, 44px) }
-  h1 { margin: 0; font: 500 clamp(40px, 5.6vw, 68px)/1.02 var(--display); letter-spacing: -.035em; text-wrap: balance }
-  .lede { max-width: 56ch; margin: 16px 0 0; font-size: 17px; line-height: 1.55; color: var(--mu2); text-wrap: pretty }
-  .lede a { text-underline-offset: 3px }
-  .pfacts { display: flex; flex-wrap: wrap; gap: 16px 0; margin: 0 }
-  .pfacts div { display: flex; flex-direction: column-reverse; padding: 2px 24px; border-inline-start: 1px solid var(--line) }
-  .pfacts div:last-child { padding-inline-end: 0 }
-  .pfacts dd { margin: 0; font: 500 30px/1.1 var(--display); letter-spacing: -.02em; font-variant-numeric: tabular-nums; white-space: nowrap }
-  .pfacts dt { margin-top: 6px; font: 400 12px var(--mono); color: var(--mu); white-space: nowrap }
-  @media (max-width: 860px) {
-    .phead .wrap { grid-template-columns: minmax(0, 1fr) }
-    .pfacts { gap: 16px 32px }
-    .pfacts div { padding: 0; border: 0 }
-    .pfacts dd { font-size: 24px }
-  }
   main > .wrap { display: flex; flex-direction: column; gap: 20px; padding-top: 28px; padding-bottom: 72px }
   /* Let wide children (the sections table) scroll inside their own box instead of widening the page */
   main > .wrap > * { min-width: 0; max-width: 100% }
@@ -108,6 +27,10 @@
   .seg { height: 48px; padding: 0 14px; border: 1px solid var(--line); border-radius: 8px; background: transparent; color: var(--mu2); font: 400 13px var(--mono); cursor: pointer; transition: border-color .15s, color .15s }
   .seg:hover { color: var(--i) }
   .seg[aria-pressed=true] { border-color: var(--i); color: var(--i) }
+  /* The view switch is three <wa-button>s; the pressed one gets a filled surface */
+  wa-button.seg { height: auto; padding: 0; border: 0; background: none }
+  wa-button.seg::part(button) { height: 48px; width: 100% }
+  wa-button.seg[aria-pressed=true]::part(button) { background: var(--soft); border-color: var(--i) }
   .tools { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px }
   /* The native select covers the whole box, so clicking anywhere on it (the › and the count too) opens the list */
   .pick { position: relative; display: block; overflow: hidden; width: min(600px, 100%); height: 48px; border: 1px solid var(--line2); border-radius: 10px; background: var(--card); cursor: pointer }
@@ -175,15 +98,6 @@
   td.c { color: var(--i); font-weight: 700 }
   td .sw { display: inline-block; width: 8px; height: 8px; margin-inline-end: 8px; border-radius: 2px; background: var(--c) }
 
-  /* Footer (same as the landing page) */
-  footer { border-top: 1px solid var(--line) }
-  footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 10px 32px; padding-block: 22px; font: 400 12.5px/1.6 var(--mono); color: var(--mu2) }
-  footer .grp { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 24px }
-  footer .dept { color: var(--i); font-weight: 500 }
-  /* Footer links look like links: underlined, with a small up-right arrow when they leave the site */
-  footer a { display: inline-flex; align-items: baseline; gap: 4px; color: var(--mu2); text-decoration: underline; text-decoration-color: color-mix(in srgb, currentColor 40%, transparent); text-decoration-thickness: 1px; text-underline-offset: 4px; transition: color .15s, text-decoration-color .15s }
-  footer a:hover { color: var(--i); text-decoration-color: currentColor }
-  footer .ext { flex: none; width: 10px; height: 10px; fill: none; stroke: currentColor; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round }
   /* Motion (same language as the home page): the page settles in on load; each time you pick an
      instructor, course or room the week's blocks grow in from their start time, day by day; agenda items
      and table rows follow. Only transform and opacity move, and none of it runs for reduced motion. */
@@ -205,43 +119,16 @@
   }
   @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important } }
 </style>
-</head>
-<body>
-<a class="skip" href="#week">Skip to the schedule</a>
-
-<header>
-  <div class="wrap">
-    <a class="brand" href="/"><b>ECE Hub</b><span>Birzeit University</span></a>
-    <nav aria-label="Primary">
-      <a class="btn" href="/labs/">Labs</a>
-      <a class="btn" href="/schedules/" aria-current="page">Schedules</a>
-      <a class="btn" href="/timetable/">Timetable</a>
-      <a class="btn" href="/stats/">Insights</a>
-    </nav>
-    <button type="button" class="theme btn" role="switch" aria-checked="false" aria-label="Dark theme" title="Toggle dark theme">
-      <svg class="sun" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3 3l1.4 1.4M11.6 11.6L13 13M3 13l1.4-1.4M11.6 4.4L13 3"/></svg>
-      <svg class="moon" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z"/></svg>
-    </button>
-  </div>
-</header>
 
 <main id="main" data-anim="all">
-  <section class="phead">
-    <div class="wrap">
-      <div>
-        <h1>Weekly schedules</h1>
-        <p class="lede">The teaching week of any instructor, course or room at Birzeit University, read from Ritaj every day. Planning your semester? <a href="/timetable/">Build your schedule</a>.</p>
-      </div>
-      <dl class="pfacts" id="pfacts" aria-live="polite"></dl>
-    </div>
-  </section>
+  <PageHead title="Weekly schedules">The teaching week of any instructor, course or room at Birzeit University, read from Ritaj every day. Planning your semester? <a href="/timetable/">Build your schedule</a>.</PageHead>
 
   <div class="wrap">
     <div class="tools">
       <div class="views" role="group" aria-label="Browse by">
-        <button type="button" class="seg" data-view="instructor" aria-pressed="true">Instructors</button>
-        <button type="button" class="seg" data-view="course" aria-pressed="false">Courses</button>
-        <button type="button" class="seg" data-view="room" aria-pressed="false">Rooms</button>
+        <wa-button appearance="outlined" size="l" class="seg" data-view="instructor" aria-pressed="true">Instructors</wa-button>
+        <wa-button appearance="outlined" size="l" class="seg" data-view="course" aria-pressed="false">Courses</wa-button>
+        <wa-button appearance="outlined" size="l" class="seg" data-view="room" aria-pressed="false">Rooms</wa-button>
       </div>
       <label class="pick dept"><b aria-hidden="true">⌂</b><select id="dept" aria-label="Department" disabled><option>Loading…</option></select><span class="caret" id="deptcount">▾</span></label>
       <label class="pick"><b aria-hidden="true">›</b><select id="pick" disabled><option>Loading…</option></select><span class="caret" id="optcount">▾</span></label>
@@ -269,20 +156,8 @@
   </div>
 </main>
 
-<footer>
-  <div class="wrap">
-    <span class="grp">
-      <span class="dept">Electrical &amp; Computer Engineering, Birzeit University</span>
-      <span>Developed by <a href="https://mabushelbaia.com" target="_blank" rel="noopener">Mohammad Abu-Shelbaia<svg class="ext" viewBox="0 0 10 10" aria-hidden="true"><path d="M3 7l4-4M3.5 3H7v3.5"/></svg></a></span>
-    </span>
-    <span class="grp">
-      <a href="https://github.com/mabushelbaia/bzu-course-catalog" target="_blank" rel="noopener">Data: bzu-course-catalog<svg class="ext" viewBox="0 0 10 10" aria-hidden="true"><path d="M3 7l4-4M3.5 3H7v3.5"/></svg></a>
-      <a href="https://github.com/ECE-Birzeit" target="_blank" rel="noopener">GitHub<svg class="ext" viewBox="0 0 10 10" aria-hidden="true"><path d="M3 7l4-4M3.5 3H7v3.5"/></svg></a>
-    </span>
-  </div>
-</footer>
 
-<script>
+<script is:inline>
   (function () {
     // Theme switch (same as the landing page)
     var root = document.documentElement;
@@ -614,5 +489,7 @@
     load();
   })();
 </script>
-</body>
-</html>
+<Fragment slot="footer">
+  <a href="https://github.com/mabushelbaia/bzu-course-catalog" target="_blank" rel="noopener">Data: bzu-course-catalog<svg class="ext" viewBox="0 0 10 10" aria-hidden="true"><path d="M3 7l4-4M3.5 3H7v3.5"/></svg></a>
+</Fragment>
+</Base>

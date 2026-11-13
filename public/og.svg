@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <style>@import url('https://api.fontshare.com/v2/css?f[]=switzer@1&amp;display=swap');</style>
+  </defs>
+  <!-- Link preview for birzeit.me, in the site's light theme: warm paper, ink, one green accent.
+       Render at 1200 x 630 in a browser engine to make og.png -->
+  <rect width="1200" height="630" fill="#f3f2ec"/>
+  <g font-family="Switzer, sans-serif">
+    <text x="64" y="80" font-size="28" font-weight="600" fill="#1a1b19" letter-spacing="-.3">ECE Hub</text>
+    <text x="194" y="80" font-size="22" fill="#6b6c65">Birzeit University</text>
+    <text x="1136" y="80" text-anchor="end" font-size="22" fill="#45463f">birzeit.me</text>
+    <line x1="64" y1="112" x2="1136" y2="112" stroke="#dddbd2" stroke-width="1.5"/>
+
+    <text font-size="80" font-weight="500" fill="#1a1b19" letter-spacing="-2.8">
+      <tspan x="60" y="236">Lab manuals</tspan>
+      <tspan x="60" y="322">and schedules</tspan>
+      <tspan x="60" y="408">for Birzeit ECE</tspan>
+    </text>
+    <text font-size="24" fill="#45463f">
+      <tspan x="64" y="472">Lab manuals that work offline, every course and</tspan>
+      <tspan x="64" y="506">room's weekly schedule, and a schedule builder</tspan>
+    </text>
+
+    <g font-size="20" fill="#45463f">
+      <rect x="64" y="561" width="12" height="12" rx="3" fill="#dc2626"/><text x="86" y="573">ENCS4110</text>
+      <rect x="200" y="561" width="12" height="12" rx="3" fill="#0369a1"/><text x="222" y="573">ENCS4101</text>
+      <rect x="336" y="561" width="12" height="12" rx="3" fill="#c2410c"/><text x="358" y="573">ENCS5150</text>
+      <rect x="472" y="561" width="12" height="12" rx="3" fill="#00787f"/><text x="494" y="573">ENCS5101</text>
+    </g>
+
+    <rect x="772" y="160" width="364" height="412" rx="20" fill="#fbfaf6" stroke="#dddbd2" stroke-width="1.5"/>
+    <text x="804" y="208" font-size="20" font-weight="500" fill="#45463f">This semester, from Ritaj</text>
+    <line x1="804" y1="232" x2="1104" y2="232" stroke="#dddbd2" stroke-width="1.5"/>
+    <g font-weight="500" fill="#1a1b19" font-size="56" letter-spacing="-1.6">
+      <text x="802" y="310">1,171</text><text x="986" y="310">745</text>
+      <text x="802" y="436">260</text><text x="986" y="436">4</text>
+    </g>
+    <g font-size="20" fill="#6b6c65">
+      <text x="804" y="342">courses</text><text x="988" y="342">instructors</text>
+      <text x="804" y="468">rooms</text><text x="988" y="468">lab manuals</text>
+    </g>
+    <line x1="804" y1="504" x2="1104" y2="504" stroke="#dddbd2" stroke-width="1.5"/>
+    <rect x="804" y="530" width="12" height="12" rx="3" fill="#15803d"/>
+    <text x="826" y="542" font-size="20" fill="#45463f">Schedule builder, no clashes</text>
+  </g>
+</svg>

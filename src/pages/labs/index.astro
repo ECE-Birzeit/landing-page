@@ -1,0 +1,251 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHead from '../../components/PageHead.astro';
+---
+<Base title="All labs · ECE Hub" description="Every lab of the Department of Electrical & Computer Engineering at Birzeit University: filter by hardware or software, language and year, and open the manual, the PDF or the setup guide." path="/labs/" ogDescription="Every ECE lab at Birzeit University, with filters for type, language and year." nav="labs" skip={{ href: "#grid", text: "Skip to the labs" }}>
+<style is:global>
+  .kicker { font: 400 12.5px var(--mono); color: var(--mu) }
+  .btn { cursor: pointer; transition: background .15s, border-color .15s, color .15s }
+  .btn:hover { background: var(--soft) }
+  button, input, select { font: inherit; color: inherit }
+
+
+  /* Terminal window */
+  .win { border: 1px solid var(--line); border-radius: 12px; background: var(--card); overflow: hidden }
+  .bar { display: flex; align-items: center; gap: 6px; height: 36px; padding: 0 14px; border-bottom: 1px solid var(--line); background: var(--bar); font: 400 12px var(--mono); color: var(--mu) }
+  .bar i { flex: none; width: 9px; height: 9px; border-radius: 50%; background: var(--line2) }
+  .bar .t { margin-inline-start: 8px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis }
+  .bar .r { margin-inline-start: auto; white-space: nowrap }
+
+
+  /* Page */
+  main .wrap { display: flex; flex-direction: column; gap: 16px; padding-top: 28px; padding-bottom: 72px }
+  main .wrap > * { min-width: 0; max-width: 100% }
+
+  /* Search and filters */
+  .tools { display: grid; grid-template-columns: minmax(0, 2fr) repeat(3, minmax(0, 1fr)); gap: 10px }
+  /* The search box and filters are Web Awesome's <wa-input> and <wa-select>, themed in wa.css */
+  .tools .ico { width: 16px; height: 16px; fill: none; stroke: var(--mu); stroke-width: 1.5; stroke-linecap: round }
+  @media (max-width: 860px) { .tools { grid-template-columns: 1fr 1fr } .tools .find { grid-column: 1 / -1 } .tools wa-select:last-child { grid-column: 1 / -1 } }
+
+  /* The catalog: one row per lab. Code, what it covers, its facts, then where to go */
+  .bar button { margin-inline-start: 14px; padding: 0; border: 0; background: none; color: var(--mu2); font: inherit; text-decoration: underline; text-underline-offset: 3px; cursor: pointer }
+  .bar button:hover { color: var(--i) }
+  .list { margin: 0; padding: 0; list-style: none }
+  .lab { display: grid; grid-template-columns: 172px minmax(0, 1fr) 230px auto; align-items: center; gap: 12px 32px; padding: 26px 24px; border-bottom: 1px solid var(--line) }
+  .lab:last-child { border-bottom: 0 }
+  .code { font: 500 52px/1 var(--display); letter-spacing: -.035em; font-variant-numeric: tabular-nums }
+  .code small { display: flex; align-items: center; gap: 7px; margin-bottom: 8px; font: 400 12px var(--mono); letter-spacing: 0; color: var(--mu2) }
+  .code small::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--a) }
+  .what h2 { margin: 0; font: 600 21px/1.2 var(--display); letter-spacing: -.015em; text-wrap: balance }
+  .what h2 a { text-decoration: none }
+  .what h2 a:hover { text-decoration: underline; text-decoration-color: var(--a); text-decoration-thickness: 2px; text-underline-offset: 4px }
+  .plat { margin: 6px 0 0; font: 500 14px var(--sans); color: var(--mu2) }
+  .topics { max-width: 62ch; margin: 10px 0 0; font-size: 14px; line-height: 1.55; color: var(--mu) }
+  .spec { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 5px 14px; margin: 0; font: 400 12.5px/1.4 var(--mono) }
+  .spec dt { color: var(--mu) }
+  .spec dd { margin: 0; color: var(--i) }
+  .go { display: flex; gap: 6px }
+  .go .open { --wa-color-neutral-fill-loud: var(--i) }
+  .go .open:hover { --wa-color-neutral-fill-loud: var(--a) }
+  .status { padding: 36px 28px; font: 400 13px/1.7 var(--mono); color: var(--mu) }
+  .invite { align-self: flex-end; font: 500 13px var(--sans); color: var(--mu2); text-decoration: none }
+  .invite b { color: var(--i); font-weight: 600 }
+  .invite:hover b { text-decoration: underline; text-underline-offset: 3px }
+  @media (max-width: 1080px) {
+    .lab { grid-template-columns: 150px minmax(0, 1fr) auto; align-items: start }
+    .spec { grid-column: 2; grid-template-columns: repeat(4, auto); justify-content: start; gap: 4px 8px }
+    .spec dd { margin-inline-end: 14px }
+    .go { grid-column: 3; grid-row: 1 }
+  }
+  @media (max-width: 720px) {
+    .lab { grid-template-columns: minmax(0, 1fr); gap: 14px; padding: 22px 18px }
+    .code { font-size: 44px }
+    .spec, .go { grid-column: 1; grid-row: auto }
+    .spec { grid-template-columns: auto minmax(0, 1fr) }
+    .go wa-button { flex: 1 }
+    .go wa-button::part(button) { width: 100% }
+    .go .open { flex: 2 }
+    .invite { align-self: flex-start }
+  }
+
+
+  /* Motion (same language as the home page) */
+  :root { --spring: cubic-bezier(.22, 1, .36, 1) }
+  @keyframes rise { from { opacity: 0; transform: translateY(14px) } to { opacity: 1; transform: none } }
+  @media (prefers-reduced-motion: no-preference) {
+    .phead .wrap > *, main .tools, main .win { animation: rise .7s var(--spring) backwards }
+    .phead .pfacts { animation-delay: 80ms } main .tools { animation-delay: 120ms } main .win { animation-delay: 180ms }
+  }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important } }
+</style>
+
+<main id="main">
+  <PageHead title="All labs">Every lab manual on ECE Hub. Filter by type, language or year, or search for a board or a topic such as PWM or SQLite.</PageHead>
+
+  <div class="wrap">
+    <div class="tools">
+      <wa-input id="q" class="find" type="search" size="l" placeholder="Search codes, boards, topics" aria-label="Search labs" autocomplete="off" spellcheck="false" with-clear><svg slot="start" class="ico" viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="4.5"/><path d="m10.5 10.5 3 3"/></svg></wa-input>
+      <wa-select id="kind" size="l" aria-label="Type"></wa-select>
+      <wa-select id="lang" size="l" aria-label="Language"></wa-select>
+      <wa-select id="year" size="l" aria-label="Year"></wa-select>
+    </div>
+
+    <div class="win">
+      <div class="bar"><i></i><i></i><i></i><span class="t">labs.json</span><span class="r"><span id="count" aria-live="polite"></span><button type="button" id="clear" hidden>clear filters</button></span></div>
+      <ul class="list" id="grid"><li class="status">Loading the labs…</li></ul>
+    </div>
+    <a class="invite" href="mailto:support@birzeit.me?subject=New%20lab%20manual">Teaching a lab? <b>Bring your manual →</b></a>
+  </div>
+</main>
+
+
+<script is:inline>
+  (function () {
+    // Theme switch (same as the landing page)
+    var root = document.documentElement;
+    var mq = window.matchMedia('(prefers-color-scheme: dark)');
+    var toggle = document.querySelector('.theme');
+    var chosen = false;
+    try { chosen = !!localStorage.getItem('ece-labs-theme'); } catch (e) {}
+    function apply(mode) { root.setAttribute('data-theme', mode); toggle.setAttribute('aria-checked', mode === 'dark' ? 'true' : 'false'); }
+    apply(root.getAttribute('data-theme'));
+    toggle.addEventListener('click', function () {
+      var mode = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      chosen = true;
+      try { localStorage.setItem('ece-labs-theme', mode); } catch (e) {}
+      apply(mode);
+      render();
+    });
+    mq.addEventListener('change', function (e) { if (!chosen) { apply(e.matches ? 'dark' : 'light'); render(); } });
+
+    // labs.json lists every lab; the home page features a few of them
+    var $ = function (id) { return document.getElementById(id); };
+    var ORDINAL = { 1: '1st', 2: '2nd', 3: '3rd' };
+    var all = [], stats = null;
+    var state = { q: '', kind: '', lang: '', year: '' };
+
+    function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+    function list(x) { return Array.isArray(x) ? x.filter(function (v) { return typeof v === 'string' && v.trim(); }) : []; }
+    function plural(n, one, many) { return n + ' ' + (n === 1 ? one : many); }
+    function href(u) { return typeof u === 'string' && /^https?:\/\//i.test(u) ? u : ''; }
+
+    function readUrl() {
+      var u = new URLSearchParams(location.search);
+      Object.keys(state).forEach(function (k) { state[k] = u.get(k) || ''; });
+    }
+    function writeUrl() {
+      var u = new URLSearchParams();
+      Object.keys(state).forEach(function (k) { if (state[k]) u.set(k, state[k]); });
+      var q = u.toString();
+      history.replaceState(null, '', q ? '?' + q : location.pathname);
+    }
+
+    function load() {
+      fetch('labs.json', { cache: 'no-cache' }).then(function (r) {
+        if (!r.ok) throw new Error(r.status);
+        return r.json();
+      }).then(function (data) {
+        all = (Array.isArray(data) ? data : []).filter(function (l) { return l && l.code && l.name; }).map(function (l) {
+          var m = String(l.code).match(/^([A-Za-z]+)\s*(\d)(\d*)$/);
+          var x = {
+            id: String(l.id || l.code).toLowerCase(), code: String(l.code), prefix: m ? m[1] : '', num: m ? m[2] + m[3] : String(l.code),
+            // The first digit of a Birzeit course number is the year it is taken in
+            year: m ? (ORDINAL[m[2]] || m[2] + 'th') + ' year' : '',
+            name: String(l.name), kind: String(l.kind || ''), platform: String(l.platform || ''),
+            langs: list(l.langs), boards: list(l.boards), topics: list(l.topics),
+            url: href(l.url), pdf: href(l.pdf), setup: href(l.setup), accent: l.accent || {}
+          };
+          x.hay = [x.code, x.name, x.kind, x.platform, x.year].concat(x.langs, x.boards, x.topics).join(' ').toLowerCase();
+          return x;
+        });
+        all.sort(function (a, b) { return a.code.localeCompare(b.code, undefined, { numeric: true }); });
+        options();
+        render();
+        // Experiment and listing counts come from the daily stats file; the page is complete without them
+        fetch('/stats.json').then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
+          if (d && d.labs) { stats = d; render(); }
+        }).catch(function () {});
+      }).catch(function () {
+        $('grid').innerHTML = '<li class="status">Couldn’t load the labs. Check your connection and reload.</li>';
+      });
+    }
+
+    function facts(pairs) {
+      $('pfacts').innerHTML = pairs.filter(function (p) { return p[0] !== null; }).map(function (p) {
+        return '<div><dt>' + esc(p[1]) + '</dt><dd>' + esc(typeof p[0] === 'number' ? p[0].toLocaleString('en') : p[0]) + '</dd></div>';
+      }).join('');
+    }
+
+    // Each picker lists the values in the data with how many labs have them
+    var picks = {};
+    function options() {
+      var fill = function (id, label, values) {
+        var count = {};
+        values.forEach(function (v) { if (v) count[v] = (count[v] || 0) + 1; });
+        var keys = Object.keys(count).sort(function (a, b) { return a.localeCompare(b, undefined, { numeric: true }); });
+        if (state[id] && !count[state[id]]) state[id] = '';
+        // <wa-option> values cannot hold spaces, so each option's value is its index in keys
+        picks[id] = keys;
+        $(id).innerHTML = '<wa-option value="all">' + label + '</wa-option>' + keys.map(function (k, i) {
+          return '<wa-option value="k' + i + '">' + esc(k) + ' (' + count[k] + ')</wa-option>';
+        }).join('');
+        $(id).value = state[id] ? 'k' + keys.indexOf(state[id]) : 'all';
+      };
+      fill('kind', 'All types', all.map(function (l) { return l.kind; }));
+      fill('lang', 'All languages', all.reduce(function (a, l) { return a.concat(l.langs); }, []));
+      fill('year', 'All years', all.map(function (l) { return l.year; }));
+      $('q').value = state.q;
+    }
+
+    function render() {
+      if (!all.length) return;
+      writeUrl();
+      var dark = root.getAttribute('data-theme') === 'dark';
+      var words = state.q.toLowerCase().split(/\s+/).filter(Boolean);
+      var shown = all.filter(function (l) {
+        return (!state.kind || l.kind === state.kind) && (!state.lang || l.langs.indexOf(state.lang) !== -1) &&
+          (!state.year || l.year === state.year) && words.every(function (w) { return l.hay.indexOf(w) !== -1; });
+      });
+      var filtered = !!(state.q || state.kind || state.lang || state.year);
+      var sum = function (k) { return stats ? all.reduce(function (a, l) { return a + ((stats.labs[l.id] || {})[k] || 0); }, 0) : null; };
+      facts([[all.length, all.length === 1 ? 'lab' : 'labs'], [sum('experiments'), 'experiments'], [sum('code_listings'), 'code listings']]);
+      $('count').textContent = filtered ? shown.length + ' of ' + plural(all.length, 'lab', 'labs') : plural(all.length, 'lab', 'labs');
+      $('clear').hidden = !filtered;
+      if (!shown.length) {
+        $('grid').innerHTML = '<li class="status">No lab matches. Try fewer words, or clear the filters.</li>';
+        return;
+      }
+      $('grid').innerHTML = shown.map(function (l) {
+        var a = (dark ? l.accent.dark : l.accent.light) || 'var(--ok)';
+        var st = (stats && stats.labs[l.id]) || {};
+        var spec = [['Type', l.kind], ['Language', l.langs.join(' · ')], ['Year', l.year], ['Experiments', st.experiments]].filter(function (x) { return x[1]; });
+        return '<li class="lab" style="--a:' + esc(a) + '">' +
+          '<div class="code"><small>' + esc(l.prefix) + '</small>' + esc(l.num) + '</div>' +
+          '<div class="what"><h2>' + (l.url ? '<a href="' + esc(l.url) + '" target="_blank" rel="noopener">' + esc(l.name) + '</a>' : esc(l.name)) + '</h2>' +
+          (l.platform ? '<p class="plat">' + esc(l.platform) + '</p>' : '') +
+          (l.topics.length ? '<p class="topics">' + esc(l.topics.join(', ')) + '</p>' : '') + '</div>' +
+          '<dl class="spec">' + spec.map(function (x) { return '<dt>' + x[0] + '</dt><dd>' + esc(x[1]) + '</dd>'; }).join('') + '</dl>' +
+          '<div class="go">' +
+          (l.url ? '<wa-button class="open" variant="neutral" appearance="accent" href="' + esc(l.url) + '" target="_blank" rel="noopener" aria-label="Start the ' + esc(l.code) + ' lab">Start <span slot="end" aria-hidden="true">→</span></wa-button>' : '') +
+          (l.pdf ? '<wa-button appearance="outlined" href="' + esc(l.pdf) + '" target="_blank" rel="noopener" aria-label="' + esc(l.code) + ' manual PDF">PDF</wa-button>' : '') +
+          (l.setup ? '<wa-button appearance="outlined" href="' + esc(l.setup) + '" target="_blank" rel="noopener" aria-label="' + esc(l.code) + ' setup guide">Setup</wa-button>' : '') +
+          '</div></li>';
+      }).join('');
+    }
+
+    // Controls
+    var timer = null;
+    $('q').addEventListener('input', function () {
+      var v = this.value;
+      clearTimeout(timer);
+      timer = setTimeout(function () { state.q = v.trim(); render(); }, 120);
+    });
+    ['kind', 'lang', 'year'].forEach(function (id) { $(id).addEventListener('change', function () { state[id] = this.value === 'all' || !this.value ? '' : picks[id][+this.value.slice(1)]; render(); }); });
+    $('q').addEventListener('wa-clear', function () { state.q = ''; render(); });
+    $('clear').addEventListener('click', function () { state = { q: '', kind: '', lang: '', year: '' }; options(); render(); $('q').focus(); });
+    readUrl();
+    load();
+  })();
+</script>
+</Base>

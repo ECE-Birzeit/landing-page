@@ -1,0 +1,17 @@
+{
+  "name": "ece-hub",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "@awesome.me/webawesome": "3.14.0",
+    "astro": "7.4.11"
+  },
+  "engines": {
+    "node": ">=22.23.4"
+  }
+}
