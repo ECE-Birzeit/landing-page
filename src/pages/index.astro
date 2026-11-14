@@ -4,8 +4,8 @@ import { contributors } from '../lib/github';
 
 // The people behind the hub, from GitHub at build time, shown as cards at the bottom of the page
 const people = await contributors();
-// The maintainer gets a wider spot with their own links; everyone else a portrait
-const LEAD = { login: 'mabushelbaia', role: 'Maintainer', site: 'https://mabushelbaia.com' };
+// The maintainer's portrait carries two small links (website, GitHub); everyone else's links to GitHub
+const LEAD = { login: 'mabushelbaia', site: 'https://mabushelbaia.com' };
 const lead = people.find((p) => p.login === LEAD.login);
 const rest = people.filter((p) => p !== lead);
 const nb = (n: string) => n.replace(/-/g, '\u2011'); // keep "Abu-Shelbaia" from breaking at the hyphen
@@ -317,19 +317,13 @@ const quick = [
   .team .slot { display: grid; place-items: center; outline: 0; border: 1.5px dashed var(--line2); color: var(--ok); font-size: 34px; font-weight: 300; transition: border-color .15s }
   .team .you a:hover .slot { border-color: var(--ok) }
   .team .you b { color: var(--ok) }
-  /* The maintainer: two columns wide, a larger portrait, their role and links */
-  .team .lead { grid-column: span 3; display: flex; align-items: center; gap: 24px; min-width: 0 }
-  .team .lead wa-avatar { --size: 132px; margin: 0; outline-color: var(--ok); outline-width: 1.5px }
-  .team .lead > div { display: flex; flex-direction: column; gap: 2px; min-width: 0 }
-  .team .lead .role { color: var(--ok); font-size: 13px; font-weight: 500 }
-  .team .lead b { font-size: 19px; letter-spacing: -.01em; white-space: nowrap }
-  .team .lead .nums { color: var(--mu); font-size: 13.5px }
-  .team .lead .links { display: flex; flex-wrap: wrap; gap: 4px 16px; margin-top: 10px }
-  .team .lead .links a { display: inline-flex; flex-direction: row; white-space: nowrap; align-items: baseline; gap: 4px; color: var(--mu2); font-size: 14px; text-decoration: underline; text-decoration-color: color-mix(in srgb, currentColor 40%, transparent); text-underline-offset: 4px }
-  .team .lead .links a:hover { color: var(--i); text-decoration-color: currentColor }
-  .team .lead .ext { width: 9px; height: 9px; fill: none; stroke: currentColor; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round }
-  @media (max-width: 760px) { .team .lead { grid-column: 1 / -1 } }
-  @media (max-width: 560px) { .team .lead { gap: 18px } .team .lead wa-avatar { --size: 96px } .team .lead b { white-space: normal } }
+  /* The maintainer: the same portrait, with two small links underneath */
+  .team .lead { display: flex; flex-direction: column; align-items: center; gap: 2px; text-align: center }
+  .team .icons { display: flex; gap: 12px; margin-top: 4px }
+  .team .icons a { display: flex; color: var(--mu); transition: color .15s }
+  .team .icons a:hover { color: var(--i) }
+  .team .icons svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.2 }
+  .team .icons svg.fill { fill: currentColor; stroke: none }
   .quick { display: flex; flex-wrap: wrap; gap: 8px 24px; font-size: 15px }
   .quick a { display: inline-flex; align-items: baseline; gap: 4px; color: var(--mu2); text-decoration: underline; text-decoration-color: color-mix(in srgb, currentColor 40%, transparent); text-underline-offset: 4px; transition: color .15s, text-decoration-color .15s }
   .quick a:hover { color: var(--i); text-decoration-color: currentColor }
@@ -605,16 +599,12 @@ __HAL_TIM_SET_COMPARE(&amp;htim2, TIM_CHANNEL_1, duty);</code></pre>
         <ul class="team">
           {lead && (
             <li class="lead">
-              <wa-avatar image={`${lead.avatar}&s=320`} label={lead.name} initials={initials(lead.name)} loading="lazy"></wa-avatar>
-              <div>
-                <span class="role">{LEAD.role}</span>
-                <b>{nb(lead.name)}</b>
-                <span class="nums">{lead.commits.toLocaleString('en')} commits · {lead.repos} repositories</span>
-                <span class="links">
-                  <a href={LEAD.site} target="_blank" rel="noopener">{LEAD.site.replace(/^https?:\/\//, '')}<Fragment set:html={ext} /></a>
-                  <a href={lead.url} target="_blank" rel="noopener">GitHub<Fragment set:html={ext} /></a>
-                </span>
-              </div>
+              <wa-avatar image={`${lead.avatar}&s=256`} label={lead.name} initials={initials(lead.name)} loading="lazy"></wa-avatar>
+              <b>{nb(lead.name)}</b>
+              <span class="icons">
+                <a href={LEAD.site} target="_blank" rel="noopener" aria-label="Website" title={LEAD.site.replace(/^https?:\/\//, '')}><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.5"/><path d="M1.5 8h13M8 1.5c1.8 1.8 2.6 4 2.6 6.5S9.8 12.7 8 14.5M8 1.5C6.2 3.3 5.4 5.5 5.4 8s.8 4.7 2.6 6.5"/></svg></a>
+                <a href={lead.url} target="_blank" rel="noopener" aria-label="GitHub" title="GitHub"><svg class="fill" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.34c-2.23.48-2.7-1.07-2.7-1.07-.36-.92-.89-1.17-.89-1.17-.73-.5.05-.49.05-.49.8.06 1.23.83 1.23.83.72 1.22 1.88.87 2.34.66.07-.52.28-.87.5-1.07-1.78-.2-3.65-.89-3.65-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.28.82 2.15 0 3.07-1.87 3.75-3.66 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"/></svg></a>
+              </span>
             </li>
           )}
           {rest.map((p) => (
