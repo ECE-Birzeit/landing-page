@@ -73,7 +73,7 @@ footer .date { color: var(--mu) }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important } }
 
 /* Page head (src/components/PageHead.astro): title, intro, and the page's figures as one quiet
-   line of text under the intro ("1,171 courses · 745 instructors"), so nothing has to line up in a grid */
+   line of text under the intro ("1,171 courses · 714 instructors"), so nothing has to line up in a grid */
 .phead { border-bottom: 1px solid var(--line) }
 .phead .wrap { padding-block: clamp(40px, 6vw, 72px) clamp(32px, 4vw, 48px) }
 .phead h1 { margin: 0; font: 500 clamp(40px, 5.6vw, 68px)/1.02 var(--sans); letter-spacing: -.035em; text-wrap: balance }

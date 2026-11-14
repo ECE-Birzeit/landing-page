@@ -107,8 +107,9 @@
       d.courses.forEach((c: any) => {
         items.push(make('Course', c.code, titleCase(c.name), '/schedules/?dept=all&view=course&q=' + encodeURIComponent(c.code), { alt: '/timetable/?add=' + encodeURIComponent(c.code) }));
         c.sections.forEach((s: any) => {
-          // A co-taught section lists its instructors in one field, separated by commas: one entry each
-          String(s.instructor || '').split(/\s*,\s*/).forEach((n: string) => {
+          // A co-taught section lists several people; the catalog splits them into `instructors` (older
+          // files only have the comma-separated cell): one entry each
+          (s.instructors || String(s.instructor || '').split(/\s*,\s*/)).forEach((n: string) => {
             if (!n || n === 'TBA') return;
             if (!inst.has(n)) inst.set(n, new Set());
             inst.get(n)!.add(c.code);

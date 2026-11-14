@@ -212,7 +212,8 @@ import PageHead from '../../components/PageHead.astro';
     function prefixOf(code) { return (code.match(/^[A-Za-z]*/) || [''])[0]; }
     function inDept(code) { var u = units[state.dept]; return !u || !u.prefixes || u.prefixes[prefixOf(code)] === 1; }
     function mins(t) { var p = t.split(':'); return +p[0] * 60 + +p[1]; }
-    // Ritaj lists a co-taught section's instructors in one field, separated by commas
+    // Ritaj lists a co-taught section's instructors in one field, separated by commas; the catalog
+    // splits them into `instructors`, and this does the same for the display string
     function people(n) { return String(n || '').split(/\s*,\s*/).filter(function (x) { return x && x !== 'TBA'; }); }
     function short(n) { return people(n).map(function (x) { var p = x.split(' '); return p.length > 2 ? p[0] + ' ' + p[p.length - 1] : x; }).join(', ') || n; }
     function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
@@ -288,7 +289,7 @@ import PageHead from '../../components/PageHead.astro';
           c.sections.forEach(function (s) {
             s.meetings.forEach(function (m) {
               if (m.start && m.end && ALL_DAYS.some(function (x) { return x[0] === m.day; }))
-                rows.push({ code: c.code, sec: s.number, inst: s.instructor || 'TBA', insts: people(s.instructor), day: m.day, start: m.start, end: m.end, room: m.room || 'TBA', enr: s.enrolled });
+                rows.push({ code: c.code, sec: s.number, inst: s.instructor || 'TBA', insts: s.instructors ? people(s.instructors.join(',')) : people(s.instructor), day: m.day, start: m.start, end: m.end, room: m.room || 'TBA', enr: s.enrolled });
             });
           });
         });
