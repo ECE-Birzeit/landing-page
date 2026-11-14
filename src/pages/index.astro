@@ -117,6 +117,7 @@ import Base from '../layouts/Base.astro';
   .now-top span:first-child { color: var(--mu2); font-weight: 500 }
   .now-week { display: flex; align-items: flex-end; gap: 16px; margin-top: -4px }
   .now-week b { font: 500 clamp(96px, 11vw, 152px)/.8 var(--sans); letter-spacing: -.06em }
+  .now-week b small { font-size: .38em; letter-spacing: -.02em; margin-inline-start: .04em; vertical-align: .95em }
   .now-week > span { padding-bottom: 6px; font-size: 18px; line-height: 1.2; color: var(--mu2) }
   .now-figs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); margin: 0; padding-top: 20px; border-top: 1px solid var(--line) }
   .now-figs div { display: flex; flex-direction: column-reverse; gap: 4px }
@@ -304,7 +305,7 @@ import Base from '../layouts/Base.astro';
 
       <aside class="now" aria-labelledby="now-term">
         <div class="now-top"><span id="now-term">This semester</span><span>from Ritaj, daily</span></div>
-        <div class="now-week"><b id="now-n">··</b><span>week<br>of <span id="now-of">··</span></span></div>
+        <div class="now-week"><b id="now-n">··</b><span id="now-l">teaching<br>week</span></div>
         <div id="hero-track"></div>
         <dl class="now-figs">
           <div><dt>courses</dt><dd data-count="course">1,171</dd></div>
@@ -634,8 +635,10 @@ __HAL_TIM_SET_COMPARE(&amp;htim2, TIM_CHANNEL_1, duty);</code></pre>
       }
       if (wk) {
         var done = wk.now > wk.of;
-        document.getElementById('now-n').textContent = done ? wk.of : wk.now;
-        document.querySelector('.now-week > span').innerHTML = done ? 'weeks<br>taught' : 'week<br>of <span>' + wk.of + '</span>';
+        // "6th teaching week"; once teaching is over, "17 weeks taught"
+        var n = done ? wk.of : wk.now, ord = W.ordinal(n);
+        document.getElementById('now-n').innerHTML = done ? n : n + '<small>' + ord.slice(-2) + '</small>';
+        document.getElementById('now-l').innerHTML = done ? 'weeks<br>taught' : 'teaching<br>week';
       }
       var term = (idx.published_terms || Object.keys(idx.terms))[0], n = idx.terms[term].counts || {};
       all('[data-count]').forEach(function (el) { if (n[el.dataset.count + 's'] != null) el.textContent = W.fmt(n[el.dataset.count + 's']); });

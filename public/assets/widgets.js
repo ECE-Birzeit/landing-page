@@ -168,6 +168,12 @@
     grow(w);
   }
 
+  // 1st, 2nd, 3rd, 4th … 11th, 12th, 13th … 21st, 22nd, 23rd
+  function ordinal(n) {
+    var t = n % 100, u = n % 10;
+    return n + (t >= 11 && t <= 13 ? 'th' : u === 1 ? 'st' : u === 2 ? 'nd' : u === 3 ? 'rd' : 'th');
+  }
+
   // Where we are in the semester; dates come from Ritaj's academic calendar via the course catalog
   function week(dates, today) {
     if (!dates || !dates.teaching_starts) return null;
@@ -275,5 +281,5 @@
   }
 
   window.ECEWidgets = { load: load, fmt: fmt, reveal: reveal, countUp: countUp, byDay: byDay, MOTION: MOTION, day: day, short: short, daily: daily, heat: heat, busiest: busiest, busiestDay: busiestDay,
-    labBars: labBars, devices: devices, top: top, week: week, semester: semester, DAYS: DAYS };
+    labBars: labBars, devices: devices, top: top, week: week, ordinal: ordinal, semester: semester, DAYS: DAYS };
 })();

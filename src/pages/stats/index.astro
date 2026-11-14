@@ -153,7 +153,7 @@ import PageHead from '../../components/PageHead.astro';
       // The page head: the semester, the teaching week and when the numbers were last counted
       var tm = String(v.term || '').match(/^(.*?)\s+(\d{4})\/\d{2}(\d{2})$/);
       var counted = new Date(s.generated_at.slice(0, 10) + 'T00:00:00');
-      var pairs = [tm ? [tm[2] + '/' + tm[3], tm[1].toLowerCase()] : null, wk && wk.now <= wk.of ? [wk.now + ' of ' + wk.of, 'teaching week'] : null,
+      var pairs = [tm ? [tm[2] + '/' + tm[3], tm[1].toLowerCase()] : null, wk && wk.now <= wk.of ? [W.ordinal(wk.now), 'teaching week'] : null,
         [counted.getDate() + ' ' + counted.toLocaleString('en', { month: 'short' }), 'last counted']];
       $('pfacts').replaceChildren.apply($('pfacts'), pairs.filter(Boolean).map(function (x) {
         var d = cell('div'); d.appendChild(cell('dt', x[1])); d.appendChild(cell('dd', x[0])); return d;
@@ -172,7 +172,7 @@ import PageHead from '../../components/PageHead.astro';
       if (first) $('daily-note').textContent = W.short(first) + ' to ' + W.short(W.day(v.daily[v.daily.length - 1][0])) + ' · hover a bar';
 
       $('term').textContent = v.term || '';
-      if (wk) { $('week').textContent = 'Week ' + Math.min(wk.now, wk.of); $('weeks').textContent = 'of ' + wk.of; }
+      if (wk) { var over = wk.now > wk.of; $('week').textContent = over ? wk.of : W.ordinal(wk.now); $('weeks').textContent = over ? 'weeks taught' : 'teaching week'; }
       W.semester($('w-sem'), v.term_dates);
       var td = v.term_dates || {};
       [['Teaching ends · ', td.teaching_ends], ['Finals · ', td.exams_start && td.exams_end ? W.short(W.day(td.exams_start)) + ' – ' + W.short(W.day(td.exams_end)) : null]].forEach(function (f) {
