@@ -1,5 +1,17 @@
 ---
 import Base from '../layouts/Base.astro';
+import { contributors } from '../lib/github';
+
+// The people behind the hub, from GitHub at build time, shown as faces at the bottom of the page
+const people = await contributors();
+const initials = (n: string) => n.split(/\s+/).map((w) => w[0]).slice(0, 2).join('').toUpperCase();
+const ext = '<svg class="ext" viewBox="0 0 10 10" aria-hidden="true"><path d="M3 7l4-4M3.5 3H7v3.5"/></svg>';
+const quick = [
+  ['Report a mistake', 'https://github.com/ECE-Birzeit/landing-page/issues/new/choose'],
+  ['How to contribute', 'https://github.com/ECE-Birzeit/.github/blob/main/CONTRIBUTING.md'],
+  ['Lab template', 'https://github.com/ECE-Birzeit/lab-template'],
+  ['Schedule data', 'https://github.com/mabushelbaia/bzu-course-catalog']
+];
 ---
 <Base title="ECE Hub · Birzeit University" description="Lab manuals built for the web and the weekly schedule of every course, instructor and room in the Department of Electrical & Computer Engineering at Birzeit University." path="/" ogImageAlt="ECE Hub, Birzeit University: lab manuals and schedules for ECE students." skip={{ href: "#labs", text: "Skip to the labs" }} brandHref="#top" showUpdated>
 <Fragment slot="head">
@@ -285,6 +297,19 @@ import Base from '../layouts/Base.astro';
   #join { border-bottom: 0 }
   .join { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 32px 64px; align-items: end }
   .join .ctas { margin: 0 }
+  /* Who built it, and quick links for joining in */
+  .crew { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 18px 40px; margin-top: 40px; padding-top: 24px; border-top: 1px solid var(--line) }
+  .faces { display: flex; align-items: center; gap: 14px }
+  .faces-row { display: flex }
+  .faces-row a { display: flex; border-radius: 50%; box-shadow: 0 0 0 2px var(--p) }
+  .faces-row a + a { margin-inline-start: -8px }
+  .faces-row a:hover { position: relative; z-index: 1 }
+  .faces wa-avatar { --size: 36px }
+  .faces-t { color: var(--mu2); font-size: 15px }
+  .quick { display: flex; flex-wrap: wrap; gap: 8px 24px; font-size: 15px }
+  .quick a { display: inline-flex; align-items: baseline; gap: 4px; color: var(--mu2); text-decoration: underline; text-decoration-color: color-mix(in srgb, currentColor 40%, transparent); text-underline-offset: 4px; transition: color .15s, text-decoration-color .15s }
+  .quick a:hover { color: var(--i); text-decoration-color: currentColor }
+  .quick .ext { width: 9px; height: 9px; fill: none; stroke: currentColor; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round }
   @media (max-width: 860px) { .join { grid-template-columns: minmax(0, 1fr); align-items: start } }
 
 
@@ -546,9 +571,29 @@ __HAL_TIM_SET_COMPARE(&amp;htim2, TIM_CHANNEL_1, duty);</code></pre>
           <wa-button appearance="outlined" size="l" href="https://github.com/ECE-Birzeit" target="_blank" rel="noopener">GitHub <span slot="end" aria-hidden="true"><svg class="cta-ext" viewBox="0 0 10 10" aria-hidden="true"><path d="M3 7l4-4M3.5 3H7v3.5"/></svg></span></wa-button>
         </div>
       </div>
+      <div class="crew">
+        {people.length > 0 && (
+          <div class="faces">
+            <span class="faces-row">
+              {people.slice(0, 12).map((p) => (
+                <a href={p.url} target="_blank" rel="noopener" title={`${p.name} · ${p.commits.toLocaleString('en')} commits`} aria-label={`${p.name} on GitHub`}>
+                  <wa-avatar image={`${p.avatar}&s=72`} label={p.name} initials={initials(p.name)} loading="lazy"></wa-avatar>
+                </a>
+              ))}
+            </span>
+            <span class="faces-t">Built by {people.length === 1 ? people[0].name : `${people.length} contributors`}, in the open</span>
+          </div>
+        )}
+        <nav class="quick" aria-label="Contribute">
+          {quick.map(([t, href]) => <a href={href} target="_blank" rel="noopener">{t}<Fragment set:html={ext} /></a>)}
+        </nav>
+      </div>
     </div>
   </section>
 </main>
+<script>
+  import '@awesome.me/webawesome/dist/components/avatar/avatar.js';
+</script>
 
 
 <script is:inline src="/assets/widgets.js"></script>
