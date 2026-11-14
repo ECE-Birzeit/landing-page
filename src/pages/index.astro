@@ -127,6 +127,8 @@ const quick = [
   h1 { margin: 0; max-width: 14ch; font: 500 clamp(44px, 5.8vw, 84px)/1.02 var(--sans); letter-spacing: -.035em; text-wrap: balance }
   .lede { margin: 0; max-width: 40rem; font-size: clamp(18px, 1.6vw, 21px); line-height: 1.55; color: var(--mu2); text-wrap: pretty }
   .ctas { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 8px }
+  /* On a phone the buttons stack at full width rather than in a ragged pile */
+  @media (max-width: 480px) { .ctas wa-button { flex: 1 1 100% } .ctas wa-button::part(button) { width: 100% } }
   /* Where the semester is, from Ritaj's academic calendar */
   /* This semester, set as type: where the teaching weeks are, and how much the hub covers */
   .now { display: flex; flex-direction: column; gap: 24px; padding: 28px; border: 1px solid var(--line); border-radius: 16px; background: var(--card); box-shadow: var(--sh) }
@@ -178,6 +180,8 @@ const quick = [
   .pv-foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 16px; font-size: 13px; color: var(--mu) }
   /* Course colours inside the examples: the one in focus in the accent, the rest in neutral steps */
   .on { --c: var(--ok) } .alt { --c: var(--i) } .mu { --c: var(--mu) }
+  /* A lab course is in its lab's colour, as on the lab cards, the schedules and the timetable */
+  .on[data-lab] { --c: var(--a) }
   .wk { display: grid; grid-template-columns: 44px minmax(0, 1fr); grid-template-rows: 24px repeat(5, 52px); border: 1px solid var(--line); border-radius: 10px; overflow: hidden }
   .wk-h { position: relative; border-inline-start: 1px solid var(--line) }
   .wk-h span { position: absolute; top: 5px; padding-inline-start: 6px; font: 400 11px var(--mono); color: var(--mu) }
@@ -206,7 +210,6 @@ const quick = [
   .lab-links wa-button.open { flex: 1 }
   .lab-links wa-button.open::part(button) { width: 100% }
   .lab-links wa-button.open::part(label) { flex: 1; text-align: start }
-  .lab.ask .lab-links wa-button.open { --wa-color-neutral-fill-loud: var(--ok); --wa-color-neutral-on-loud: var(--p) }
   .codeblock wa-copy-button { color: #c9c6be }
   wa-button [slot=end] svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round }
   @media (hover: none) { .arrow { display: none } }
@@ -254,7 +257,7 @@ const quick = [
   /* ---- A manual you can work in: four things the web manuals do, each with an example ------------ */
   .why { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: 40px 64px; align-items: center }
   @media (max-width: 960px) { .why { grid-template-columns: minmax(0, 1fr) } }
-  .feats { display: flex; flex-direction: column; border-top: 1px solid var(--line) }
+  .feats { display: flex; flex-direction: column; margin-top: 32px; border-top: 1px solid var(--line) }
   .feat { display: grid; grid-template-columns: 10px minmax(0, 1fr); align-items: start; gap: 16px; width: 100%; padding: 20px 8px; border: 0; border-bottom: 1px solid var(--line); background: transparent; color: inherit; font: inherit; text-align: start; cursor: pointer; transition: background-color .15s var(--ease) }
   .feat:hover { background: var(--soft) }
   .feat .pad { width: 10px; height: 10px; margin-top: 6px; border: 1.5px solid var(--mu2); border-radius: 2px; background: var(--card); transition: background-color .2s var(--ease), border-color .2s var(--ease) }
@@ -265,6 +268,18 @@ const quick = [
   .demo-cap { display: flex; justify-content: space-between; padding: 12px 24px; border-bottom: 1px solid var(--line); background: var(--bar); font-size: 13px; color: var(--mu) }
   .demo-cap span:last-child { font: 400 12px var(--mono) }
   .demo-body { min-height: 380px; padding: 24px }
+  /* Below 960px the example sits under the list: the four features become a compact 2 × 2 grid
+     right above it (each example carries its own note), so a tap changes something on screen */
+  @media (max-width: 960px) {
+    .why { row-gap: 16px }
+    .feats { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px; margin-top: 24px; border-top: 0 }
+    .feat { gap: 10px; padding: 12px; border: 1px solid var(--line); border-radius: 10px }
+    .feat[aria-selected=true] { border-color: var(--ok) }
+    .feat .pad { margin-top: 5px }
+    .feat b { font-size: 15px }
+    .feat-d { display: none }
+    .demo-body { min-height: 0 }
+  }
   .dpanel { display: flex; flex-direction: column; gap: 16px }
   .dnote { margin: 0; font-size: 15px; line-height: 1.55; color: var(--mu2) }
   .dstatus { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; min-height: 48px; padding: 12px 16px; white-space: nowrap; border: 1px solid var(--line); border-radius: 10px; font-size: 14px }
@@ -383,7 +398,7 @@ const quick = [
           <span class="lab-plat">TM4C123 · ARM Cortex-M4</span>
           <div class="lab-use" data-use="encs4110" hidden><span><b data-u="students"></b> students</span><span><b data-u="experiment_views"></b> page views</span><span><b data-u="experiments"></b> experiments</span></div>
           <div class="lab-links">
-            <wa-button class="open" variant="neutral" appearance="accent" size="s" href="https://encs4110.birzeit.me/" aria-label="Start the ENCS4110 lab" target="_blank" rel="noopener">Start <span slot="end" aria-hidden="true">→</span></wa-button>
+            <wa-button class="open" variant="brand" size="s" href="https://encs4110.birzeit.me/" aria-label="Start the ENCS4110 lab" target="_blank" rel="noopener">Start <span slot="end" aria-hidden="true">→</span></wa-button>
             <wa-button appearance="outlined" size="s" href="https://encs4110.birzeit.me/manual/encs4110_manual.pdf" aria-label="ENCS4110 manual PDF" target="_blank" rel="noopener">PDF</wa-button>
             <wa-button appearance="outlined" size="s" href="https://encs4110.birzeit.me/setup/" aria-label="ENCS4110 setup guide" target="_blank" rel="noopener">Setup</wa-button>
           </div>
@@ -395,7 +410,7 @@ const quick = [
           <span class="lab-plat">STM32 · CubeIDE · HAL</span>
           <div class="lab-use" data-use="encs4101" hidden><span><b data-u="students"></b> students</span><span><b data-u="experiment_views"></b> page views</span><span><b data-u="experiments"></b> experiments</span></div>
           <div class="lab-links">
-            <wa-button class="open" variant="neutral" appearance="accent" size="s" href="https://encs4101.birzeit.me/" aria-label="Start the ENCS4101 lab" target="_blank" rel="noopener">Start <span slot="end" aria-hidden="true">→</span></wa-button>
+            <wa-button class="open" variant="brand" size="s" href="https://encs4101.birzeit.me/" aria-label="Start the ENCS4101 lab" target="_blank" rel="noopener">Start <span slot="end" aria-hidden="true">→</span></wa-button>
             <wa-button appearance="outlined" size="s" href="https://encs4101.birzeit.me/ENCS4101-Manual.pdf" aria-label="ENCS4101 manual PDF" target="_blank" rel="noopener">PDF</wa-button>
             <wa-button appearance="outlined" size="s" href="https://encs4101.birzeit.me/setup/" aria-label="ENCS4101 setup guide" target="_blank" rel="noopener">Setup</wa-button>
           </div>
@@ -407,7 +422,7 @@ const quick = [
           <span class="lab-plat">Android (Java) · Spring Boot</span>
           <div class="lab-use" data-use="encs5150" hidden><span><b data-u="students"></b> students</span><span><b data-u="experiment_views"></b> page views</span><span><b data-u="experiments"></b> experiments</span></div>
           <div class="lab-links">
-            <wa-button class="open" variant="neutral" appearance="accent" size="s" href="https://encs5150.birzeit.me/" aria-label="Start the ENCS5150 lab" target="_blank" rel="noopener">Start <span slot="end" aria-hidden="true">→</span></wa-button>
+            <wa-button class="open" variant="brand" size="s" href="https://encs5150.birzeit.me/" aria-label="Start the ENCS5150 lab" target="_blank" rel="noopener">Start <span slot="end" aria-hidden="true">→</span></wa-button>
             <wa-button appearance="outlined" size="s" href="https://encs5150.birzeit.me/ENCS515-Manual-2025.pdf" aria-label="ENCS5150 manual PDF" target="_blank" rel="noopener">PDF</wa-button>
             <wa-button appearance="outlined" size="s" href="https://encs5150.birzeit.me/setup/" aria-label="ENCS5150 setup guide" target="_blank" rel="noopener">Setup</wa-button>
           </div>
@@ -419,7 +434,7 @@ const quick = [
           <span class="lab-plat">Cortex-M4 · Arduino Mega · Raspberry Pi</span>
           <div class="lab-use" data-use="encs5101" hidden><span><b data-u="students"></b> students</span><span><b data-u="experiment_views"></b> page views</span><span><b data-u="experiments"></b> experiments</span></div>
           <div class="lab-links">
-            <wa-button class="open" variant="neutral" appearance="accent" size="s" href="https://encs5101.birzeit.me/" aria-label="Start the ENCS5101 lab" target="_blank" rel="noopener">Start <span slot="end" aria-hidden="true">→</span></wa-button>
+            <wa-button class="open" variant="brand" size="s" href="https://encs5101.birzeit.me/" aria-label="Start the ENCS5101 lab" target="_blank" rel="noopener">Start <span slot="end" aria-hidden="true">→</span></wa-button>
             <wa-button appearance="outlined" size="s" href="https://encs5101.birzeit.me/ENCS5101-Manual.pdf" aria-label="ENCS5101 manual PDF" target="_blank" rel="noopener">PDF</wa-button>
             <wa-button appearance="outlined" size="s" href="https://encs5101.birzeit.me/setup/" aria-label="ENCS5101 setup guide" target="_blank" rel="noopener">Setup</wa-button>
           </div>
@@ -431,7 +446,7 @@ const quick = [
           <span class="lab-plat">Any lab in the department</span>
           <div class="lab-use"><span>It becomes a site like these, with pages that work offline and code you can copy</span></div>
           <div class="lab-links">
-            <wa-button class="open" variant="neutral" appearance="accent" size="s" href="mailto:support@birzeit.me?subject=New%20lab%20manual">Get in touch <span slot="end" aria-hidden="true">→</span></wa-button>
+            <wa-button class="open" variant="brand" size="s" href="mailto:support@birzeit.me?subject=New%20lab%20manual">Get in touch <span slot="end" aria-hidden="true">→</span></wa-button>
             <wa-button appearance="outlined" size="s" href="https://github.com/ECE-Birzeit" target="_blank" rel="noopener">GitHub</wa-button>
           </div>
         </article>
@@ -443,7 +458,7 @@ const quick = [
       <div class="why">
         <div>
           <div class="sec-head"><div><h2 id="why-h">A manual you can actually work in</h2></div></div>
-          <div class="feats" role="tablist" aria-label="What the web manuals do" aria-orientation="vertical" style="margin-top:32px">
+          <div class="feats" role="tablist" aria-label="What the web manuals do" aria-orientation="vertical">
             <button type="button" class="feat" role="tab" id="ft-offline" aria-controls="dp-offline" aria-selected="true">
               <span class="pad" aria-hidden="true"></span><span><b>Works offline</b><span class="feat-d">Install a lab once and every page, image and code listing opens without internet</span></span>
             </button>
@@ -522,7 +537,7 @@ __HAL_TIM_SET_COMPARE(&amp;htim2, TIM_CHANNEL_1, duty);</code></pre>
         </div>
         <a class="preview" href="/schedules/?view=room&amp;q=Masri207" aria-label="Example: the week of room Masri207">
           <div class="pv-top"><span class="seg">Instructors</span><span class="seg">Courses</span><span class="seg on">Rooms</span><span class="pick">Masri207</span></div>
-          <div class="wk" style="--hours:10"><div></div><div class="wk-h"><span style="left:0%">08:00</span><span style="left:20%">10:00</span><span style="left:40%">12:00</span><span style="left:60%">14:00</span><span style="left:80%">16:00</span></div><div class="wk-d">Sat</div><div class="wk-l"><span class="wk-b " style="--l:30.00;--w:28.33"><b>ENCS4110</b>Sec 5</span></div><div class="wk-d">Mon</div><div class="wk-l"><span class="wk-b " style="--l:0.00;--w:28.33"><b>ENCS4110</b>Sec 1</span><span class="wk-b " style="--l:30.00;--w:28.33"><b>ENCS4110</b>Sec 6</span></div><div class="wk-d">Tue</div><div class="wk-l"><span class="wk-b " style="--l:30.00;--w:28.33"><b>ENCS4110</b>Sec 2</span><span class="wk-b on" style="--l:60.00;--w:28.33"><b>ENCS4110</b>Sec 3</span></div><div class="wk-d">Wed</div><div class="wk-l"><span class="wk-b alt" style="--l:0.00;--w:28.33"><b>ENCS5101</b>Sec 1</span><span class="wk-b " style="--l:30.00;--w:28.33"><b>ENCS4110</b>Sec 7</span></div><div class="wk-d">Thu</div><div class="wk-l"><span class="wk-b " style="--l:60.00;--w:28.33"><b>ENCS4110</b>Sec 4</span></div></div>
+          <div class="wk" style="--hours:10"><div></div><div class="wk-h"><span style="left:0%">08:00</span><span style="left:20%">10:00</span><span style="left:40%">12:00</span><span style="left:60%">14:00</span><span style="left:80%">16:00</span></div><div class="wk-d">Sat</div><div class="wk-l"><span class="wk-b " style="--l:30.00;--w:28.33"><b>ENCS4110</b>Sec 5</span></div><div class="wk-d">Mon</div><div class="wk-l"><span class="wk-b " style="--l:0.00;--w:28.33"><b>ENCS4110</b>Sec 1</span><span class="wk-b " style="--l:30.00;--w:28.33"><b>ENCS4110</b>Sec 6</span></div><div class="wk-d">Tue</div><div class="wk-l"><span class="wk-b " style="--l:30.00;--w:28.33"><b>ENCS4110</b>Sec 2</span><span class="wk-b on" data-lab="encs4110" style="--l:60.00;--w:28.33"><b>ENCS4110</b>Sec 3</span></div><div class="wk-d">Wed</div><div class="wk-l"><span class="wk-b alt" style="--l:0.00;--w:28.33"><b>ENCS5101</b>Sec 1</span><span class="wk-b " style="--l:30.00;--w:28.33"><b>ENCS4110</b>Sec 7</span></div><div class="wk-d">Thu</div><div class="wk-l"><span class="wk-b " style="--l:60.00;--w:28.33"><b>ENCS4110</b>Sec 4</span></div></div>
           <div class="pv-foot"><span>Masri207 · 8 sections a week</span><span>First Semester 2026/2027</span></div>
         </a>
       </div>
@@ -532,7 +547,7 @@ __HAL_TIM_SET_COMPARE(&amp;htim2, TIM_CHANNEL_1, duty);</code></pre>
     <div class="wrap">
       <div class="show-row flip">
         <div class="show-text">
-          <h2 id="build-h">Plan next semester without a clash</h2>
+          <h2 id="build-h">Plan next semester with no overlapping classes</h2>
           <p>Add the courses you plan to take and step through every combination of sections that fits, best first. Keep days free or skip early starts, then add the week to your calendar.</p>
           <ul class="ticks">
             <li>Lectures, labs and discussions, one section of each</li>
@@ -542,9 +557,9 @@ __HAL_TIM_SET_COMPARE(&amp;htim2, TIM_CHANNEL_1, duty);</code></pre>
           <wa-button appearance="outlined" href="/timetable/">Build your schedule <span slot="end" aria-hidden="true">→</span></wa-button>
         </div>
         <a class="preview" href="/timetable/?c=ENCS4110,ENCS3320,ENEE2360" aria-label="Example: three courses fitted into two days">
-          <div class="pv-top"><span class="chip on">ENCS4110</span><span class="chip alt">ENCS3320</span><span class="chip mu">ENEE2360</span><span class="pv-count">1 of <b>108</b></span></div>
-          <div class="wk" style="--hours:7"><div></div><div class="wk-h"><span style="left:0%">08:00</span><span style="left:28.5714%">10:00</span><span style="left:57.1429%">12:00</span><span style="left:85.7143%">14:00</span></div><div class="wk-d">Sat</div><div class="wk-l"><span class="wk-b alt" style="--l:42.86;--w:19.05"><b>ENCS3320</b>Masri406</span><span class="wk-b mu" style="--l:64.29;--w:19.05"><b>ENEE2360</b>Masri306</span></div><div class="wk-d">Mon</div><div class="wk-l"><span class="wk-b on" style="--l:0.00;--w:40.48"><b>ENCS4110</b>Masri207</span><span class="wk-b alt" style="--l:42.86;--w:19.05"><b>ENCS3320</b>Masri406</span><span class="wk-b mu" style="--l:64.29;--w:19.05"><b>ENEE2360</b>Masri306</span></div><div class="wk-d">Tue</div><div class="wk-l free"></div><div class="wk-d">Wed</div><div class="wk-l free"></div><div class="wk-d">Thu</div><div class="wk-l free"></div></div>
-          <div class="pv-foot"><span>2 days on campus · Tuesday to Thursday free</span><span>no clashes</span></div>
+          <div class="pv-top"><span class="chip on" data-lab="encs4110">ENCS4110</span><span class="chip alt">ENCS3320</span><span class="chip mu">ENEE2360</span><span class="pv-count">1 of <b>108</b></span></div>
+          <div class="wk" style="--hours:7"><div></div><div class="wk-h"><span style="left:0%">08:00</span><span style="left:28.5714%">10:00</span><span style="left:57.1429%">12:00</span><span style="left:85.7143%">14:00</span></div><div class="wk-d">Sat</div><div class="wk-l"><span class="wk-b alt" style="--l:42.86;--w:19.05"><b>ENCS3320</b>Masri406</span><span class="wk-b mu" style="--l:64.29;--w:19.05"><b>ENEE2360</b>Masri306</span></div><div class="wk-d">Mon</div><div class="wk-l"><span class="wk-b on" data-lab="encs4110" style="--l:0.00;--w:40.48"><b>ENCS4110</b>Masri207</span><span class="wk-b alt" style="--l:42.86;--w:19.05"><b>ENCS3320</b>Masri406</span><span class="wk-b mu" style="--l:64.29;--w:19.05"><b>ENEE2360</b>Masri306</span></div><div class="wk-d">Tue</div><div class="wk-l free"></div><div class="wk-d">Wed</div><div class="wk-l free"></div><div class="wk-d">Thu</div><div class="wk-l free"></div></div>
+          <div class="pv-foot"><span>2 days on campus · Tuesday to Thursday free</span><span>no overlaps</span></div>
         </a>
       </div>
     </div>

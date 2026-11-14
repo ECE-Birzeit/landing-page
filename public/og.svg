@@ -41,6 +41,6 @@
     </g>
     <line x1="804" y1="504" x2="1104" y2="504" stroke="#dddbd2" stroke-width="1.5"/>
     <rect x="804" y="530" width="12" height="12" rx="3" fill="#15803d"/>
-    <text x="826" y="542" font-size="20" fill="#45463f">Schedule builder, no clashes</text>
+    <text x="826" y="542" font-size="20" fill="#45463f">Schedule builder, no overlaps</text>
   </g>
 </svg>

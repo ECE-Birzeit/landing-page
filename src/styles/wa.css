@@ -48,6 +48,11 @@ html[data-theme] {
   --wa-form-control-placeholder-color: var(--mu);
   --wa-form-control-activated-color: var(--ok);
 }
+/* One size system for every button, input and select: s 40px, m 48px, l 56px tall (on the 8px
+   grid), with 14 / 15 / 16px text. Plain controls on the inner pages use the m size too */
+:is(wa-button, wa-input, wa-select)[size=s] { --wa-form-control-height: 40px; font-size: 14px }
+:is(wa-button, wa-input, wa-select):not([size=s], [size=l]) { --wa-form-control-height: 48px; font-size: 15px }
+:is(wa-button, wa-input, wa-select)[size=l] { --wa-form-control-height: 56px; font-size: 16px }
 /* Buttons that are links keep the site's underline-free look */
 wa-button { text-decoration: none }
 /* Inside a select, the highlighted option is a quiet surface step, not a green block */

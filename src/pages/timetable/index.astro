@@ -2,7 +2,7 @@
 import Base from '../../layouts/Base.astro';
 import PageHead from '../../components/PageHead.astro';
 ---
-<Base title="Timetable builder · ECE Hub" description="Pick your Birzeit University courses and get every clash-free timetable: filter by start time, days off and instructor, then export it to your calendar. Updated daily from Ritaj." path="/timetable/" ogDescription="Pick your courses and get every clash-free timetable for the semester at Birzeit University." nav="timetable" skip={{ href: "#out", text: "Skip to the timetable" }}>
+<Base title="Timetable builder · ECE Hub" description="Pick your Birzeit University courses and get every timetable with no overlapping classes: filter by start time, days off and instructor, then export it to your calendar. Updated daily from Ritaj." path="/timetable/" ogDescription="Pick your courses and get every timetable with no overlapping classes for the semester at Birzeit University." nav="timetable" skip={{ href: "#out", text: "Skip to the timetable" }}>
 <Fragment slot="head">
   <link rel="preconnect" href="https://raw.githubusercontent.com" crossorigin>
 </Fragment>
@@ -15,11 +15,10 @@ import PageHead from '../../components/PageHead.astro';
   button, input, select { font: inherit; color: inherit }
 
 
-  /* Terminal window */
+  /* Panel: a card with a quiet header row for its count and actions */
   .win { border: 1px solid var(--line); border-radius: 12px; background: var(--card); overflow: hidden }
   .bar { display: flex; align-items: center; gap: 6px; height: 36px; padding: 0 14px; border-bottom: 1px solid var(--line); background: var(--bar); font: 400 12px var(--mono); color: var(--mu) }
-  .bar i { flex: none; width: 9px; height: 9px; border-radius: 50%; background: var(--line2) }
-  .bar .t { margin-inline-start: 8px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis }
+  .bar .t { overflow: hidden; white-space: nowrap; text-overflow: ellipsis }
   .bar .r { margin-inline-start: auto; white-space: nowrap }
 
   /* Page: courses and filters on the left, the timetables on the right */
@@ -35,11 +34,11 @@ import PageHead from '../../components/PageHead.astro';
   /* Step 1 is where every visit starts, so it is the most visible thing on the page until a course is added */
   .start { display: flex; align-items: center; gap: 10px; font-size: 16px; font-weight: 500; color: var(--i) }
   .step { flex: none; display: inline-grid; place-items: center; width: 24px; height: 24px; border-radius: 6px; background: var(--ok); color: var(--p); font-size: 13px; font-weight: 600 }
-  .find input { width: 100%; height: 52px; padding: 0 16px 0 42px; border: 1.5px solid var(--line2); border-radius: 10px; outline: 0; background: var(--card); font: 400 15px var(--sans); transition: border-color .15s }
+  .find input { width: 100%; height: 48px; padding: 0 16px 0 42px; border: 1px solid var(--line2); border-radius: 10px; outline: 0; background: var(--card); font: 400 15px var(--sans); transition: border-color .15s }
   .find.empty input { border-color: var(--ok) }
   .find input:hover, .find input:focus { border-color: var(--i) }
   .find input::placeholder { color: var(--mu2) }
-  .find > b { position: absolute; left: 17px; top: 26px; transform: translateY(-50%); font: 600 15px var(--display); color: var(--ok); pointer-events: none }
+  .find > b { position: absolute; left: 17px; top: 24px; transform: translateY(-50%); font: 600 15px var(--display); color: var(--ok); pointer-events: none }
   .hits { position: absolute; z-index: 5; top: 54px; left: 0; right: 0; max-height: 340px; overflow-y: auto; margin: 0; padding: 4px; list-style: none; border: 1px solid var(--line2); border-radius: 10px; background: var(--card); box-shadow: 0 12px 32px rgb(0 0 0 / .18) }
   .hits li { display: flex; align-items: baseline; gap: 10px; padding: 9px 10px; border-radius: 7px; cursor: pointer; font: 400 12.5px var(--mono); color: var(--mu2) }
   .hits li b { flex: none; color: var(--i) }
@@ -131,7 +130,12 @@ import PageHead from '../../components/PageHead.astro';
   td { height: 42px; padding: 0 14px; border-bottom: 1px solid var(--line); color: var(--mu2); white-space: nowrap }
   tr:last-child td { border-bottom: 0 }
   th.num, td.num { text-align: end }
-  td.c { color: var(--i); font-weight: 700 }
+  td.c { color: var(--i); font-weight: 500 }
+  /* The title and the instructors share whatever width is left and end in "…" (the full text shows on hover), so the
+     whole table fits on a laptop without scrolling sideways; phones still scroll it */
+  td.t, td.i { max-width: 0; overflow: hidden; text-overflow: ellipsis }
+  td.t { width: 55% } td.i { width: 45% }
+  @media (max-width: 720px) { td.t, td.i { width: auto; max-width: none } }
   td .sw { display: inline-block; width: 8px; height: 8px; margin-inline-end: 8px; border-radius: 2px }
 
 
@@ -150,7 +154,7 @@ import PageHead from '../../components/PageHead.astro';
 </style>
 
 <main id="main" data-anim="all">
-  <PageHead title="Timetable builder">Add the courses you plan to take and get every combination of sections that doesn't clash, best first. To look up one instructor, course or room, use the <a href="/schedules/">weekly schedules</a>.</PageHead>
+  <PageHead title="Timetable builder">Add the courses you plan to take and get every combination of sections with no overlapping classes, best first. To look up one instructor, course or room, use the <a href="/schedules/">weekly schedules</a>.</PageHead>
 
   <div class="wrap">
     <div class="cols">
@@ -163,12 +167,12 @@ import PageHead from '../../components/PageHead.astro';
         </div>
 
         <div class="win">
-          <div class="bar"><i></i><i></i><i></i><span class="t">my courses</span><span class="r" id="ncourses"></span></div>
+          <div class="bar"><span class="t">Your courses</span><span class="r" id="ncourses"></span></div>
           <div id="courses"><div class="status">Loading the courses…</div></div>
         </div>
 
         <div class="win">
-          <div class="bar"><i></i><i></i><i></i><span class="t">filters</span><span class="r"><button type="button" id="reset" class="kicker" style="border:0;background:none;cursor:pointer;padding:0" hidden>reset</button></span></div>
+          <div class="bar"><span class="t">Filters</span><span class="r"><button type="button" id="reset" class="kicker" style="border:0;background:none;cursor:pointer;padding:0" hidden>reset</button></span></div>
           <div class="filters">
             <div class="two">
               <wa-select id="after" class="field" size="s" label="No classes before"></wa-select>
@@ -198,13 +202,13 @@ import PageHead from '../../components/PageHead.astro';
         <div class="sum" id="sum"></div>
 
         <div class="win week">
-          <div class="bar"><i></i><i></i><i></i><span class="t" id="file">timetable</span><span class="r" id="span"></span></div>
+          <div class="bar"><span class="t" id="file">Timetable</span><span class="r" id="span"></span></div>
           <div class="gantt" id="gantt"><div class="status">Loading the schedule…</div></div>
         </div>
 
         <div class="days" id="days" role="group" aria-label="Day"></div>
         <div class="win agenda">
-          <div class="bar"><i></i><i></i><i></i><span class="t" id="dayname"></span><span class="r" id="daycount"></span></div>
+          <div class="bar"><span class="t" id="dayname"></span><span class="r" id="daycount"></span></div>
           <div id="agenda"></div>
         </div>
 
@@ -263,8 +267,12 @@ import PageHead from '../../components/PageHead.astro';
     function plural(n, one, many) { return n.toLocaleString('en') + ' ' + (n === 1 ? one : many); }
     function color(code) {
       var dark = root.getAttribute('data-theme') === 'dark';
-      var pal = dark ? ['#4ade80', '#38bdf8', '#fb923c', '#f87171', '#c084fc', '#facc15', '#3cc5cb', '#f472b6'] : ['#15803d', '#0369a1', '#c2410c', '#dc2626', '#7e22ce', '#a16207', '#00787f', '#be185d'];
-      return pal[state.picked.indexOf(code) % pal.length];
+      // A lab course keeps its lab's colour (the same as base.css and the lab cards); every other
+      // course takes the next colour from a set that leaves those four hues out, so no two look alike
+      var LAB = { ENCS4110: ['#dc2626', '#f87171'], ENCS4101: ['#0369a1', '#38bdf8'], ENCS5150: ['#c2410c', '#fb923c'], ENCS5101: ['#00787f', '#3cc5cb'] };
+      if (LAB[code]) return LAB[code][dark ? 1 : 0];
+      var pal = dark ? ['#4ade80', '#c084fc', '#facc15', '#f472b6', '#818cf8', '#a8a29e'] : ['#15803d', '#7e22ce', '#a16207', '#be185d', '#4338ca', '#57534e'];
+      return pal[state.picked.filter(function (c) { return !LAB[c]; }).indexOf(code) % pal.length];
     }
     // "Mon Wed 10:00–11:15", one entry per distinct time
     function times(sec) {
@@ -386,7 +394,7 @@ import PageHead from '../../components/PageHead.astro';
         return !state.free[m.day] && (!state.after || m.s >= state.after) && (!state.before || m.e <= state.before);
       });
     }
-    function clash(a, b) {
+    function overlap(a, b) {
       for (var i = 0; i < a.meet.length; i++) for (var j = 0; j < b.meet.length; j++) {
         var x = a.meet[i], y = b.meet[j];
         if (x.day === y.day && x.s < y.e && y.s < x.e) return true;
@@ -420,7 +428,7 @@ import PageHead from '../../components/PageHead.astro';
         for (var i = 0; i < grp.secs.length && !capped; i++) {
           if (++steps > BUDGET) { capped = true; return; }
           var s = grp.secs[i], ok = true;
-          for (var k = 0; k < taken.length; k++) if (clash(taken[k].sec, s)) { ok = false; break; }
+          for (var k = 0; k < taken.length; k++) if (overlap(taken[k].sec, s)) { ok = false; break; }
           if (!ok) continue;
           taken.push({ code: grp.code, sec: s });
           walk(g + 1);
@@ -433,12 +441,12 @@ import PageHead from '../../components/PageHead.astro';
         var pairs = [];
         for (var a = 0; a < groups.length; a++) for (var b = a + 1; b < groups.length; b++) {
           if (groups[a].code === groups[b].code) continue;
-          var all = groups[a].secs.every(function (x) { return groups[b].secs.every(function (y) { return clash(x, y); }); });
+          var all = groups[a].secs.every(function (x) { return groups[b].secs.every(function (y) { return overlap(x, y); }); });
           if (all) pairs.push('<b>' + esc(groups[a].code) + '</b> and <b>' + esc(groups[b].code) + '</b>');
         }
         return { list: [], capped: false, why: pairs.length
-          ? pairs.join('; ') + ' clash in every section that fits your filters. Drop one, loosen a filter or switch a section back on.'
-          : 'These courses can’t all fit in one week without a clash. Drop a course, loosen a filter or switch a section back on.' };
+          ? pairs.join('; ') + ' overlap in every section that fits your filters. Drop one, loosen a filter or switch a section back on.'
+          : 'These courses can’t all fit in one week without overlapping. Drop a course, loosen a filter or switch a section back on.' };
       }
 
       var out = list.map(function (secs) {
@@ -514,7 +522,7 @@ import PageHead from '../../components/PageHead.astro';
       if (!opt) {
         $('count').innerHTML = state.picked.length ? '<b>No timetable fits</b>' : 'Add a course to start';
         $('sum').innerHTML = '';
-        $('file').textContent = 'timetable'; $('span').textContent = '';
+        $('file').textContent = 'Timetable'; $('span').textContent = '';
         $('gantt').innerHTML = '<div class="status">' + (result.why || 'Your week appears here once you add a course. Add them all and step through the options with Prev and Next, or the ← → keys.') + '</div>';
         $('days').innerHTML = ''; $('dayname').textContent = ''; $('daycount').textContent = '';
         $('agenda').innerHTML = '<div class="status">' + (result.why || 'Your week appears here once you add a course.') + '</div>';
@@ -541,7 +549,7 @@ import PageHead from '../../components/PageHead.astro';
       var span = (h1 - h0) * 60;
       $('gantt').style.setProperty('--hours', h1 - h0);
       $('days').style.setProperty('--days', days.length);
-      $('file').textContent = 'timetable ' + (at + 1) + ' · ' + state.picked.join(' ');
+      $('file').textContent = 'Timetable ' + (at + 1) + ' · ' + state.picked.join(' ');
       $('span').textContent = (h0 < 10 ? '0' : '') + h0 + ':00 – ' + h1 + ':00 · ' + days[0][1] + ' – ' + days[days.length - 1][1];
       var tag = function (r) { return r.sec.type + ' ' + r.sec.number + ' · ' + r.m.room; };
 
@@ -587,8 +595,8 @@ import PageHead from '../../components/PageHead.astro';
         if (!keys.length) { keys = ['—|—']; by['—|—'] = ['—']; }
         return keys.map(function (k, i) {
           var p = k.split('|');
-          return '<tr><td class="c">' + (i ? '' : '<span class="sw" style="background:' + color(x.code) + '"></span>' + esc(x.code)) + '</td><td>' + (i ? '' : esc(courses[x.code].name)) + '</td><td>' +
-            (i ? '' : esc(x.sec.type + ' ' + x.sec.number)) + '</td><td>' + by[k].join(' ') + '</td><td>' + p[0] + '</td><td>' + esc(p[1]) + '</td><td>' + (i ? '' : esc(x.sec.inst)) + '</td></tr>';
+          return '<tr><td class="c">' + (i ? '' : '<span class="sw" style="background:' + color(x.code) + '"></span>' + esc(x.code)) + '</td><td class="t"' + (i ? '>' : ' title="' + esc(courses[x.code].name) + '">' + esc(courses[x.code].name)) + '</td><td>' +
+            (i ? '' : esc(x.sec.type + ' ' + x.sec.number)) + '</td><td>' + by[k].join(' ') + '</td><td>' + p[0] + '</td><td>' + esc(p[1]) + '</td><td class="i"' + (i ? '>' : ' title="' + esc(x.sec.inst) + '">' + esc(x.sec.inst)) + '</td></tr>';
         }).join('');
       }).join('');
     }

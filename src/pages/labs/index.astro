@@ -10,11 +10,10 @@ import PageHead from '../../components/PageHead.astro';
   button, input, select { font: inherit; color: inherit }
 
 
-  /* Terminal window */
+  /* Panel: a card with a quiet header row for its count and actions */
   .win { border: 1px solid var(--line); border-radius: 12px; background: var(--card); overflow: hidden }
   .bar { display: flex; align-items: center; gap: 6px; height: 36px; padding: 0 14px; border-bottom: 1px solid var(--line); background: var(--bar); font: 400 12px var(--mono); color: var(--mu) }
-  .bar i { flex: none; width: 9px; height: 9px; border-radius: 50%; background: var(--line2) }
-  .bar .t { margin-inline-start: 8px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis }
+  .bar .t { overflow: hidden; white-space: nowrap; text-overflow: ellipsis }
   .bar .r { margin-inline-start: auto; white-space: nowrap }
 
 
@@ -46,8 +45,7 @@ import PageHead from '../../components/PageHead.astro';
   .spec dt { color: var(--mu) }
   .spec dd { margin: 0; color: var(--i) }
   .go { display: flex; gap: 6px }
-  .go .open { --wa-color-neutral-fill-loud: var(--i) }
-  .go .open:hover { --wa-color-neutral-fill-loud: var(--a) }
+  .go .open:hover { --wa-color-brand-fill-loud: var(--a) }
   .status { padding: 36px 28px; font: 400 13px/1.7 var(--mono); color: var(--mu) }
   .invite { align-self: flex-end; font: 500 13px var(--sans); color: var(--mu2); text-decoration: none }
   .invite b { color: var(--i); font-weight: 600 }
@@ -85,14 +83,14 @@ import PageHead from '../../components/PageHead.astro';
 
   <div class="wrap">
     <div class="tools">
-      <wa-input id="q" class="find" type="search" size="l" placeholder="Search codes, boards, topics" aria-label="Search labs" autocomplete="off" spellcheck="false" with-clear><svg slot="start" class="ico" viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="4.5"/><path d="m10.5 10.5 3 3"/></svg></wa-input>
-      <wa-select id="kind" size="l" aria-label="Type"></wa-select>
-      <wa-select id="lang" size="l" aria-label="Language"></wa-select>
-      <wa-select id="year" size="l" aria-label="Year"></wa-select>
+      <wa-input id="q" class="find" type="search" placeholder="Search codes, boards, topics" aria-label="Search labs" autocomplete="off" spellcheck="false" with-clear><svg slot="start" class="ico" viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="4.5"/><path d="m10.5 10.5 3 3"/></svg></wa-input>
+      <wa-select id="kind" aria-label="Type"></wa-select>
+      <wa-select id="lang" aria-label="Language"></wa-select>
+      <wa-select id="year" aria-label="Year"></wa-select>
     </div>
 
     <div class="win">
-      <div class="bar"><i></i><i></i><i></i><span class="t">labs.json</span><span class="r"><span id="count" aria-live="polite"></span><button type="button" id="clear" hidden>clear filters</button></span></div>
+      <div class="bar"><span class="r"><span id="count" aria-live="polite"></span><button type="button" id="clear" hidden>clear filters</button></span></div>
       <ul class="list" id="grid"><li class="status">Loading the labs…</li></ul>
     </div>
     <a class="invite" href="mailto:support@birzeit.me?subject=New%20lab%20manual">Teaching a lab? <b>Bring your manual →</b></a>
@@ -227,9 +225,9 @@ import PageHead from '../../components/PageHead.astro';
           (l.topics.length ? '<p class="topics">' + esc(l.topics.join(', ')) + '</p>' : '') + '</div>' +
           '<dl class="spec">' + spec.map(function (x) { return '<dt>' + x[0] + '</dt><dd>' + esc(x[1]) + '</dd>'; }).join('') + '</dl>' +
           '<div class="go">' +
-          (l.url ? '<wa-button class="open" variant="neutral" appearance="accent" href="' + esc(l.url) + '" target="_blank" rel="noopener" aria-label="Start the ' + esc(l.code) + ' lab">Start <span slot="end" aria-hidden="true">→</span></wa-button>' : '') +
-          (l.pdf ? '<wa-button appearance="outlined" href="' + esc(l.pdf) + '" target="_blank" rel="noopener" aria-label="' + esc(l.code) + ' manual PDF">PDF</wa-button>' : '') +
-          (l.setup ? '<wa-button appearance="outlined" href="' + esc(l.setup) + '" target="_blank" rel="noopener" aria-label="' + esc(l.code) + ' setup guide">Setup</wa-button>' : '') +
+          (l.url ? '<wa-button class="open" variant="brand" size="s" href="' + esc(l.url) + '" target="_blank" rel="noopener" aria-label="Start the ' + esc(l.code) + ' lab">Start <span slot="end" aria-hidden="true">→</span></wa-button>' : '') +
+          (l.pdf ? '<wa-button appearance="outlined" size="s" href="' + esc(l.pdf) + '" target="_blank" rel="noopener" aria-label="' + esc(l.code) + ' manual PDF">PDF</wa-button>' : '') +
+          (l.setup ? '<wa-button appearance="outlined" size="s" href="' + esc(l.setup) + '" target="_blank" rel="noopener" aria-label="' + esc(l.code) + ' setup guide">Setup</wa-button>' : '') +
           '</div></li>';
       }).join('');
     }
