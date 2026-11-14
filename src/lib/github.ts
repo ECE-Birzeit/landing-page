@@ -1,14 +1,14 @@
 // Who has worked on ECE Hub, read from GitHub when the site is built: everyone who has committed to a
 // public ECE-Birzeit repository or the course catalog, most commits first. Bots are left out.
 // Set GITHUB_TOKEN (the workflows do) to lift GitHub's anonymous rate limit. If GitHub can't be
-// reached the build carries on with an empty list, and the home page just leaves the faces out.
+// reached the build carries on with an empty list, and the home page shows only the invite.
 
 import { execSync } from 'node:child_process';
 
 const API = 'https://api.github.com/';
 const REPOS = ['mabushelbaia/bzu-course-catalog'];
 
-export interface Person { login: string; name: string; url: string; avatar: string | null; commits: number; repos: number; mock?: boolean }
+export interface Person { login: string; name: string; url: string; avatar: string; commits: number; repos: number }
 
 // The workflows pass GITHUB_TOKEN; locally, borrow the GitHub CLI's sign-in if there is one, so
 // `npm run dev` doesn't run out of GitHub's 60 anonymous requests an hour while you edit
@@ -26,17 +26,6 @@ async function get(path: string): Promise<any> {
 }
 
 const isBot = (c: any) => c.type !== 'User' || /\[bot\]$/i.test(c.login) || /^copilot/i.test(c.login);
-
-// Made-up contributors to see how the cards fill out, shown only in `npm run dev` (never in a build)
-// unless MOCK_CONTRIBUTORS=1 is set. Initials only: no photos, no real accounts.
-function mocks(): Person[] {
-  if (!import.meta.env.DEV && process.env.MOCK_CONTRIBUTORS !== '1') return [];
-  return [
-    ['Sample Student', 'sample-student', 42, 3], ['Lab Assistant', 'lab-assistant', 27, 2],
-    ['Manual Reviewer', 'manual-reviewer', 12, 1], ['First-time Fixer', 'first-fix', 3, 1],
-    ['Data Helper', 'data-helper', 8, 1]
-  ].map(([name, login, commits, repos]) => ({ login: login as string, name: name as string, url: '#', avatar: null, commits: commits as number, repos: repos as number, mock: true }));
-}
 
 export async function contributors(): Promise<Person[]> {
   try {
@@ -57,7 +46,7 @@ export async function contributors(): Promise<Person[]> {
     await Promise.all([...people.values()].map(async (p) => {
       try { const u = await get(`users/${p.login}`); if (u.name) p.name = u.name; } catch {}
     }));
-    return [...people.values(), ...mocks()].sort((a, b) => b.commits - a.commits || a.login.localeCompare(b.login));
+    return [...people.values()].sort((a, b) => b.commits - a.commits || a.login.localeCompare(b.login));
   } catch (e: any) {
     console.warn(`[contributors] ${e.message}; leaving them out`);
     return [];

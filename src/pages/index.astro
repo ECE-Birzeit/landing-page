@@ -297,21 +297,21 @@ const quick = [
   #join { border-bottom: 0 }
   .join { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 32px 64px; align-items: end }
   .join .ctas { margin: 0 }
-  /* Who built it, as cards, with quick links for joining in */
-  .crew { display: flex; flex-direction: column; gap: 18px; margin-top: 48px; padding-top: 28px; border-top: 1px solid var(--line) }
+  /* Who built it: round portraits, and an open spot inviting the next contributor */
+  .crew { display: flex; flex-direction: column; gap: 28px; margin-top: 48px; padding-top: 28px; border-top: 1px solid var(--line) }
   .crew-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 10px 32px }
   .crew-head h3 { margin: 0; font: 500 20px/1.3 var(--sans); letter-spacing: -.01em }
-  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr)); gap: 12px; margin: 0; padding: 0; list-style: none }
-  .cards li, .cards a { display: flex }
-  .cards a { flex: 1; color: inherit; text-decoration: none; border-radius: var(--wa-border-radius-l) }
-  .cards wa-card { flex: 1; --spacing: 18px; transition: border-color .15s }
-  .cards a:hover wa-card { --border-color: var(--line2) }
-  .cards .who { display: flex; align-items: center; gap: 12px; min-width: 0 }
-  .cards .who > span { min-width: 0 }
-  .cards wa-avatar { --size: 44px; flex: none }
-  .cards b { display: block; overflow: hidden; font-weight: 500; white-space: nowrap; text-overflow: ellipsis }
-  .cards small { display: block; color: var(--mu); font-size: 13.5px }
-  .cards .stat { margin-top: 14px; font-size: 13.5px; color: var(--mu2) }
+  .team { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 28px 16px; margin: 0; padding: 0; list-style: none }
+  .team a { display: flex; flex-direction: column; align-items: center; gap: 2px; color: inherit; text-align: center; text-decoration: none }
+  .team wa-avatar, .team .slot { --size: 112px; flex: none; width: var(--size); height: var(--size); margin-bottom: 12px; border-radius: 50%; outline: 1px solid var(--line); outline-offset: 4px; transition: outline-color .15s }
+  .team wa-avatar { font-size: 26px }
+  @media (max-width: 560px) { .team { grid-template-columns: repeat(2, minmax(0, 1fr)) } .team wa-avatar, .team .slot { --size: 96px } }
+  .team a:hover wa-avatar, .team a:hover .slot { outline-color: var(--line2) }
+  .team b { font-weight: 500; font-size: 15px; text-wrap: balance }
+  .team span:not(.slot) { color: var(--mu); font-size: 13px }
+  .team .slot { display: grid; place-items: center; outline: 0; border: 1.5px dashed var(--line2); color: var(--ok); font-size: 34px; font-weight: 300; transition: border-color .15s }
+  .team .you a:hover .slot { border-color: var(--ok) }
+  .team .you b { color: var(--ok) }
   .quick { display: flex; flex-wrap: wrap; gap: 8px 24px; font-size: 15px }
   .quick a { display: inline-flex; align-items: baseline; gap: 4px; color: var(--mu2); text-decoration: underline; text-decoration-color: color-mix(in srgb, currentColor 40%, transparent); text-underline-offset: 4px; transition: color .15s, text-decoration-color .15s }
   .quick a:hover { color: var(--i); text-decoration-color: currentColor }
@@ -584,30 +584,30 @@ __HAL_TIM_SET_COMPARE(&amp;htim2, TIM_CHANNEL_1, duty);</code></pre>
             {quick.map(([t, href]) => <a href={href} target="_blank" rel="noopener">{t}<Fragment set:html={ext} /></a>)}
           </nav>
         </div>
-        {people.length > 0 && (
-          <ul class="cards">
-            {people.slice(0, 8).map((p) => (
-              <li>
-                <a href={p.url} target={p.mock ? undefined : '_blank'} rel="noopener" aria-label={`${p.name} on GitHub`}>
-                  <wa-card appearance="outlined">
-                    <div class="who">
-                      <wa-avatar image={p.avatar ? `${p.avatar}&s=96` : undefined} label={p.name} initials={initials(p.name)} loading="lazy"></wa-avatar>
-                      <span><b>{p.name}</b><small>@{p.login}</small></span>
-                    </div>
-                    <div class="stat">{p.commits.toLocaleString('en')} {p.commits === 1 ? 'commit' : 'commits'} · {p.repos} {p.repos === 1 ? 'repository' : 'repositories'}</div>
-                  </wa-card>
-                </a>
-              </li>
-            ))}
-          </ul>
-        )}
+        <ul class="team">
+          {people.map((p) => (
+            <li>
+              <a href={p.url} target="_blank" rel="noopener" title={`${p.commits.toLocaleString('en')} commits`}>
+                <wa-avatar image={`${p.avatar}&s=256`} label={p.name} initials={initials(p.name)} loading="lazy"></wa-avatar>
+                <b>{p.name.replace(/-/g, '\u2011')}</b>
+                <span>@{p.login}</span>
+              </a>
+            </li>
+          ))}
+          <li class="you">
+            <a href="https://github.com/ECE-Birzeit/.github/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener">
+              <span class="slot" aria-hidden="true">+</span>
+              <b>Your name here</b>
+              <span>Contribute</span>
+            </a>
+          </li>
+        </ul>
       </div>
     </div>
   </section>
 </main>
 <script>
   import '@awesome.me/webawesome/dist/components/avatar/avatar.js';
-  import '@awesome.me/webawesome/dist/components/card/card.js';
 </script>
 
 
