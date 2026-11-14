@@ -1,0 +1,48 @@
+/* The course pages (/courses/ and /courses/CODE/), drawn at build time from the catalog */
+main .wrap { display: flex; flex-direction: column; gap: 18px; padding-top: 28px; padding-bottom: 76px }
+.acts { display: flex; flex-wrap: wrap; gap: 10px }
+
+/* A window: title bar, then content (the same frame the schedules and insights use) */
+.win { border: 1px solid var(--line); border-radius: 12px; background: var(--card); overflow: hidden; min-width: 0 }
+.win > h2, .bar { display: flex; align-items: center; gap: 12px; min-height: 40px; margin: 0; padding: 8px 18px; border-bottom: 1px solid var(--line); background: var(--bar); font: 500 14px var(--sans); color: var(--i) }
+.bar .r, .win > h2 .r { margin-inline-start: auto; font-weight: 400; font-size: 12.5px; color: var(--mu); white-space: nowrap }
+
+.tbl-box { overflow-x: auto }
+.tbl { width: 100%; border-collapse: collapse; font-size: 14px }
+.tbl th { padding: 12px 18px 8px; font-weight: 400; font-size: 12.5px; color: var(--mu); text-align: start; white-space: nowrap }
+.tbl td { padding: 12px 18px; border-top: 1px solid var(--line); vertical-align: top }
+.tbl td.n { white-space: nowrap; font-weight: 500 }
+.tbl td.n small { display: block; font-weight: 400; color: var(--mu) }
+.tbl td .ln { display: block; white-space: nowrap }
+.tbl td .ln + .ln { margin-top: 4px }
+.tbl td.num { text-align: end; white-space: nowrap; font-variant-numeric: tabular-nums }
+.tbl th.num { text-align: end }
+.tbl td.mu { color: var(--mu) }
+.tbl a { color: inherit; text-decoration: underline; text-decoration-color: var(--line2); text-underline-offset: 3px }
+.tbl a:hover { text-decoration-color: currentColor }
+
+.note { margin: 0; padding: 14px 18px 16px; font-size: 13px; line-height: 1.6; color: var(--mu); border-top: 1px solid var(--line) }
+.empty { margin: 0; padding: 22px 18px; color: var(--mu2) }
+
+details.win > summary { cursor: pointer; list-style: none }
+details.win > summary::-webkit-details-marker { display: none }
+details.win > summary h2 { border-bottom: 0 }
+details.win[open] > summary h2 { border-bottom: 1px solid var(--line) }
+details.win > summary h2::before { content: '▸'; color: var(--mu); transition: transform .15s }
+details.win[open] > summary h2::before { transform: rotate(90deg) }
+
+/* /courses/: every course, by department, with a filter */
+.find { display: flex; flex-wrap: wrap; align-items: center; gap: 12px }
+.find wa-input { flex: 1 1 320px; max-width: 480px }
+.find output { color: var(--mu); font-size: 14px }
+.fac > h2 { margin: 18px 0 4px; font: 500 20px/1.3 var(--sans); letter-spacing: -.01em }
+.dep { padding: 0 }
+.dep h3 { margin: 0; padding: 10px 18px; border-bottom: 1px solid var(--line); background: var(--bar); font: 500 14px var(--sans) }
+.dep h3 span { margin-inline-start: 8px; font-weight: 400; color: var(--mu) }
+.dep ul { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); margin: 0; padding: 6px 0; list-style: none }
+.dep li a { display: flex; gap: 10px; padding: 7px 18px; color: inherit; text-decoration: none; font-size: 14px }
+.dep li a:hover { background: var(--soft) }
+.dep li b { flex: none; min-width: 76px; font-weight: 500 }
+.dep li span { color: var(--mu2) }
+.dep li.off span { color: var(--mu) }
+.fac[hidden], .dep[hidden], .dep li[hidden] { display: none }

@@ -13,7 +13,7 @@ interface Props {
   ogDescription?: string;
   ogImageAlt?: string;
   path: string;
-  nav?: 'labs' | 'schedules' | 'timetable' | 'stats' | '';
+  nav?: 'labs' | 'courses' | 'schedules' | 'timetable' | 'stats' | '';
   skip?: { href: string; text: string };
   brandHref?: string;
   showUpdated?: boolean;
@@ -31,6 +31,7 @@ try { updated = execSync('git log -1 --format=%cs').toString().trim(); } catch {
 
 const links = [
   { href: '/labs/', label: 'Labs', id: 'labs' },
+  { href: '/courses/', label: 'Courses', id: 'courses' },
   { href: '/schedules/', label: 'Schedules', id: 'schedules' },
   { href: '/timetable/', label: 'Timetable', id: 'timetable' },
   { href: '/stats/', label: 'Insights', id: 'stats' }

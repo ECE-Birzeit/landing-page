@@ -1,0 +1,82 @@
+---
+// Every course on Ritaj's last few semesters, by faculty and department, each linking to its page.
+// The filter is the only script; without it the page is a plain list of links.
+import Base from '../../layouts/Base.astro';
+import PageHead from '../../components/PageHead.astro';
+import { catalog, type Course } from '../../lib/catalog';
+import '../../styles/courses.css';
+
+const { terms, current, courses } = await catalog();
+const currentTerm = terms.find((t) => t.code === current);
+const all = [...courses.values()];
+const now = all.filter((c) => c.offerings.some((o) => o.term === current));
+
+// Faculty → department → courses; departments the unit tree doesn't know go under "Other"
+const groups = new Map<string, Map<string, Course[]>>();
+for (const c of all) {
+  const fac = c.faculty ?? (c.department ? c.department : 'Other');
+  const dep = c.department ?? `${c.prefix} courses`;
+  if (!groups.has(fac)) groups.set(fac, new Map());
+  const deps = groups.get(fac)!;
+  if (!deps.has(dep)) deps.set(dep, []);
+  deps.get(dep)!.push(c);
+}
+const facs = [...groups].sort(([a], [b]) => (a === 'Other' ? 1 : b === 'Other' ? -1 : a.localeCompare(b)));
+const slug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+---
+<Base title="Courses · Birzeit University · ECE Hub" description={`Every course at Birzeit University over the last ${terms.length} semesters, by department: each with its sections, times, rooms, instructors and when it is usually offered.`} path="/courses/" nav="courses" skip={{ href: '#list', text: 'Skip to the courses' }}>
+<main id="main">
+  <PageHead title="Courses" facts={[[now.length, `courses in ${currentTerm?.name.toLowerCase() ?? 'this semester'}`], [all.length, `over the last ${terms.length} semesters`]]}>
+    Every course on Ritaj, with its sections, times, rooms and instructors, and the semesters it is usually offered in. For one week at a glance, use the <a href="/schedules/">weekly schedules</a>.
+  </PageHead>
+  <div class="wrap">
+    <div class="find">
+      <wa-input id="q" type="search" size="l" placeholder="Course code or name, e.g. ENCS3320 or networks" with-clear aria-label="Filter the courses"></wa-input>
+      <output id="shown" for="q"></output>
+    </div>
+    <div id="list">
+      {facs.map(([fac, deps]) => (
+        <section class="fac" aria-labelledby={`f-${slug(fac)}`}>
+          <h2 id={`f-${slug(fac)}`}>{fac}</h2>
+          {[...deps].sort(([a], [b]) => a.localeCompare(b)).map(([dep, cs]) => (
+            <div class="win dep">
+              {dep !== fac && <h3>{dep}<span>{cs.length}</span></h3>}
+              <ul>
+                {cs.map((c) => {
+                  const on = c.offerings.some((o) => o.term === current);
+                  return <li class={on ? undefined : 'off'} data-k={`${c.code} ${c.name}`.toLowerCase()}><a href={`/courses/${c.code}/`}><b>{c.code}</b><span>{c.name}</span></a></li>;
+                })}
+              </ul>
+            </div>
+          ))}
+        </section>
+      ))}
+    </div>
+  </div>
+</main>
+<Fragment slot="footer">
+  <a href="https://github.com/mabushelbaia/bzu-course-catalog" target="_blank" rel="noopener">Data: bzu-course-catalog<svg class="ext" viewBox="0 0 10 10" aria-hidden="true"><path d="M3 7l4-4M3.5 3H7v3.5"/></svg></a>
+</Fragment>
+<script is:inline>
+  (function () {
+    var q = document.getElementById('q'), shown = document.getElementById('shown');
+    var items = [].slice.call(document.querySelectorAll('#list li'));
+    var total = items.length;
+    function apply() {
+      var words = String(q.value || '').toLowerCase().trim().split(/\s+/).filter(Boolean), n = 0;
+      items.forEach(function (li) {
+        var k = li.getAttribute('data-k'), hit = words.every(function (w) { return k.indexOf(w) !== -1; });
+        li.hidden = !hit; if (hit) n++;
+      });
+      document.querySelectorAll('#list .dep').forEach(function (d) { d.hidden = !d.querySelector('li:not([hidden])'); });
+      document.querySelectorAll('#list .fac').forEach(function (f) { f.hidden = !f.querySelector('.dep:not([hidden])'); });
+      shown.textContent = words.length ? n.toLocaleString('en') + ' of ' + total.toLocaleString('en') : '';
+    }
+    q.addEventListener('input', apply);
+    q.addEventListener('wa-clear', apply);
+    // ?q= opens the list already filtered
+    var p = new URLSearchParams(location.search).get('q');
+    if (p) customElements.whenDefined('wa-input').then(function () { return q.updateComplete; }).then(function () { q.value = p; apply(); });
+  })();
+</script>
+</Base>

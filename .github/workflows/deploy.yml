@@ -3,9 +3,9 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main]
-  # Daily, so the impact strip's counts follow the lab sites
+  # On a schedule too, so the course pages and the counts follow the catalog and the lab sites
   schedule:
-    - cron: "40 3 * * *"
+    - cron: "40 */6 * * *"   # every 6 hours
   workflow_dispatch:
 
 permissions:
@@ -33,10 +33,6 @@ jobs:
         run: |
           npm ci
           npm run build
-      - name: Stamp the sitemap
-        run: |
-          d=$(git log -1 --format=%cs)
-          sed -i -E "s|<lastmod>[^<]*</lastmod>|<lastmod>$d</lastmod>|" dist/sitemap.xml
       - name: Sign in to Google Analytics
         # Keyless: GitHub's OIDC token is exchanged for the ga-reader service account
         # (project birzeit-me-stats). Skipped until the GA_PROPERTY_ID variable is set.

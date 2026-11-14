@@ -18,6 +18,8 @@ import PageHead from '../../components/PageHead.astro';
   .bar i { flex: none; width: 9px; height: 9px; border-radius: 50%; background: var(--line2) }
   .bar .t { margin-inline-start: 8px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis }
   .bar .r { margin-inline-start: auto; white-space: nowrap }
+  .bar .cpage + .r { margin-inline-start: 14px }
+  .bar .cpage { color: var(--i); text-decoration: underline; text-decoration-color: var(--line2); text-underline-offset: 3px }
 
   /* Page */
   main > .wrap { display: flex; flex-direction: column; gap: 20px; padding-top: 28px; padding-bottom: 72px }
@@ -137,7 +139,7 @@ import PageHead from '../../components/PageHead.astro';
     </div>
 
     <div class="win week" id="week">
-      <div class="bar"><i></i><i></i><i></i><span class="t" id="file">schedule</span><span class="r" id="span">08:00 – 17:00 · Sat – Thu</span></div>
+      <div class="bar"><i></i><i></i><i></i><span class="t" id="file">schedule</span><a class="r cpage" id="cpage" hidden>Course page</a><span class="r" id="span">08:00 – 17:00 · Sat – Thu</span></div>
       <div class="gantt" id="gantt"><div class="status">Loading the schedule…</div></div>
     </div>
 
@@ -212,7 +214,8 @@ import PageHead from '../../components/PageHead.astro';
     function prefixOf(code) { return (code.match(/^[A-Za-z]*/) || [''])[0]; }
     function inDept(code) { var u = units[state.dept]; return !u || !u.prefixes || u.prefixes[prefixOf(code)] === 1; }
     function mins(t) { var p = t.split(':'); return +p[0] * 60 + +p[1]; }
-    // Ritaj lists a co-taught section's instructors in one field, separated by commas
+    // Ritaj lists a co-taught section's instructors in one field, separated by commas; the catalog
+    // splits them into `instructors`, and this does the same for the display string
     function people(n) { return String(n || '').split(/\s*,\s*/).filter(function (x) { return x && x !== 'TBA'; }); }
     function short(n) { return people(n).map(function (x) { var p = x.split(' '); return p.length > 2 ? p[0] + ' ' + p[p.length - 1] : x; }).join(', ') || n; }
     function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
@@ -288,7 +291,7 @@ import PageHead from '../../components/PageHead.astro';
           c.sections.forEach(function (s) {
             s.meetings.forEach(function (m) {
               if (m.start && m.end && ALL_DAYS.some(function (x) { return x[0] === m.day; }))
-                rows.push({ code: c.code, sec: s.number, inst: s.instructor || 'TBA', insts: people(s.instructor), day: m.day, start: m.start, end: m.end, room: m.room || 'TBA', enr: s.enrolled });
+                rows.push({ code: c.code, sec: s.number, inst: s.instructor || 'TBA', insts: s.instructors ? people(s.instructors.join(',')) : people(s.instructor), day: m.day, start: m.start, end: m.end, room: m.room || 'TBA', enr: s.enrolled });
             });
           });
         });
@@ -397,6 +400,8 @@ import PageHead from '../../components/PageHead.astro';
       $('span').textContent = (h0 < 10 ? '0' : '') + h0 + ':00 – ' + h1 + ':00 · ' + DAYS[0][1] + ' – ' + DAYS[DAYS.length - 1][1];
       var line = function (r) { return view === 'room' ? short(r.inst) : view === 'course' ? 'Sec ' + r.sec + ' · ' + r.room : r.room; };
       $('file').textContent = NOUN[view][0] + ' · ' + label(view, sel);
+      $('cpage').hidden = view !== 'course';
+      if (view === 'course') $('cpage').href = '/courses/' + encodeURIComponent(sel) + '/';
 
       // Week grid
       var hours = '';

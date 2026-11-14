@@ -1,0 +1,139 @@
+---
+// One page per course, e.g. /courses/ENCS3320/, built from bzu-course-catalog when the site is built:
+// the newest semester's sections (times, rooms, instructors, enrolment), and every published semester
+// the course ran in, so students can see when it is usually offered and at what times.
+import Base from '../../layouts/Base.astro';
+import PageHead from '../../components/PageHead.astro';
+import { catalog, meetingLines, people, type Course, type Offering, type Section } from '../../lib/catalog';
+import '../../styles/courses.css';
+
+export async function getStaticPaths() {
+  const { courses } = await catalog();
+  return [...courses.values()].map((course) => ({ params: { code: course.code }, props: { course } }));
+}
+
+const { course } = Astro.props as { course: Course };
+const { terms, current } = await catalog();
+const { code, name } = course;
+const latest = course.offerings[0];
+const currentTerm = terms.find((t) => t.code === current);
+
+const TYPE_ORDER = ['Lecture', 'Lab', 'Tutorial', 'Discussion'];
+const sorted = (ss: Section[]) => [...ss].sort((a, b) =>
+  (TYPE_ORDER.indexOf(a.type) + 1 || 9) - (TYPE_ORDER.indexOf(b.type) + 1 || 9) || (parseInt(a.number) || 0) - (parseInt(b.number) || 0));
+const unique = <T,>(xs: T[]) => [...new Set(xs)];
+const instructorsOf = (o: Offering) => unique(o.sections.flatMap(people)).sort();
+const enrolledOf = (o: Offering) => o.sections.reduce((n, s) => n + (s.enrolled || 0), 0);
+const enrolment = (s: Section) => s.enrolled == null ? '' : s.capacity ? `${s.enrolled} / ${s.capacity}` : String(s.enrolled);
+const day = (iso: string) => new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'Asia/Hebron' });
+// "First Semester 2026/2027" reads as the figure 2026/27 with the label "first semester"
+const termFact = (n: string): [string, string] => {
+  const m = n.match(/^(.*?)\s+(\d{4})\/\d{2}(\d{2})$/);
+  return m ? [`${m[2]}/${m[3]}`, m[1].toLowerCase()] : [n, 'semester'];
+};
+// The usual times of a semester's offering: its distinct weekly patterns, lectures first
+const patterns = (o: Offering) => unique(sorted(o.sections).flatMap((s) => meetingLines(s).map((l) => `${l.days} ${l.time}`)));
+const bySchedule = (q: string) => `/schedules/?dept=all&view=${q}`;
+
+const owner = [course.department, course.faculty].filter(Boolean).join(', ');
+const runsNow = latest.term === current;
+const upcoming = !runsNow && currentTerm && terms.findIndex((t) => t.code === latest.term) < terms.findIndex((t) => t.code === current);
+const status = runsNow
+  ? `Taught in ${currentTerm!.name} in ${latest.sections.length} ${latest.sections.length === 1 ? 'section' : 'sections'}.`
+  : upcoming
+    ? `Open for ${latest.name}, in ${latest.sections.length} ${latest.sections.length === 1 ? 'section' : 'sections'}.`
+    : `Not offered in ${currentTerm?.name ?? 'this semester'}; last taught in ${latest.name}.`;
+const insts = instructorsOf(latest);
+const facts: [string | number, string][] = [
+  termFact(latest.name),
+  [latest.sections.length, latest.sections.length === 1 ? 'section' : 'sections'],
+  [insts.length, insts.length === 1 ? 'instructor' : 'instructors'],
+  [enrolledOf(latest), 'enrolled']
+];
+
+const title = `${code} ${name} · Birzeit University`;
+const description = `${code} ${name} at Birzeit University${owner ? ` (${course.department})` : ''}: ` +
+  `${latest.sections.length} ${latest.sections.length === 1 ? 'section' : 'sections'} in ${latest.name}, with times, rooms and instructors` +
+  (course.offerings.length > 1 ? `, and when it is usually offered.` : '.');
+
+const ld = {
+  '@context': 'https://schema.org', '@type': 'Course', courseCode: code, name,
+  description, url: new URL(`/courses/${code}/`, Astro.site).href,
+  provider: { '@type': 'CollegeOrUniversity', name: 'Birzeit University', sameAs: 'https://www.birzeit.edu' },
+  hasCourseInstance: course.offerings.map((o) => ({
+    '@type': 'CourseInstance', name: `${code} · ${o.name}`, courseMode: 'Onsite',
+    instructor: instructorsOf(o).map((n) => ({ '@type': 'Person', name: n }))
+  }))
+};
+---
+<Base title={title} description={description} path={`/courses/${code}/`} nav="courses" skip={{ href: '#sections', text: 'Skip to the sections' }}>
+<Fragment slot="head">
+  <script type="application/ld+json" set:html={JSON.stringify(ld)} />
+</Fragment>
+<main id="main">
+  <PageHead title={`${code} ${name}`} facts={facts}>
+    {owner && <>{owner}. </>}{status}{' '}<a href="/courses/">All courses</a>.
+  </PageHead>
+  <div class="wrap">
+    {/* The builder and the schedules work on the semester being taught or registered for */}
+    {(runsNow || upcoming) && <div class="acts">
+      <wa-button variant="brand" size="l" href={`/timetable/?add=${code}`}>Add to the schedule builder</wa-button>
+      <wa-button appearance="outlined" size="l" href={`${bySchedule('course')}&q=${code}`}>See its week</wa-button>
+    </div>}
+
+    <section class="win" id="sections" aria-labelledby="sec-h">
+      <h2 id="sec-h">{latest.name}<span class="r">read from Ritaj {day(latest.updated_at)}</span></h2>
+      <div class="tbl-box">
+        <table class="tbl">
+          <thead><tr><th>Section</th><th>Meets</th><th>Room</th><th>Instructor</th><th class="num">Enrolled</th></tr></thead>
+          <tbody>
+            {sorted(latest.sections).map((s) => {
+              const lines = meetingLines(s);
+              const who = people(s);
+              return (
+                <tr>
+                  <td class="n">{s.number}<small>{s.type}</small></td>
+                  <td>{lines.length ? lines.map((l) => <span class="ln">{l.days} {l.time}</span>) : <span class="mu">No set time</span>}</td>
+                  <td>{lines.length ? lines.map((l) => <span class="ln">{l.room === 'Room not set' ? l.room : <a href={`${bySchedule('room')}&q=${encodeURIComponent(l.room)}`}>{l.room}</a>}</span>) : ''}</td>
+                  <td>{who.length ? who.map((n) => <span class="ln"><a href={`${bySchedule('instructor')}&q=${encodeURIComponent(n)}`}>{n}</a></span>) : <span class="mu">Not announced</span>}</td>
+                  <td class="num">{enrolment(s)}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+      {(runsNow || upcoming)
+        ? <p class="note">Rooms and instructors open their own week in the schedules. Ritaj can still change sections during registration; the <a href={`${bySchedule('course')}&q=${code}`}>live schedule</a> always has the latest.</p>
+        : <p class="note">These are the sections from {latest.name}, the last time the course ran. Rooms and instructors open their week in the current schedules.</p>}
+    </section>
+
+    <section class="win" aria-labelledby="when-h">
+      <h2 id="when-h">When it's taught<span class="r">the last {terms.length} semesters on Ritaj</span></h2>
+      <div class="tbl-box">
+        <table class="tbl">
+          <thead><tr><th>Semester</th><th class="num">Sections</th><th>Meets</th><th>Taught by</th></tr></thead>
+          <tbody>
+            {terms.map((t) => {
+              const o = course.offerings.find((x) => x.term === t.code);
+              if (!o) return <tr><td class="n">{t.name}</td><td class="num mu">–</td><td class="mu" colspan="2">Not offered</td></tr>;
+              const ps = patterns(o), who = instructorsOf(o);
+              return (
+                <tr>
+                  <td class="n">{t.name}</td>
+                  <td class="num">{o.sections.length}</td>
+                  <td>{ps.slice(0, 4).map((p) => <span class="ln">{p}</span>)}{ps.length > 4 && <span class="ln mu">and {ps.length - 4} more</span>}</td>
+                  <td>{who.slice(0, 4).map((n) => <span class="ln">{n}</span>)}{who.length > 4 && <span class="ln mu">and {who.length - 4} more</span>}{!who.length && <span class="mu">Not announced</span>}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+</main>
+<Fragment slot="footer">
+  <a href="https://github.com/mabushelbaia/bzu-course-catalog" target="_blank" rel="noopener">Data: bzu-course-catalog<svg class="ext" viewBox="0 0 10 10" aria-hidden="true"><path d="M3 7l4-4M3.5 3H7v3.5"/></svg></a>
+</Fragment>
+</Base>
