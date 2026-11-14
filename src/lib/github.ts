@@ -3,14 +3,23 @@
 // Set GITHUB_TOKEN (the workflows do) to lift GitHub's anonymous rate limit. If GitHub can't be
 // reached the build carries on with an empty list, and the home page just leaves the faces out.
 
+import { execSync } from 'node:child_process';
+
 const API = 'https://api.github.com/';
 const REPOS = ['mabushelbaia/bzu-course-catalog'];
 
 export interface Person { login: string; name: string; url: string; avatar: string | null; commits: number; repos: number; mock?: boolean }
 
+// The workflows pass GITHUB_TOKEN; locally, borrow the GitHub CLI's sign-in if there is one, so
+// `npm run dev` doesn't run out of GitHub's 60 anonymous requests an hour while you edit
+let token: string | undefined = process.env.GITHUB_TOKEN;
+if (!token) {
+  try { token = execSync('gh auth token', { stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim() || undefined; } catch {}
+}
+
 async function get(path: string): Promise<any> {
   const headers: Record<string, string> = { Accept: 'application/vnd.github+json', 'User-Agent': 'ece-hub-build' };
-  if (process.env.GITHUB_TOKEN) headers.Authorization = `Bearer ${process.env.GITHUB_TOKEN}`;
+  if (token) headers.Authorization = `Bearer ${token}`;
   const r = await fetch(API + path, { headers });
   if (!r.ok) throw new Error(`GitHub ${path}: ${r.status}`);
   return r.status === 204 ? [] : r.json();
