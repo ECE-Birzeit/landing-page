@@ -57,6 +57,10 @@ Old designs are frozen as plain files in `public/vN/` with `<meta name="robots" 
 
 [Open an issue](https://github.com/ECE-Birzeit/landing-page/issues/new/choose) or send a pull request. The [contributing guide](https://github.com/ECE-Birzeit/.github/blob/main/CONTRIBUTING.md) covers the rest.
 
+## Branches
+
+New features are tried on `dev` first: branch from `dev`, open the pull request into `dev`, and test it locally with `npm run dev`. `.github/workflows/check.yml` builds every push to `dev` and every pull request, without deploying anything. When `dev` is ready, a pull request from `dev` into `main` ships it.
+
 ## Deployment
 
 On every push to `main`, and once a day, `.github/workflows/deploy.yml` builds the site with Astro, writes the latest commit date into the sitemap, counts the platform into `stats.json` and deploys `dist/` to GitHub Pages at [birzeit.me](https://birzeit.me). The footer's "Updated" date is the latest commit's, read at build time.
