@@ -28,7 +28,7 @@ npm run preview   # serve dist/
 | `src/layouts/Base.astro` | What every page shares: the `<head>` (meta and link-preview tags, icons, fonts, analytics, the theme set before first paint), the header with the nav, and the footer. Pages pass their title, description, path and nav item, add to the head through `slot="head"` and add footer links through `slot="footer"` |
 | `src/components/Jump.astro` | The search box in the header (⌘K / Ctrl+K, or `/`): finds any page, lab, course, instructor or room and opens it; ⌘↵ on a course adds it to the schedule builder (`/timetable/?add=CODE`). Courses, instructors and rooms come from the bzu-course-catalog term file, loaded the first time the box opens; the last five picks are kept in `localStorage` under `ece-jump-recent` |
 | `src/styles/base.css` | Shared styles: reset, the colour tokens for the light and dark themes, type, the header and the footer. One font, Switzer, on every page |
-| `src/pages/index.astro` | The home page at `/`: a text hero with this semester's panel (week, bar to the exams, the hub's counts), the featured laboratories as a sideways row of cards, what the web manuals do, the schedules and the schedule builder with real examples, this semester in numbers, and the call for manuals. Motion uses [GSAP](https://gsap.com) 3.12.5 and ScrollTrigger from cdnjs with integrity hashes; nothing moves for reduced motion, and the page is complete without the scripts |
+| `src/pages/index.astro` | The home page at `/`: a text hero with this semester's panel (week, bar to the exams, the hub's counts), the featured laboratories as a sideways row of cards, what the web manuals do, the schedules and the schedule builder with real examples, this semester in numbers, and the call for manuals with a round portrait for each contributor and an open "Your name here" spot (from GitHub at build time, `src/lib/github.ts`; it uses `GITHUB_TOKEN`, or the GitHub CLI's sign-in locally) and quick links for joining in. Motion uses [GSAP](https://gsap.com) 3.12.5 and ScrollTrigger from cdnjs with integrity hashes; nothing moves for reduced motion, and the page is complete without the scripts |
 | `src/pages/labs/index.astro` | Every lab at `/labs/`, with search and filters for type, language and year, drawn from `public/labs/labs.json` |
 | `src/pages/schedules/index.astro` | The weekly schedules at `/schedules/`: browse by instructor, course or room, with a sortable sections table. Reads the live JSON from [bzu-course-catalog](https://github.com/mabushelbaia/bzu-course-catalog) in the browser, so it stays current without redeploys |
 | `src/pages/timetable/index.astro` | The schedule builder at `/timetable/`: pick courses and step through every clash-free combination of sections, with filters, per-section switches, a calendar (`.ics`) export and a shareable link. Choices are kept in `localStorage` under `ece-timetable` |
@@ -56,6 +56,10 @@ Old designs are frozen as plain files in `public/vN/` with `<meta name="robots" 
 ## Contributing
 
 [Open an issue](https://github.com/ECE-Birzeit/landing-page/issues/new/choose) or send a pull request. The [contributing guide](https://github.com/ECE-Birzeit/.github/blob/main/CONTRIBUTING.md) covers the rest.
+
+## Branches
+
+New features are tried on `dev` first: branch from `dev`, open the pull request into `dev`, and test it locally with `npm run dev`. `.github/workflows/check.yml` builds every push to `dev` and every pull request, without deploying anything. When `dev` is ready, a pull request from `dev` into `main` ships it.
 
 ## Deployment
 

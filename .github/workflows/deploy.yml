@@ -33,6 +33,8 @@ jobs:
         run: |
           npm ci
           npm run build
+        env:
+          GITHUB_TOKEN: ${{ github.token }}   # the home page's contributors come from GitHub
       - name: Stamp the sitemap
         run: |
           d=$(git log -1 --format=%cs)
