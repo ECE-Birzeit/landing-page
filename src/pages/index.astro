@@ -4,6 +4,11 @@ import { contributors } from '../lib/github';
 
 // The people behind the hub, from GitHub at build time, shown as cards at the bottom of the page
 const people = await contributors();
+// The maintainer gets a wider spot with their own links; everyone else a portrait
+const LEAD = { login: 'mabushelbaia', role: 'Maintainer', site: 'https://mabushelbaia.com' };
+const lead = people.find((p) => p.login === LEAD.login);
+const rest = people.filter((p) => p !== lead);
+const nb = (n: string) => n.replace(/-/g, '\u2011'); // keep "Abu-Shelbaia" from breaking at the hyphen
 const initials = (n: string) => n.split(/\s+/).map((w) => w[0]).slice(0, 2).join('').toUpperCase();
 const ext = '<svg class="ext" viewBox="0 0 10 10" aria-hidden="true"><path d="M3 7l4-4M3.5 3H7v3.5"/></svg>';
 const quick = [
@@ -312,6 +317,19 @@ const quick = [
   .team .slot { display: grid; place-items: center; outline: 0; border: 1.5px dashed var(--line2); color: var(--ok); font-size: 34px; font-weight: 300; transition: border-color .15s }
   .team .you a:hover .slot { border-color: var(--ok) }
   .team .you b { color: var(--ok) }
+  /* The maintainer: two columns wide, a larger portrait, their role and links */
+  .team .lead { grid-column: span 3; display: flex; align-items: center; gap: 24px; min-width: 0 }
+  .team .lead wa-avatar { --size: 132px; margin: 0; outline-color: var(--ok); outline-width: 1.5px }
+  .team .lead > div { display: flex; flex-direction: column; gap: 2px; min-width: 0 }
+  .team .lead .role { color: var(--ok); font-size: 13px; font-weight: 500 }
+  .team .lead b { font-size: 19px; letter-spacing: -.01em; white-space: nowrap }
+  .team .lead .nums { color: var(--mu); font-size: 13.5px }
+  .team .lead .links { display: flex; flex-wrap: wrap; gap: 4px 16px; margin-top: 10px }
+  .team .lead .links a { display: inline-flex; flex-direction: row; white-space: nowrap; align-items: baseline; gap: 4px; color: var(--mu2); font-size: 14px; text-decoration: underline; text-decoration-color: color-mix(in srgb, currentColor 40%, transparent); text-underline-offset: 4px }
+  .team .lead .links a:hover { color: var(--i); text-decoration-color: currentColor }
+  .team .lead .ext { width: 9px; height: 9px; fill: none; stroke: currentColor; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round }
+  @media (max-width: 760px) { .team .lead { grid-column: 1 / -1 } }
+  @media (max-width: 560px) { .team .lead { gap: 18px } .team .lead wa-avatar { --size: 96px } .team .lead b { white-space: normal } }
   .quick { display: flex; flex-wrap: wrap; gap: 8px 24px; font-size: 15px }
   .quick a { display: inline-flex; align-items: baseline; gap: 4px; color: var(--mu2); text-decoration: underline; text-decoration-color: color-mix(in srgb, currentColor 40%, transparent); text-underline-offset: 4px; transition: color .15s, text-decoration-color .15s }
   .quick a:hover { color: var(--i); text-decoration-color: currentColor }
@@ -585,11 +603,25 @@ __HAL_TIM_SET_COMPARE(&amp;htim2, TIM_CHANNEL_1, duty);</code></pre>
           </nav>
         </div>
         <ul class="team">
-          {people.map((p) => (
+          {lead && (
+            <li class="lead">
+              <wa-avatar image={`${lead.avatar}&s=320`} label={lead.name} initials={initials(lead.name)} loading="lazy"></wa-avatar>
+              <div>
+                <span class="role">{LEAD.role}</span>
+                <b>{nb(lead.name)}</b>
+                <span class="nums">{lead.commits.toLocaleString('en')} commits · {lead.repos} repositories</span>
+                <span class="links">
+                  <a href={LEAD.site} target="_blank" rel="noopener">{LEAD.site.replace(/^https?:\/\//, '')}<Fragment set:html={ext} /></a>
+                  <a href={lead.url} target="_blank" rel="noopener">GitHub<Fragment set:html={ext} /></a>
+                </span>
+              </div>
+            </li>
+          )}
+          {rest.map((p) => (
             <li>
               <a href={p.url} target="_blank" rel="noopener" title={`${p.commits.toLocaleString('en')} commits`}>
                 <wa-avatar image={`${p.avatar}&s=256`} label={p.name} initials={initials(p.name)} loading="lazy"></wa-avatar>
-                <b>{p.name.replace(/-/g, '\u2011')}</b>
+                <b>{nb(p.name)}</b>
                 <span>@{p.login}</span>
               </a>
             </li>
