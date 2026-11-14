@@ -19,12 +19,8 @@ import PageHead from '../../components/PageHead.astro';
   [data-theme=dark] [data-lab=encs4110] { --a: #f87171 } [data-theme=dark] [data-lab=encs4101] { --a: #38bdf8 }
   [data-theme=dark] [data-lab=encs5150] { --a: #fb923c } [data-theme=dark] [data-lab=encs5101] { --a: #3cc5cb }
 
-  /* A terminal window: title bar with three dots, then content */
+  /* A card */
   .win { border: 1px solid var(--line); border-radius: 12px; background: var(--card); overflow: hidden; min-width: 0; display: flex; flex-direction: column }
-  .bar { display: flex; align-items: center; gap: 6px; height: 36px; padding: 0 14px; border-bottom: 1px solid var(--line); background: var(--bar); font: 400 12px var(--mono); color: var(--mu) }
-  .bar i { flex: none; width: 9px; height: 9px; border-radius: 50%; background: var(--line2) }
-  .bar .t { margin-inline-start: 8px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis }
-  .bar .r { margin-inline-start: auto; white-space: nowrap }
 
   /* Insights */
   main > .wrap { display: flex; flex-direction: column; gap: 18px; padding-top: 28px; padding-bottom: 76px }
@@ -70,7 +66,6 @@ import PageHead from '../../components/PageHead.astro';
 
     <div id="body" hidden>
       <div class="win">
-        <div class="bar" aria-hidden="true"><i></i><i></i><i></i><span class="t">this semester</span></div>
         <div class="kpis">
           <div class="kpi"><b id="k-students"></b><span>students</span><small id="k-students-n"></small></div>
           <div class="kpi"><b id="k-views"></b><span>experiment pages opened</span><small>across the four lab sites</small></div>
@@ -80,9 +75,9 @@ import PageHead from '../../components/PageHead.astro';
       </div>
 
       <div class="row2">
-        <div class="win"><div class="bar" aria-hidden="true"><i></i><i></i><i></i><span class="t">students per day</span></div>
+        <div class="win">
           <div class="pad"><div class="w-title"><h2>Students per day</h2><span id="daily-note">hover a bar for the numbers</span></div><div id="w-daily"></div></div></div>
-        <div class="win"><div class="bar" aria-hidden="true"><i></i><i></i><i></i><span class="t">semester</span></div>
+        <div class="win">
           <div class="pad">
             <div class="w-title"><h2>Semester</h2><span id="term"></span></div>
             <div class="big"><b id="week"></b><span id="weeks"></span></div>
@@ -92,9 +87,9 @@ import PageHead from '../../components/PageHead.astro';
       </div>
 
       <div class="row2">
-        <div class="win"><div class="bar" aria-hidden="true"><i></i><i></i><i></i><span class="t">week</span></div>
+        <div class="win">
           <div class="pad"><div class="w-title"><h2>When students read</h2><span id="heat-note"></span></div><div id="w-heat"></div></div></div>
-        <div class="win"><div class="bar" aria-hidden="true"><i></i><i></i><i></i><span class="t">devices</span></div>
+        <div class="win">
           <div class="pad">
             <div class="w-title"><h2>Devices</h2><span>students</span></div><div id="w-dev"></div>
             <div class="sep"><div class="w-title"><h2>Students by lab</h2></div><div id="w-labs"></div></div>
@@ -102,9 +97,9 @@ import PageHead from '../../components/PageHead.astro';
       </div>
 
       <div class="row11">
-        <div class="win"><div class="bar" aria-hidden="true"><i></i><i></i><i></i><span class="t">most opened</span></div>
+        <div class="win">
           <div class="pad"><div class="w-title"><h2>Most-opened experiments</h2><span>page views</span></div><div id="w-top"></div></div></div>
-        <div class="win"><div class="bar" aria-hidden="true"><i></i><i></i><i></i><span class="t">labs</span></div>
+        <div class="win">
           <div class="pad" style="padding-bottom: 6px"><div class="w-title"><h2>Every lab</h2><span>this semester</span></div></div>
           <div class="tbl-box"><table class="tbl">
             <thead><tr><th>Lab</th><th>Students</th><th>Views</th><th>Exps</th><th>Listings</th></tr></thead>

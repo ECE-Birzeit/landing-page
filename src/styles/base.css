@@ -15,8 +15,8 @@ a { color: inherit }
   --sh: none;
 }
 [data-theme=light] {
-  --p: #f3f2ec; --card: #fbfaf6; --bar: #eeece5; --i: #1a1b19; --mu: #6b6c65; --mu2: #45463f;
-  --line: #dddbd2; --line2: #c9c7bd; --soft: #e9e7df; --ok: #15803d;
+  --p: #f3f2ec; --card: #fbfaf6; --bar: #eeece5; --i: #1a1b19; --mu: #66675f; --mu2: #45463f;
+  --line: #dddbd2; --line2: #c9c7bd; --soft: #e9e7df; --ok: #137a3a;
   --sh: 0 1px 2px rgba(26,27,25,.05);
 }
 /* Each lab keeps its own site's accent */
@@ -79,8 +79,8 @@ footer .date { color: var(--mu) }
 .phead h1 { margin: 0; font: 500 clamp(40px, 5.6vw, 68px)/1.02 var(--sans); letter-spacing: -.035em; text-wrap: balance }
 .phead .lede { max-width: 60ch; margin: 16px 0 0; font-size: 17px; line-height: 1.55; color: var(--mu2); text-wrap: pretty }
 .phead .lede a { text-underline-offset: 3px }
-.pfacts { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 0; min-height: 24px; margin: 16px 0 0; font-size: 15px; line-height: 1.5 }
+.pfacts { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 0; min-height: 24px; margin: 16px 0 0 -24px; clip-path: inset(0 0 0 24px); font-size: 15px; line-height: 1.5 }
 .pfacts div { display: flex; flex-direction: row-reverse; align-items: baseline; gap: 6px }
-.pfacts div + div::after { content: '·'; order: 9; margin-inline: 12px; color: var(--line2) }
+.pfacts div::after { content: '·'; order: 9; flex: none; width: 24px; margin-inline-end: -6px; text-align: center; color: var(--line2) }
 .pfacts dd { margin: 0; font-weight: 500; color: var(--i); white-space: nowrap }
 .pfacts dt { color: var(--mu); white-space: nowrap }

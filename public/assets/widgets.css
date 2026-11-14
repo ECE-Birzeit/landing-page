@@ -83,5 +83,7 @@
 .w-days div { display: flex; flex-direction: column; gap: 6px; min-width: 0 }
 .w-days .w-track { height: 6px }
 .w-days span { display: flex; justify-content: space-between; gap: 4px; font: 400 11.5px var(--mono); color: var(--mu) }
-.w-days b { font-weight: 700; color: var(--i) }
+.w-days b { font-weight: 500; color: var(--i) }
+/* On a phone each column is ~34px: put the day above its total instead of beside it */
+@media (max-width: 560px) { .w-days { gap: 6px } .w-days span { flex-direction: column; gap: 2px } }
 .w-title h2, .w-title h3 { margin: 0; font: 600 15px var(--display); letter-spacing: -.01em }
