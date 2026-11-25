@@ -9,8 +9,8 @@ import PageHead from '../../components/PageHead.astro';
 <style is:global>
   /* What each kind of date is, as a small square in its colour; green is the site's one accent, kept for
      days off, the dates students care about most */
-  [data-theme=light] { --k-holiday: var(--ok); --k-deadline: #b45309; --k-exams: #dc2626; --k-term: var(--i); --k-swap: #0369a1; --k-staff: var(--mu); --k-ceremony: var(--mu2); --k-other: var(--mu) }
-  [data-theme=dark] { --k-holiday: var(--ok); --k-deadline: #fbbf24; --k-exams: #f87171; --k-term: var(--i); --k-swap: #38bdf8; --k-staff: var(--mu); --k-ceremony: var(--mu2); --k-other: var(--mu) }
+  [data-theme=light] { --k-holiday: var(--ok); --k-deadline: #b45309; --k-exams: #dc2626; --k-term: var(--i); --k-swap: #0369a1; --k-remote: #7e22ce; --k-staff: var(--mu); --k-ceremony: var(--mu2); --k-other: var(--mu) }
+  [data-theme=dark] { --k-holiday: var(--ok); --k-deadline: #fbbf24; --k-exams: #f87171; --k-term: var(--i); --k-swap: #38bdf8; --k-remote: #c084fc; --k-staff: var(--mu); --k-ceremony: var(--mu2); --k-other: var(--mu) }
 
   main > .wrap { display: flex; flex-direction: column; gap: 16px; padding-top: 28px; padding-bottom: 72px }
   .cols { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 24px; align-items: start }
@@ -75,7 +75,7 @@ import PageHead from '../../components/PageHead.astro';
       <button type="button" class="seg" data-show="holiday" aria-pressed="false" style="--kc:var(--k-holiday)"><span class="k" aria-hidden="true"></span>Days off</button>
       <button type="button" class="seg" data-show="deadline" aria-pressed="false" style="--kc:var(--k-deadline)"><span class="k" aria-hidden="true"></span>Deadlines</button>
       <button type="button" class="seg" data-show="exams" aria-pressed="false" style="--kc:var(--k-exams)"><span class="k" aria-hidden="true"></span>Teaching and exams</button>
-      <button type="button" class="seg" data-show="swap" aria-pressed="false" style="--kc:var(--k-swap)"><span class="k" aria-hidden="true"></span>Make-up days</button>
+      <button type="button" class="seg" data-show="swap" aria-pressed="false" style="--kc:var(--k-swap)"><span class="k" aria-hidden="true"></span>Make-up and online days</button>
       <span class="r">
         <select id="year" aria-label="Academic year" hidden></select>
         <select id="term" aria-label="Semester"><option value="">Every semester</option></select>
@@ -108,8 +108,8 @@ import PageHead from '../../components/PageHead.astro';
     // calendar.json: per academic year, each event's date (and end), kind, English title, Ritaj's Arabic
     // text, and the semester it belongs to
     var DATA = 'https://raw.githubusercontent.com/mabushelbaia/bzu-course-catalog/main/data/';
-    var KIND = { holiday: 'Day off', deadline: 'Deadline', exams: 'Exams', term: 'Teaching', swap: 'Make-up day', staff: 'Staff', ceremony: 'Ceremony', other: '' };
-    var GROUP = { holiday: 'holiday', deadline: 'deadline', exams: 'exams', term: 'exams', swap: 'swap' };
+    var KIND = { holiday: 'Day off', deadline: 'Deadline', exams: 'Exams', term: 'Teaching', swap: 'Make-up day', remote: 'Online teaching', staff: 'Staff', ceremony: 'Ceremony', other: '' };
+    var GROUP = { holiday: 'holiday', deadline: 'deadline', exams: 'exams', term: 'exams', swap: 'swap', remote: 'swap' };
     var SEM = { '1': 'First semester', '2': 'Second semester', '3': 'Summer session' };
     var $ = function (id) { return document.getElementById(id); };
     var cal = null, state = { show: 'all', year: null, term: '', past: false, staff: false };
