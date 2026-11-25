@@ -1,0 +1,77 @@
+---
+// The semester as a small card for other sites to embed (the lab manuals, a club page):
+//   <iframe src="https://birzeit.me/widget/" width="360" height="220" style="border:0" title="Birzeit semester"></iframe>
+// ?theme=light or ?theme=dark fixes the theme (otherwise it follows the visitor's system), and
+// ?transparent=1 drops the card's background and border so it sits on the host page.
+// No header, footer or analytics; not for search engines.
+import '../../styles/base.css';
+---
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Semester · ECE Hub</title>
+<link rel="preconnect" href="https://api.fontshare.com" crossorigin>
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=switzer@1&display=swap">
+<link rel="stylesheet" href="/assets/widgets.css">
+<script is:inline>
+  (function () {
+    var u = new URLSearchParams(location.search), t = u.get('theme');
+    var mode = t === 'light' || t === 'dark' ? t : (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', mode);
+    if (u.get('transparent') === '1') document.documentElement.classList.add('bare');
+  })();
+</script>
+<style is:global>
+  html, body { min-height: 0; background: transparent }
+  body { padding: 4px }
+  .card { display: flex; flex-direction: column; gap: 14px; padding: 18px 20px; border: 1px solid var(--line); border-radius: 14px; background: var(--card); color: var(--i) }
+  .bare .card { padding: 4px 2px; border: 0; background: transparent }
+  .top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; font-size: 13px; color: var(--mu) }
+  .top b { color: var(--mu2); font-weight: 500; overflow: hidden; white-space: nowrap; text-overflow: ellipsis }
+  .top a { color: var(--mu); text-decoration: none; white-space: nowrap }
+  .top a:hover { color: var(--i) }
+  .wk { display: flex; align-items: flex-end; gap: 12px }
+  .wk b { font: 500 64px/.8 var(--sans); letter-spacing: -.05em }
+  .wk b small { font-size: .38em; letter-spacing: -.02em; margin-inline-start: .04em; vertical-align: .95em }
+  .wk span { padding-bottom: 2px; font-size: 14px; line-height: 1.2; color: var(--mu2) }
+  .left { margin: 0; font-size: 13.5px; color: var(--mu2) }
+  .left b { color: var(--i); font-weight: 500 }
+  .status { font-size: 13px; color: var(--mu) }
+</style>
+</head>
+<body>
+  <div class="card" id="card">
+    <div class="top"><b id="term">This semester</b><a href="https://birzeit.me" target="_blank" rel="noopener">birzeit.me ↗</a></div>
+    <div class="wk" id="wk" hidden><b id="n"></b><span id="l"></span></div>
+    <div id="track"></div>
+    <p class="left" id="left" hidden></p>
+    <span class="status" id="status">Loading…</span>
+  </div>
+<script is:inline src="/assets/widgets.js"></script>
+<script is:inline>
+  (function () {
+    var $ = function (id) { return document.getElementById(id); }, W = window.ECEWidgets;
+    // The semester's dates from Ritaj's academic calendar, via the course catalog (the same as the home page)
+    fetch('https://raw.githubusercontent.com/mabushelbaia/bzu-course-catalog/main/data/index.json').then(function (r) { return r.json(); }).then(function (idx) {
+      var cur = idx.current;
+      if (!cur) throw new Error('no term');
+      $('term').textContent = cur.name;
+      var wk = W.week(cur);
+      if (wk) {
+        var done = wk.now > wk.of, n = done ? wk.of : wk.now, ord = W.ordinal(n);
+        $('n').innerHTML = done ? n : n + '<small>' + ord.slice(-2) + '</small>';
+        $('l').innerHTML = done ? 'weeks<br>taught' : 'teaching<br>week';
+        $('wk').hidden = new Date() < new Date(cur.teaching_starts + 'T00:00:00');
+      }
+      W.semester($('track'), cur);
+      var left = W.left(cur);
+      if (left) { $('left').innerHTML = left; $('left').hidden = false; }
+      $('status').remove();
+    }).catch(function () { $('status').textContent = 'Couldn’t load the semester.'; });
+  })();
+</script>
+</body>
+</html>

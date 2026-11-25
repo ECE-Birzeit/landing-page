@@ -32,8 +32,9 @@ npm run preview   # serve dist/
 | `src/pages/labs/index.astro` | Every lab at `/labs/`, with search and filters for type, language and year, drawn from `public/labs/labs.json` |
 | `src/pages/schedules/index.astro` | The weekly schedules at `/schedules/`: browse by instructor, course or room, with a sortable sections table. Reads the live JSON from [bzu-course-catalog](https://github.com/mabushelbaia/bzu-course-catalog) in the browser, so it stays current without redeploys |
 | `src/pages/timetable/index.astro` | The schedule builder at `/timetable/`: pick courses and step through every combination of sections with no overlapping classes, with filters, per-section switches, a calendar (`.ics`) export and a shareable link. Choices are kept in `localStorage` under `ece-timetable` |
+| `src/pages/widget/index.astro` | The semester as a small card for other sites to embed at `/widget/`: the teaching week, the bar to the exams and what's left (weeks of teaching, days to exams). No header, footer or analytics, and `noindex`. `?theme=light` or `?theme=dark` fixes the theme; `?transparent=1` drops the card's background and border |
 | `src/pages/stats/index.astro` | The insights page at `/stats/`, drawn from `/stats.json` |
-| `public/` | Files served as they are: icons, `og.png` and its source `og.svg`, `sitemap.xml`, `robots.txt`, `CNAME`, `labs/labs.json`, the chart widgets in `assets/` (shared by the home and insights pages), and the frozen old designs in `v1/`, `v2/` and `legacy/` |
+| `public/` | Files served as they are: icons, `og.png` and its source `og.svg`, `sitemap.xml`, `robots.txt`, `CNAME`, `labs/labs.json`, the chart widgets in `assets/widgets.js` (shared by the home, insights and widget pages; `left()` writes the "9 weeks of teaching left · 66 days to exams" line), `assets/export.js` (the schedule builder's and weekly schedules' **Save image**, a landscape PNG of the week and its sections table laid out like the printed page, the switch to the light theme for **Print**, and **Copy link**), and the frozen old designs in `v1/`, `v2/` and `legacy/` |
 | `scripts/stats.py` | Writes `/stats.json` during the deploy: manuals, experiments and code listings from the four lab repos, plus visitors from Google Analytics (keyless sign-in) counted from the semester's first teaching day |
 | `.github/workflows/deploy.yml` | Builds the site, stamps the sitemap, writes `stats.json` and deploys to GitHub Pages |
 
@@ -48,6 +49,12 @@ The pages keep their scripts as plain JavaScript (`<script is:inline>`) and thei
 ### Versions
 
 Old designs are frozen as plain files in `public/vN/` with `<meta name="robots" content="noindex">`, reachable at their folder but not linked from the site.
+
+### Embedding the semester card
+
+```html
+<iframe src="https://birzeit.me/widget/" width="360" height="220" style="border:0" title="Birzeit semester"></iframe>
+```
 
 ### Link preview
 

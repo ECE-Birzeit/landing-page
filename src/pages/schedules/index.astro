@@ -42,6 +42,7 @@ import PageHead from '../../components/PageHead.astro';
   .pick.dept { width: min(420px, 100%) }
   .pick.dept b { color: var(--mu) }
   .meta-right { margin-inline-start: auto }
+  .exp { display: inline-flex; gap: 8px }
   .status { padding: 28px; font: 400 13px var(--mono); color: var(--mu) }
 
   /* Week: days are the rows, time runs across */
@@ -130,6 +131,24 @@ import PageHead from '../../components/PageHead.astro';
     .seg[aria-pressed=true], .dtab[aria-pressed=true] { background: var(--soft) }
   }
   @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important } }
+
+  /* Print: the week and its sections, on one landscape page */
+  @media print {
+    .phead, .tools, .now, .days, .agenda { display: none !important }
+    main > .wrap { padding: 0 !important; gap: 8px !important }
+    .week, .tbl { display: block !important; break-inside: avoid }
+    .nowline { display: none }
+    .blk.live { box-shadow: none }
+    .bar { height: 28px }
+    .hhead { height: 26px }
+    .dayl, .lane { height: 54px }
+    .blk { top: 5px; bottom: 5px; padding: 3px 6px; font-size: 9.5px }
+    .blk.low { top: 28px; bottom: 4px } .blk.high { bottom: 28px }
+    .blk b { font-size: 10.5px }
+    th { height: 26px } th button { font-size: 10.5px; padding: 0 10px }
+    td { height: 22px; padding: 0 10px; font-size: 10.5px }
+    td.o { color: var(--i); font-weight: 500 }
+  }
 </style>
 
 <main id="main" data-anim="all">
@@ -145,6 +164,7 @@ import PageHead from '../../components/PageHead.astro';
       <label class="pick dept"><b aria-hidden="true">⌂</b><select id="dept" aria-label="Department" disabled><option>Loading…</option></select><span class="caret" id="deptcount">▾</span></label>
       <label class="pick"><b aria-hidden="true">›</b><select id="pick" disabled><option>Loading…</option></select><span class="caret" id="optcount">▾</span></label>
       <span class="kicker" id="summary"></span>
+      <span class="exp noprint"><wa-button appearance="outlined" size="s" id="share" title="A link that opens this week">Copy link</wa-button><wa-button appearance="outlined" size="s" id="png" title="An image of this week and its sections">Save image</wa-button><wa-button appearance="outlined" size="s" id="print">Print</wa-button></span>
       <span class="kicker meta-right" id="updated"></span>
     </div>
 
@@ -171,6 +191,7 @@ import PageHead from '../../components/PageHead.astro';
 </main>
 
 
+<script is:inline src="/assets/export.js"></script>
 <script is:inline>
   (function () {
     // Theme switch (same as the landing page)
@@ -479,10 +500,11 @@ import PageHead from '../../components/PageHead.astro';
       $('tbody').innerHTML = table.map(function (g, k) {
         var days = g.dayCodes.map(function (x) { return DAYS.filter(function (d) { return d[0] === x; })[0][1]; }).join(' ');
         return '<tr style="--k:' + Math.min(k * 22, 330) + 'ms;--c:' + color(g.code) + '"><td class="c"><span class="sw"></span>' + esc(g.code) + '</td><td>' + esc(names[g.code] || '') + '</td><td>Sec ' + esc(g.sec) +
-          '</td><td>' + days + '</td><td>' + g.start + '–' + g.end + '</td><td>' + esc(g.other) + '</td><td class="num">' + esc(g.enr) + '</td></tr>';
+          '</td><td>' + days + '</td><td>' + g.start + '–' + g.end + '</td><td class="o">' + esc(g.other) + '</td><td class="num">' + esc(g.enr) + '</td></tr>';
       }).join('');
       $('summary').textContent = table.length + (table.length === 1 ? ' section · ' : ' sections · ') + mine.length + (mine.length === 1 ? ' meeting a week' : ' meetings a week');
-      shown = { view: view, mine: mine, h0: h0, h1: h1 };
+      shown = { view: view, mine: mine, h0: h0, h1: h1, sel: sel, line: line };
+      $('png').disabled = $('print').disabled = !mine.length;
       updateNow();
     }
 
@@ -557,6 +579,21 @@ import PageHead from '../../components/PageHead.astro';
       }
     }
     setInterval(updateNow, 30000);
+
+    // Lock-screen image and print (assets/export.js)
+    $('png').addEventListener('click', function () {
+      if (!shown || !shown.mine.length) return;
+      var v = shown.view;
+      WeekImage.save({
+        title: label(v, shown.sel).replace(/\s+/g, ' '), sub: [NOUN[v][0].charAt(0).toUpperCase() + NOUN[v][0].slice(1), state.term].filter(Boolean).join(' · '),
+        weekTitle: $('file').textContent, table: document.querySelector('.tbl table'), note: $('updated').textContent,
+        file: (v + '-' + shown.sel).replace(/[^\w.-]+/g, '-'),
+        items: shown.mine.map(function (r) { return { day: r.day, s: mins(r.start), e: mins(r.end), code: r.code, line: v === 'room' ? 'Sec ' + r.sec : shown.line(r), inst: v === 'instructor' ? '' : r.inst, color: color(r.code) }; })
+      });
+    });
+    $('print').addEventListener('click', function () { window.print(); });
+    $('share').addEventListener('click', function () { WeekImage.copyLink(this, 'Copy link'); });
+    WeekImage.printing(function () { render('theme'); });
     document.addEventListener('visibilitychange', function () { if (!document.hidden) updateNow(); });
 
     // Controls

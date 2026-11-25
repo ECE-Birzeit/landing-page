@@ -138,6 +138,8 @@ const quick = [
   .now-week b { font: 500 clamp(96px, 11vw, 152px)/.8 var(--sans); letter-spacing: -.06em }
   .now-week b small { font-size: .38em; letter-spacing: -.02em; margin-inline-start: .04em; vertical-align: .95em }
   .now-week > span { padding-bottom: 6px; font-size: 18px; line-height: 1.2; color: var(--mu2) }
+  .now-left { margin: -12px 0 0; font-size: 14px; color: var(--mu2) }
+  .now-left b { color: var(--i); font-weight: 500 }
   .now-figs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); margin: 0; padding-top: 20px; border-top: 1px solid var(--line) }
   .now-figs div { display: flex; flex-direction: column-reverse; gap: 4px }
   .now-figs dt { font-size: 13px; color: var(--mu) }
@@ -365,6 +367,7 @@ const quick = [
         <div class="now-top"><span id="now-term">This semester</span><span>from Ritaj, daily</span></div>
         <div class="now-week"><b id="now-n">··</b><span id="now-l">teaching<br>week</span></div>
         <div id="hero-track"></div>
+        <p class="now-left" id="now-left" hidden></p>
         <dl class="now-figs">
           <div><dt>courses</dt><dd data-count="course">1,171</dd></div>
           <div><dt>instructors</dt><dd data-count="instructor">714</dd></div>
@@ -729,6 +732,8 @@ __HAL_TIM_SET_COMPARE(&amp;htim2, TIM_CHANNEL_1, duty);</code></pre>
       if (cur) {
         document.getElementById('now-term').textContent = cur.name;
         W.semester(document.getElementById('hero-track'), cur);
+        var left = W.left(cur), box = document.getElementById('now-left');
+        if (left) { box.innerHTML = left; box.hidden = false; }
       }
       if (wk) {
         var done = wk.now > wk.of;

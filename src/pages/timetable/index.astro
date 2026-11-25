@@ -151,6 +151,24 @@ import PageHead from '../../components/PageHead.astro';
     .seg:active:not(:disabled), .dtab:active { transform: scale(.96) }
   }
   @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important } }
+  /* Print: the week and the sections to register, on one landscape page */
+  @media print {
+    .phead, .side, .pager, .days, .agenda, #updated { display: none !important }
+    main > .wrap { padding: 0 !important }
+    .cols { display: block !important }
+    .out { gap: 8px !important }
+    .sum { font-size: 11px }
+    .week, .tbl { display: block !important; break-inside: avoid }
+    .bar { height: 28px }
+    .hhead { height: 26px }
+    .dayl, .lane { height: 54px !important }
+    .blk { top: 5px; bottom: 5px; padding: 3px 6px; font-size: 9.5px }
+    .blk b { font-size: 10.5px }
+    th { height: 26px } th button, th { font-size: 10.5px }
+    td { height: 24px; padding: 0 10px; font-size: 10.5px }
+    /* The instructor in full, in the text colour */
+    td.i { max-width: none; width: auto; overflow: visible; color: var(--i); font-weight: 500 }
+  }
 </style>
 
 <main id="main" data-anim="all">
@@ -198,6 +216,8 @@ import PageHead from '../../components/PageHead.astro';
           <wa-button appearance="outlined" size="s" id="next" aria-label="Next timetable">Next ›</wa-button>
           <wa-button appearance="outlined" size="s" id="ics">Add to calendar</wa-button>
           <wa-button appearance="outlined" size="s" id="share">Copy link</wa-button>
+          <wa-button appearance="outlined" size="s" id="png" title="An image of this week and its sections">Save image</wa-button>
+          <wa-button appearance="outlined" size="s" id="print">Print</wa-button>
         </div>
         <div class="sum" id="sum"></div>
 
@@ -225,6 +245,7 @@ import PageHead from '../../components/PageHead.astro';
 </main>
 
 
+<script is:inline src="/assets/export.js"></script>
 <script is:inline>
   (function () {
     // Theme switch (same as the landing page)
@@ -253,7 +274,7 @@ import PageHead from '../../components/PageHead.astro';
     var LIMIT = 3000;      // timetables kept
     var BUDGET = 2000000;  // search steps before giving up on listing every one
     var $ = function (id) { return document.getElementById(id); };
-    var courses = {}, codes = [], term = null, cal = null;
+    var courses = {}, codes = [], term = null, cal = null, termName = '', drawn = [];
     // picked: course codes in the order they were added; off: sections switched off, { code: { L2: 1 } };
     // after / before: minutes, 0 for any; free: days to keep empty, { S: 1 }
     var state = { picked: [], off: {}, after: 0, before: 0, free: {}, sort: 'days', day: null, open: {} };
@@ -360,6 +381,7 @@ import PageHead from '../../components/PageHead.astro';
         codes = Object.keys(courses).sort();
         // A saved or shared course that isn't offered this semester drops out
         state.picked = state.picked.filter(function (c, i, a) { return courses[c] && a.indexOf(c) === i; });
+        termName = d.name;
         facts([termFact(d.name), [codes.length, 'courses'], [d.courses.reduce(function (a, c) { return a + c.sections.length; }, 0), 'sections']]);
         var c = (checked || d.updated_at).slice(0, 10);
         $('updated').textContent = 'Checked ' + c + ' from Ritaj. Sections and rooms can change until registration closes, so confirm on Ritaj before you register.';
@@ -518,6 +540,7 @@ import PageHead from '../../components/PageHead.astro';
       $('prev').disabled = $('next').disabled = n < 2;
       $('ics').disabled = !opt || !cal || !opt.secs.some(function (x) { return x.sec.meet.length; });
       $('share').disabled = !opt;
+      $('png').disabled = $('print').disabled = !opt || !opt.secs.some(function (x) { return x.sec.meet.length; });
       $('tblwin').hidden = !opt;
       if (!opt) {
         $('count').innerHTML = state.picked.length ? '<b>No timetable fits</b>' : 'Add a course to start';
@@ -542,6 +565,7 @@ import PageHead from '../../components/PageHead.astro';
       var mine = [];
       opt.secs.forEach(function (x) { x.sec.meet.forEach(function (m) { mine.push({ code: x.code, sec: x.sec, m: m }); }); });
       mine.sort(function (a, b) { return ORDER.indexOf(a.m.day) - ORDER.indexOf(b.m.day) || a.m.s - b.m.s; });
+      drawn = mine;
       // Sunday only when something meets then; hours stretch past 08:00–17:00 when classes do
       var days = ALL_DAYS.filter(function (d) { return d[0] !== 'U' || mine.some(function (r) { return r.m.day === 'U'; }); });
       var h0 = Math.min.apply(null, [8].concat(mine.map(function (r) { return Math.floor(r.m.s / 60); })));
@@ -710,11 +734,19 @@ import PageHead from '../../components/PageHead.astro';
     $('days').addEventListener('click', function (e) { var b = e.target.closest('.dtab'); if (b) { state.day = b.dataset.day; draw('theme'); } });
 
     // Copy a link that opens this exact timetable
-    $('share').addEventListener('click', function () {
-      var b = this, done = function (t) { b.textContent = t; setTimeout(function () { b.textContent = 'Copy link'; }, 1600); };
-      if (navigator.clipboard) navigator.clipboard.writeText(location.href).then(function () { done('Copied'); }, function () { done('Copy it from the address bar'); });
-      else done('Copy it from the address bar');
+    $('share').addEventListener('click', function () { WeekImage.copyLink(this, 'Copy link'); });
+
+    // Lock-screen image and print (assets/export.js)
+    $('png').addEventListener('click', function () {
+      if (!drawn.length) return;
+      WeekImage.save({
+        title: 'My timetable', sub: termName, weekTitle: $('file').textContent, table: $('tblwin').querySelector('table'),
+        note: $('updated').textContent, file: 'timetable-' + term,
+        items: drawn.map(function (r) { return { day: r.m.day, s: r.m.s, e: r.m.e, code: r.code, line: r.sec.type + ' ' + r.sec.number + ' · ' + r.m.room, inst: r.sec.inst, color: color(r.code) }; })
+      });
     });
+    $('print').addEventListener('click', function () { window.print(); });
+    WeekImage.printing(function () { draw('theme'); });
 
     // Calendar file: each meeting repeats weekly from the first teaching day to the last
     $('ics').addEventListener('click', function () {
