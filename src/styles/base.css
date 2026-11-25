@@ -129,6 +129,12 @@ button, input, select { font: inherit; color: inherit }
 .tbl td.c { color: var(--i); font-weight: 500 }
 .tbl td .sw { display: inline-block; width: 8px; height: 8px; margin-inline-end: 8px; border-radius: 2px; background: var(--c) }
 
+/* Toggles: a <wa-button class="seg"> with aria-pressed; the pressed one gets a filled surface and an ink
+   border (schedules' view switch, the calendar's filters) */
+wa-button.seg::part(button) { width: 100% }
+wa-button.seg:not([aria-pressed=true])::part(button) { color: var(--mu2) }
+wa-button.seg[aria-pressed=true]::part(button) { background: var(--soft); border-color: var(--i); color: var(--i) }
+
 /* Icons: one line set, 1.5 stroke, in the colour of the text around them */
 .ico { flex: none; width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; vertical-align: -3px }
 .ico.s { width: 12px; height: 12px; vertical-align: -1px }
