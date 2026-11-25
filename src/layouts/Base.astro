@@ -97,6 +97,29 @@ const links = [
 
 <slot />
 
+<script is:inline>
+  // The theme switch, for every page: the visitor's choice is kept; until they choose, the theme follows
+  // the system. Pages whose drawings depend on the theme listen for "themechange".
+  (function () {
+    var root = document.documentElement, toggle = document.querySelector('.theme');
+    var mq = window.matchMedia('(prefers-color-scheme: dark)'), chosen = false;
+    try { chosen = !!localStorage.getItem('ece-labs-theme'); } catch (e) {}
+    function apply(mode, tell) {
+      root.setAttribute('data-theme', mode);
+      toggle.setAttribute('aria-checked', mode === 'dark' ? 'true' : 'false');
+      if (tell) document.dispatchEvent(new CustomEvent('themechange', { detail: mode }));
+    }
+    apply(root.getAttribute('data-theme'));
+    toggle.addEventListener('click', function () {
+      var mode = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      chosen = true;
+      try { localStorage.setItem('ece-labs-theme', mode); } catch (e) {}
+      apply(mode, true);
+    });
+    mq.addEventListener('change', function (e) { if (!chosen) apply(e.matches ? 'dark' : 'light', true); });
+  })();
+</script>
+
 <footer>
   <div class="wrap">
     <span class="grp">
@@ -106,7 +129,7 @@ const links = [
     <span class="grp">
       <slot name="footer" />
       <a href="https://github.com/ECE-Birzeit" target="_blank" rel="noopener">GitHub<svg class="ext" viewBox="0 0 10 10" aria-hidden="true"><path d="M3 7l4-4M3.5 3H7v3.5"/></svg></a>
-      {showUpdated && <span class="date">Updated <time id="updated" datetime={updated}>{updated}</time></span>}
+      {showUpdated && <span class="date">Updated <time id="updated" datetime={updated}>{new Date(updated + 'T12:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</time></span>}
     </span>
   </div>
 </footer>

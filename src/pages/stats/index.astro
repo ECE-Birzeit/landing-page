@@ -8,9 +8,6 @@ import PageHead from '../../components/PageHead.astro';
   <link rel="stylesheet" href="/assets/widgets.css">
 </Fragment>
 <style is:global>
-  .kicker { font: 400 12.5px var(--mono); color: var(--mu) }
-  .btn { cursor: pointer; transition: background .15s, border-color .15s, color .15s }
-  .btn:hover { background: var(--soft) }
 
 
   /* Each lab borrows its site's accent */
@@ -19,46 +16,44 @@ import PageHead from '../../components/PageHead.astro';
   [data-theme=dark] [data-lab=encs4110] { --a: #f87171 } [data-theme=dark] [data-lab=encs4101] { --a: #38bdf8 }
   [data-theme=dark] [data-lab=encs5150] { --a: #fb923c } [data-theme=dark] [data-lab=encs5101] { --a: #3cc5cb }
 
-  /* A card */
-  .win { border: 1px solid var(--line); border-radius: 12px; background: var(--card); overflow: hidden; min-width: 0; display: flex; flex-direction: column }
+  .win { min-width: 0; display: flex; flex-direction: column }
 
   /* Insights */
-  main > .wrap { display: flex; flex-direction: column; gap: 18px; padding-top: 28px; padding-bottom: 76px }
-  #body { display: flex; flex-direction: column; gap: 18px }
-  .row2 { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 18px }
-  .row11 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 18px }
+  main > .wrap { display: flex; flex-direction: column; gap: 20px; padding-top: 28px; padding-bottom: 76px }
+  #body { display: flex; flex-direction: column; gap: 20px}
+  .row2 { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 20px}
+  .row11 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px}
   @media (max-width: 900px) { .row2, .row11 { grid-template-columns: minmax(0, 1fr) } }
-  .pad { display: flex; flex-direction: column; gap: 18px; padding: 22px }
+  .pad { display: flex; flex-direction: column; gap: 20px; padding: 24px}
   .kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)) }
   @media (max-width: 900px) { .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)) } }
-  .kpi { display: flex; flex-direction: column; gap: 8px; padding: 24px 22px 22px; border-inline-end: 1px solid var(--line); border-bottom: 1px solid var(--line); margin: 0 -1px -1px 0; min-width: 0 }
+  .kpi { display: flex; flex-direction: column; gap: 8px; padding: 24px 24px 24px; border-inline-end: 1px solid var(--line); border-bottom: 1px solid var(--line); margin: 0 -1px -1px 0; min-width: 0 }
   .kpi b { font: 500 clamp(34px, 4vw, 52px)/.95 var(--display); letter-spacing: -.03em }
   .kpi span { font: 500 13px var(--mono); color: var(--mu2) }
   .kpi small { font: 400 12px var(--mono); color: var(--mu) }
-  .big { display: flex; align-items: baseline; gap: 10px }
+  .big { display: flex; align-items: baseline; gap: 12px}
   .big b { font: 500 52px/.9 var(--display); letter-spacing: -.03em }
   .big span { font: 400 13px var(--mono); color: var(--mu) }
-  .facts { display: flex; flex-direction: column; gap: 8px; font: 400 12.5px var(--mono); color: var(--mu2) }
+  .facts { display: flex; flex-direction: column; gap: 8px; font: 400 12px var(--mono); color: var(--mu2) }
   .facts span:last-child { color: var(--mu) }
-  .sep { padding-top: 18px; border-top: 1px solid var(--line); display: flex; flex-direction: column; gap: 14px }
-  .tbl { width: 100%; border-collapse: collapse; font: 400 13px var(--mono) }
-  .tbl th { padding: 0 22px 10px; font-weight: 400; font-size: 11.5px; color: var(--mu); text-align: end }
-  .tbl td { padding: 13px 22px; border-top: 1px solid var(--line); text-align: end; white-space: nowrap }
-  .tbl th:first-child, .tbl td:first-child { text-align: start }
-  .tbl td:first-child { white-space: normal }
-  .tbl td em { font-style: normal; color: var(--a) }
-  .tbl td small { color: var(--mu) }
-  .tbl tfoot td { background: var(--soft); font-weight: 700 }
-  .tbl-box { overflow-x: auto }
-  @media (max-width: 560px) { .tbl th, .tbl td { padding-inline: 12px } .tbl td small { display: none } }
-  .note { margin: 0; padding: 14px 22px 18px; font: 400 12px/1.6 var(--mono); color: var(--mu) }
-  .foot-note { margin: 6px 0 0; font: 400 12px/1.7 var(--mono); color: var(--mu) }
-  .status { padding: 40px 22px; font: 400 13px var(--mono); color: var(--mu) }
+  .sep { padding-top: 20px; border-top: 1px solid var(--line); display: flex; flex-direction: column; gap: 16px}
+  .data { width: 100%; border-collapse: collapse; font: 400 13px var(--mono) }
+  .data th { padding: 0 24px 12px; font-weight: 400; font-size: 12px; color: var(--mu); text-align: end }
+  .data td { padding: 12px 24px; border-top: 1px solid var(--line); text-align: end; white-space: nowrap }
+  .data th:first-child, .data td:first-child { text-align: start }
+  .data td:first-child { white-space: normal }
+  .data td em { font-style: normal; color: var(--a) }
+  .data td small { color: var(--mu) }
+  .data tfoot td { background: var(--soft); font-weight: 600 }
+  .data-box { overflow-x: auto }
+  @media (max-width: 560px) { .data th, .data td { padding-inline: 12px } .data td small { display: none } }
+  .note { margin: 0; padding: 16px 24px 20px; font: 400 12px/1.6 var(--mono); color: var(--mu) }
+  .foot-note { margin: 8px 0 0; font: 400 12px/1.7 var(--mono); color: var(--mu) }
   @media (prefers-reduced-motion: reduce) { * { transition: none !important } }
 </style>
 
 <main>
-  <PageHead title="How the labs are used">Who reads the lab sites this semester, when and on what, from the sites' analytics. Counted again every day.</PageHead>
+  <PageHead title="Insights">How the lab sites are used this semester: who reads them, when and on what, from the sites' analytics. Counted again every day.</PageHead>
 
   <div class="wrap" id="dash">
 
@@ -68,7 +63,7 @@ import PageHead from '../../components/PageHead.astro';
       <div class="win">
         <div class="kpis">
           <div class="kpi"><b id="k-students"></b><span>students</span><small id="k-students-n"></small></div>
-          <div class="kpi"><b id="k-views"></b><span>experiment pages opened</span><small>across the four lab sites</small></div>
+          <div class="kpi"><b id="k-views"></b><span>experiment pages opened</span><small>across the lab sites</small></div>
           <div class="kpi"><b id="k-per"></b><span>experiment pages per student</span><small>pages opened ÷ students</small></div>
           <div class="kpi"><b id="k-phone"></b><span>read on a phone or tablet</span><small id="k-phone-n"></small></div>
         </div>
@@ -76,7 +71,7 @@ import PageHead from '../../components/PageHead.astro';
 
       <div class="row2">
         <div class="win">
-          <div class="pad"><div class="w-title"><h2>Students per day</h2><span id="daily-note">hover a bar for the numbers</span></div><div id="w-daily"></div></div></div>
+          <div class="pad"><div class="w-title"><h2>Students per day</h2><span id="daily-note">point at a bar for the numbers</span></div><div id="w-daily"></div></div></div>
         <div class="win">
           <div class="pad">
             <div class="w-title"><h2>Semester</h2><span id="term"></span></div>
@@ -101,8 +96,8 @@ import PageHead from '../../components/PageHead.astro';
           <div class="pad"><div class="w-title"><h2>Most-opened experiments</h2><span>page views</span></div><div id="w-top"></div></div></div>
         <div class="win">
           <div class="pad" style="padding-bottom: 6px"><div class="w-title"><h2>Every lab</h2><span>this semester</span></div></div>
-          <div class="tbl-box"><table class="tbl">
-            <thead><tr><th>Lab</th><th>Students</th><th>Views</th><th>Exps</th><th>Listings</th></tr></thead>
+          <div class="data-box"><table class="data">
+            <thead><tr><th>Lab</th><th>Students</th><th>Views</th><th>Experiments</th><th>Code listings</th></tr></thead>
             <tbody id="labs"></tbody>
             <tfoot><tr id="labs-total"></tr></tfoot>
           </table></div>
@@ -119,21 +114,7 @@ import PageHead from '../../components/PageHead.astro';
 <script is:inline src="/assets/widgets.js"></script>
 <script is:inline>
   (function () {
-    // Theme switch (same as the landing page)
     var root = document.documentElement;
-    var mq = window.matchMedia('(prefers-color-scheme: dark)');
-    var toggle = document.querySelector('.theme');
-    var chosen = false;
-    try { chosen = !!localStorage.getItem('ece-labs-theme'); } catch (e) {}
-    function apply(mode) { root.setAttribute('data-theme', mode); toggle.setAttribute('aria-checked', mode === 'dark' ? 'true' : 'false'); }
-    apply(root.getAttribute('data-theme'));
-    toggle.addEventListener('click', function () {
-      var mode = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-      chosen = true;
-      try { localStorage.setItem('ece-labs-theme', mode); } catch (e) {}
-      apply(mode);
-    });
-    mq.addEventListener('change', function (e) { if (!chosen) apply(e.matches ? 'dark' : 'light'); });
 
     var W = window.ECEWidgets, fmt = W.fmt;
     var $ = function (id) { return document.getElementById(id); };
@@ -146,10 +127,9 @@ import PageHead from '../../components/PageHead.astro';
       var first = v.daily && v.daily.length ? W.day(v.daily[0][0]) : null;
       var wk = W.week(v.term_dates);
       // The page head: the semester, the teaching week and when the numbers were last counted
-      var tm = String(v.term || '').match(/^(.*?)\s+(\d{4})\/\d{2}(\d{2})$/);
       var counted = new Date(s.generated_at.slice(0, 10) + 'T00:00:00');
-      var pairs = [tm ? [tm[2] + '/' + tm[3], tm[1].toLowerCase()] : null, wk && wk.now <= wk.of ? [W.ordinal(wk.now), 'teaching week'] : null,
-        [counted.getDate() + ' ' + counted.toLocaleString('en', { month: 'short' }), 'last counted']];
+      var pairs = [v.term ? [v.term, ''] : null, wk && wk.now <= wk.of ? [W.ordinal(wk.now), 'teaching week'] : null,
+        [counted.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }), 'last counted']];
       $('pfacts').replaceChildren.apply($('pfacts'), pairs.filter(Boolean).map(function (x) {
         var d = cell('div'); d.appendChild(cell('dt', x[1])); d.appendChild(cell('dd', x[0])); return d;
       }));
@@ -164,13 +144,13 @@ import PageHead from '../../components/PageHead.astro';
       $('k-phone-n').textContent = fmt(small) + ' students';
 
       W.daily($('w-daily'), v, 190);
-      if (first) $('daily-note').textContent = W.short(first) + ' to ' + W.short(W.day(v.daily[v.daily.length - 1][0])) + ' · hover a bar';
+      if (first) $('daily-note').textContent = W.short(first) + ' to ' + W.short(W.day(v.daily[v.daily.length - 1][0])) + ' · point at a bar';
 
       $('term').textContent = v.term || '';
       if (wk) { var over = wk.now > wk.of; $('week').textContent = over ? wk.of : W.ordinal(wk.now); $('weeks').textContent = over ? 'weeks taught' : 'teaching week'; }
       W.semester($('w-sem'), v.term_dates);
       var td = v.term_dates || {};
-      [['Teaching ends · ', td.teaching_ends], ['Finals · ', td.exams_start && td.exams_end ? W.short(W.day(td.exams_start)) + ' – ' + W.short(W.day(td.exams_end)) : null]].forEach(function (f) {
+      [['Teaching ends · ', td.teaching_ends], ['Exams · ', td.exams_start && td.exams_end ? W.short(W.day(td.exams_start)) + '–' + W.short(W.day(td.exams_end)) : null]].forEach(function (f) {
         if (f[1]) $('facts').appendChild(cell('span', f[0] + (f[1].length === 10 ? W.short(W.day(f[1])) : f[1])));
       });
       $('facts').appendChild(cell('span', 'Dates from Ritaj’s academic calendar'));
@@ -194,7 +174,7 @@ import PageHead from '../../components/PageHead.astro';
       });
       $('labs-total').append(cell('td', 'All labs'), cell('td', fmt(v.students)), cell('td', fmt(v.experiment_views)), cell('td', s.experiments), cell('td', s.code_listings));
       $('labs-note').textContent = 'A student who uses two labs counts once in the total, so the rows add up to more than ' + fmt(v.students) + '.';
-      $('foot-note').textContent = (first ? 'Analytics on the lab sites began on ' + first.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) + '; teaching started on ' + W.day(td.teaching_starts).toLocaleDateString('en-GB', { day: 'numeric', month: 'long' }) + '. ' : '') +
+      $('foot-note').textContent = (first ? 'Analytics on the lab sites began on ' + first.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) + '; teaching started on ' + W.day(td.teaching_starts).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) + '. ' : '') +
         'Students are unique visitors as Google Analytics counts them (per browser). Page views count experiment pages only.';
 
       $('status').hidden = true;

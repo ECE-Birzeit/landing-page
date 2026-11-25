@@ -4,17 +4,8 @@ import PageHead from '../../components/PageHead.astro';
 ---
 <Base title="All labs · ECE Hub" description="Every lab of the Department of Electrical & Computer Engineering at Birzeit University: filter by hardware or software, language and year, and open the manual, the PDF or the setup guide." path="/labs/" ogDescription="Every ECE lab at Birzeit University, with filters for type, language and year." nav="labs" skip={{ href: "#grid", text: "Skip to the labs" }}>
 <style is:global>
-  .kicker { font: 400 12.5px var(--mono); color: var(--mu) }
-  .btn { cursor: pointer; transition: background .15s, border-color .15s, color .15s }
-  .btn:hover { background: var(--soft) }
-  button, input, select { font: inherit; color: inherit }
 
 
-  /* Panel: a card with a quiet header row for its count and actions */
-  .win { border: 1px solid var(--line); border-radius: 12px; background: var(--card); overflow: hidden }
-  .bar { display: flex; align-items: center; gap: 6px; height: 36px; padding: 0 14px; border-bottom: 1px solid var(--line); background: var(--bar); font: 400 12px var(--mono); color: var(--mu) }
-  .bar .t { overflow: hidden; white-space: nowrap; text-overflow: ellipsis }
-  .bar .r { margin-inline-start: auto; white-space: nowrap }
 
 
   /* Page */
@@ -22,42 +13,41 @@ import PageHead from '../../components/PageHead.astro';
   main .wrap > * { min-width: 0; max-width: 100% }
 
   /* Search and filters */
-  .tools { display: grid; grid-template-columns: minmax(0, 2fr) repeat(3, minmax(0, 1fr)); gap: 10px }
+  .tools { display: grid; grid-template-columns: minmax(0, 2fr) repeat(3, minmax(0, 1fr)); gap: 12px}
   /* The search box and filters are Web Awesome's <wa-input> and <wa-select>, themed in wa.css */
   .tools .ico { width: 16px; height: 16px; fill: none; stroke: var(--mu); stroke-width: 1.5; stroke-linecap: round }
   @media (max-width: 860px) { .tools { grid-template-columns: 1fr 1fr } .tools .find { grid-column: 1 / -1 } .tools wa-select:last-child { grid-column: 1 / -1 } }
 
   /* The catalog: one row per lab. Code, what it covers, its facts, then where to go */
-  .bar button { margin-inline-start: 14px; padding: 0; border: 0; background: none; color: var(--mu2); font: inherit; text-decoration: underline; text-underline-offset: 3px; cursor: pointer }
+  .bar button { margin-inline-start: 16px; padding: 0; border: 0; background: none; color: var(--mu2); font: inherit; text-decoration: underline; text-underline-offset: 3px; cursor: pointer }
   .bar button:hover { color: var(--i) }
   .list { margin: 0; padding: 0; list-style: none }
-  .lab { display: grid; grid-template-columns: 172px minmax(0, 1fr) 230px auto; align-items: center; gap: 12px 32px; padding: 26px 24px; border-bottom: 1px solid var(--line) }
+  .lab { display: grid; grid-template-columns: 172px minmax(0, 1fr) 230px auto; align-items: center; gap: 12px 32px; padding: 28px 24px; border-bottom: 1px solid var(--line) }
   .lab:last-child { border-bottom: 0 }
   .code { font: 500 52px/1 var(--display); letter-spacing: -.035em; font-variant-numeric: tabular-nums }
-  .code small { display: flex; align-items: center; gap: 7px; margin-bottom: 8px; font: 400 12px var(--mono); letter-spacing: 0; color: var(--mu2) }
+  .code small { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font: 400 12px var(--mono); letter-spacing: 0; color: var(--mu2) }
   .code small::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--a) }
-  .what h2 { margin: 0; font: 600 21px/1.2 var(--display); letter-spacing: -.015em; text-wrap: balance }
+  .what h2 { margin: 0; font: 600 20px/1.2 var(--display); letter-spacing: -.015em; text-wrap: balance }
   .what h2 a { text-decoration: none }
   .what h2 a:hover { text-decoration: underline; text-decoration-color: var(--a); text-decoration-thickness: 2px; text-underline-offset: 4px }
-  .plat { margin: 6px 0 0; font: 500 14px var(--sans); color: var(--mu2) }
-  .topics { max-width: 62ch; margin: 10px 0 0; font-size: 14px; line-height: 1.55; color: var(--mu) }
-  .spec { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 5px 14px; margin: 0; font: 400 12.5px/1.4 var(--mono) }
+  .plat { margin: 8px 0 0; font: 500 14px var(--sans); color: var(--mu2) }
+  .topics { max-width: 62ch; margin: 12px 0 0; font-size: 14px; line-height: 1.55; color: var(--mu) }
+  .spec { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 16px; margin: 0; font: 400 12px/1.4 var(--mono) }
   .spec dt { color: var(--mu) }
   .spec dd { margin: 0; color: var(--i) }
-  .go { display: flex; gap: 6px }
-  .go .open:hover { --wa-color-brand-fill-loud: var(--a) }
-  .status { padding: 36px 28px; font: 400 13px/1.7 var(--mono); color: var(--mu) }
+  .go { display: flex; gap: 8px}
+  .lab:hover .go .open, .lab:focus-within .go .open { --wa-color-neutral-fill-normal: color-mix(in srgb, var(--a) 22%, var(--card)) }
   .invite { align-self: flex-end; font: 500 13px var(--sans); color: var(--mu2); text-decoration: none }
   .invite b { color: var(--i); font-weight: 600 }
   .invite:hover b { text-decoration: underline; text-underline-offset: 3px }
   @media (max-width: 1080px) {
     .lab { grid-template-columns: 150px minmax(0, 1fr) auto; align-items: start }
     .spec { grid-column: 2; grid-template-columns: repeat(4, auto); justify-content: start; gap: 4px 8px }
-    .spec dd { margin-inline-end: 14px }
+    .spec dd { margin-inline-end: 16px}
     .go { grid-column: 3; grid-row: 1 }
   }
   @media (max-width: 720px) {
-    .lab { grid-template-columns: minmax(0, 1fr); gap: 14px; padding: 22px 18px }
+    .lab { grid-template-columns: minmax(0, 1fr); gap: 16px; padding: 24px 20px}
     .code { font-size: 44px }
     .spec, .go { grid-column: 1; grid-row: auto }
     .spec { grid-template-columns: auto minmax(0, 1fr) }
@@ -68,14 +58,7 @@ import PageHead from '../../components/PageHead.astro';
   }
 
 
-  /* Motion (same language as the home page) */
-  :root { --spring: cubic-bezier(.22, 1, .36, 1) }
-  @keyframes rise { from { opacity: 0; transform: translateY(14px) } to { opacity: 1; transform: none } }
-  @media (prefers-reduced-motion: no-preference) {
-    .phead .wrap > *, main .tools, main .win { animation: rise .7s var(--spring) backwards }
-    .phead .pfacts { animation-delay: 80ms } main .tools { animation-delay: 120ms } main .win { animation-delay: 180ms }
-  }
-  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important } }
+  /* Motion: the shared entrance and block fade are in base.css */
 </style>
 
 <main id="main">
@@ -93,29 +76,16 @@ import PageHead from '../../components/PageHead.astro';
       <div class="bar"><span class="r"><span id="count" aria-live="polite"></span><button type="button" id="clear" hidden>clear filters</button></span></div>
       <ul class="list" id="grid"><li class="status">Loading the labs…</li></ul>
     </div>
-    <a class="invite" href="mailto:support@birzeit.me?subject=New%20lab%20manual">Teaching a lab? <b>Bring your manual →</b></a>
+    <a class="invite" href="mailto:support@birzeit.me?subject=New%20lab%20manual">Teaching a lab? <b>Bring your manual</b> <svg aria-hidden="true" class="ico s" viewBox="0 0 12 12"><path d="M2 6h8M6.5 2.5 10 6l-3.5 3.5"/></svg></a>
   </div>
 </main>
 
 
 <script is:inline>
   (function () {
-    // Theme switch (same as the landing page)
     var root = document.documentElement;
-    var mq = window.matchMedia('(prefers-color-scheme: dark)');
-    var toggle = document.querySelector('.theme');
-    var chosen = false;
-    try { chosen = !!localStorage.getItem('ece-labs-theme'); } catch (e) {}
-    function apply(mode) { root.setAttribute('data-theme', mode); toggle.setAttribute('aria-checked', mode === 'dark' ? 'true' : 'false'); }
-    apply(root.getAttribute('data-theme'));
-    toggle.addEventListener('click', function () {
-      var mode = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-      chosen = true;
-      try { localStorage.setItem('ece-labs-theme', mode); } catch (e) {}
-      apply(mode);
-      render();
-    });
-    mq.addEventListener('change', function (e) { if (!chosen) { apply(e.matches ? 'dark' : 'light'); render(); } });
+    // The theme switch lives in Base.astro; course colours depend on the theme, so redraw when it changes
+    document.addEventListener('themechange', function () { render(); });
 
     // labs.json lists every lab; the home page features a few of them
     var $ = function (id) { return document.getElementById(id); };
@@ -225,7 +195,7 @@ import PageHead from '../../components/PageHead.astro';
           (l.topics.length ? '<p class="topics">' + esc(l.topics.join(', ')) + '</p>' : '') + '</div>' +
           '<dl class="spec">' + spec.map(function (x) { return '<dt>' + x[0] + '</dt><dd>' + esc(x[1]) + '</dd>'; }).join('') + '</dl>' +
           '<div class="go">' +
-          (l.url ? '<wa-button class="open" variant="brand" size="s" href="' + esc(l.url) + '" target="_blank" rel="noopener" aria-label="Start the ' + esc(l.code) + ' lab">Start <span slot="end" aria-hidden="true">→</span></wa-button>' : '') +
+          (l.url ? '<wa-button class="open" variant="neutral" appearance="filled" size="s" href="' + esc(l.url) + '" target="_blank" rel="noopener" aria-label="Start the ' + esc(l.code) + ' lab">Start <span slot="end" aria-hidden="true"><svg class="ico s" viewBox="0 0 12 12"><path d="M2 6h8M6.5 2.5 10 6l-3.5 3.5"/></svg></span></wa-button>' : '') +
           (l.pdf ? '<wa-button appearance="outlined" size="s" href="' + esc(l.pdf) + '" target="_blank" rel="noopener" aria-label="' + esc(l.code) + ' manual PDF">PDF</wa-button>' : '') +
           (l.setup ? '<wa-button appearance="outlined" size="s" href="' + esc(l.setup) + '" target="_blank" rel="noopener" aria-label="' + esc(l.code) + ' setup guide">Setup</wa-button>' : '') +
           '</div></li>';
