@@ -84,3 +84,12 @@ footer .date { color: var(--mu) }
 .pfacts div::after { content: '·'; order: 9; flex: none; width: 24px; margin-inline-end: -6px; text-align: center; color: var(--line2) }
 .pfacts dd { margin: 0; font-weight: 500; color: var(--i); white-space: nowrap }
 .pfacts dt { color: var(--mu); white-space: nowrap }
+
+/* Print: paper colours, no site chrome, and nothing that moves. Pages hide their own controls with
+   .noprint and set what else to drop in their own @media print. */
+@media print {
+  @page { size: A4 landscape; margin: 12mm }
+  header, footer, .skip, .noprint { display: none !important }
+  body { background: #fff !important; min-height: 0 }
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; animation: none !important; transition: none !important }
+}

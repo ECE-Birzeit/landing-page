@@ -42,6 +42,7 @@ import PageHead from '../../components/PageHead.astro';
   .pick.dept { width: min(420px, 100%) }
   .pick.dept b { color: var(--mu) }
   .meta-right { margin-inline-start: auto }
+  .exp { display: inline-flex; gap: 8px }
   .status { padding: 28px; font: 400 13px var(--mono); color: var(--mu) }
 
   /* Week: days are the rows, time runs across */
@@ -58,6 +59,19 @@ import PageHead from '../../components/PageHead.astro';
   .blk b { display: block; overflow: hidden; text-overflow: ellipsis; font-size: 12px; font-weight: 700; color: var(--c) }
   .blk.low { top: 40px; bottom: 6px }
   .blk.high { bottom: 40px }
+
+  /* Now: what the instructor or room is doing at this moment (Birzeit time) and what comes next */
+  .now { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; padding: 12px 16px; border: 1px solid var(--line); border-radius: 12px; background: var(--card); font: 400 13px/1.5 var(--mono); color: var(--mu2) }
+  .now[hidden] { display: none }
+  .now b { color: var(--i); font-weight: 600 }
+  .now .lead { display: inline-flex; align-items: center; gap: 8px; font: 600 14px var(--display); color: var(--i) }
+  .now .dot { width: 8px; height: 8px; border-radius: 50%; border: 1.5px solid var(--mu); flex: none }
+  .now.live .dot { border-color: var(--ok); background: var(--ok) }
+  .now .then { color: var(--mu) }
+  .nowline { position: absolute; top: 0; bottom: 0; width: 2px; margin-left: -1px; background: var(--ok); z-index: 2; pointer-events: none }
+  .nowline::before { content: ''; position: absolute; top: -1px; left: -3px; width: 8px; height: 8px; border-radius: 50%; background: var(--ok) }
+  .blk.live { box-shadow: 0 0 0 2px var(--c) }
+  .item.live .tm { color: var(--ok) }
 
   /* Phone: day tabs and a list instead of the grid */
   .days { display: none; grid-template-columns: repeat(var(--days, 5), minmax(0, 1fr)); gap: 6px }
@@ -117,6 +131,24 @@ import PageHead from '../../components/PageHead.astro';
     .seg[aria-pressed=true], .dtab[aria-pressed=true] { background: var(--soft) }
   }
   @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important } }
+
+  /* Print: the week and its sections, on one landscape page */
+  @media print {
+    .phead, .tools, .now, .days, .agenda { display: none !important }
+    main > .wrap { padding: 0 !important; gap: 8px !important }
+    .week, .tbl { display: block !important; break-inside: avoid }
+    .nowline { display: none }
+    .blk.live { box-shadow: none }
+    .bar { height: 28px }
+    .hhead { height: 26px }
+    .dayl, .lane { height: 54px }
+    .blk { top: 5px; bottom: 5px; padding: 3px 6px; font-size: 9.5px }
+    .blk.low { top: 28px; bottom: 4px } .blk.high { bottom: 28px }
+    .blk b { font-size: 10.5px }
+    th { height: 26px } th button { font-size: 10.5px; padding: 0 10px }
+    td { height: 22px; padding: 0 10px; font-size: 10.5px }
+    td.o { color: var(--i); font-weight: 500 }
+  }
 </style>
 
 <main id="main" data-anim="all">
@@ -132,8 +164,11 @@ import PageHead from '../../components/PageHead.astro';
       <label class="pick dept"><b aria-hidden="true">⌂</b><select id="dept" aria-label="Department" disabled><option>Loading…</option></select><span class="caret" id="deptcount">▾</span></label>
       <label class="pick"><b aria-hidden="true">›</b><select id="pick" disabled><option>Loading…</option></select><span class="caret" id="optcount">▾</span></label>
       <span class="kicker" id="summary"></span>
+      <span class="exp noprint"><wa-button appearance="outlined" size="s" id="share" title="A link that opens this week">Copy link</wa-button><wa-button appearance="outlined" size="s" id="png" title="An image of this week and its sections">Save image</wa-button><wa-button appearance="outlined" size="s" id="print">Print</wa-button></span>
       <span class="kicker meta-right" id="updated"></span>
     </div>
+
+    <div class="now" id="now" role="status" hidden></div>
 
     <div class="win week" id="week">
       <div class="bar"><span class="t" id="file">Schedule</span><span class="r" id="span">08:00 – 17:00 · Sat – Thu</span></div>
@@ -156,6 +191,7 @@ import PageHead from '../../components/PageHead.astro';
 </main>
 
 
+<script is:inline src="/assets/export.js"></script>
 <script is:inline>
   (function () {
     // Theme switch (same as the landing page)
@@ -280,6 +316,7 @@ import PageHead from '../../components/PageHead.astro';
       fetch(DATA + 'index.json').then(function (r) { return r.json(); }).then(function (idx) {
         checked = idx.checked_at || null;
         term = (idx.published_terms || Object.keys(idx.terms))[0];
+        state.cur = idx.current && idx.current.term === term ? idx.current : null;
         return Promise.all([fetch(DATA + term + '.json'), fetch(DATA + 'departments.json')]);
       }).then(function (rs) {
         if (!rs[0].ok) throw new Error(rs[0].status);
@@ -408,13 +445,13 @@ import PageHead from '../../components/PageHead.astro';
       var html = '<div class="hhead"></div><div class="hhead">' + hours + '</div>';
       DAYS.forEach(function (d, di) {
         var dm = mine.filter(function (r) { return r.day === d[0]; });
-        html += '<div class="dayl">' + d[1] + '</div><div class="lane">';
+        html += '<div class="dayl">' + d[1] + '</div><div class="lane" data-day="' + d[0] + '">';
         dm.forEach(function (r, k) {
           var left = (mins(r.start) - h0 * 60) / span * 100, w = (mins(r.end) - mins(r.start)) / span * 100;
           // Meetings that overlap in time (two sections at once, in the course view) share the lane height
           var overlap = dm.filter(function (o) { return mins(o.start) < mins(r.end) && mins(r.start) < mins(o.end); });
           var cls = overlap.length > 1 ? (overlap.indexOf(r) === 0 ? ' high' : ' low') : '';
-          html += '<div class="blk' + cls + '" style="--k:' + (di * 55 + k * 45) + 'ms;--c:' + color(r.code) + ';left:calc(' + left + '% + 3px);width:calc(' + w + '% - 6px)" title="' +
+          html += '<div class="blk' + cls + '" data-m="' + mine.indexOf(r) + '" style="--k:' + (di * 55 + k * 45) + 'ms;--c:' + color(r.code) + ';left:calc(' + left + '% + 3px);width:calc(' + w + '% - 6px)" title="' +
             esc(r.code + ' · ' + r.start + '–' + r.end + ' · ' + r.room + ' · ' + r.inst) + '"><b>' + esc(r.code) + '</b>' + esc(line(r)) + '</div>';
         });
         html += '</div>';
@@ -431,7 +468,7 @@ import PageHead from '../../components/PageHead.astro';
       $('dayname').textContent = DAYS.filter(function (d) { return d[0] === state.day; })[0][1];
       $('daycount').textContent = today.length + (today.length === 1 ? ' class' : ' classes');
       $('agenda').innerHTML = today.length ? today.map(function (r, k) {
-        return '<div class="item" style="--k:' + k * 50 + 'ms;--c:' + color(r.code) + '"><div class="tm">' + r.start + '<br>' + r.end + '</div><div><b>' + esc(r.code) + '</b><span>' + esc(names[r.code] || '') +
+        return '<div class="item" data-m="' + mine.indexOf(r) + '" style="--k:' + k * 50 + 'ms;--c:' + color(r.code) + '"><div class="tm">' + r.start + '<br>' + r.end + '</div><div><b>' + esc(r.code) + '</b><span>' + esc(names[r.code] || '') +
           '</span><small>' + esc(line(r) + (view === 'course' ? '' : ' · Sec ' + r.sec)) + '</small></div></div>';
       }).join('') : '<div class="status">No classes on this day.</div>';
 
@@ -463,10 +500,101 @@ import PageHead from '../../components/PageHead.astro';
       $('tbody').innerHTML = table.map(function (g, k) {
         var days = g.dayCodes.map(function (x) { return DAYS.filter(function (d) { return d[0] === x; })[0][1]; }).join(' ');
         return '<tr style="--k:' + Math.min(k * 22, 330) + 'ms;--c:' + color(g.code) + '"><td class="c"><span class="sw"></span>' + esc(g.code) + '</td><td>' + esc(names[g.code] || '') + '</td><td>Sec ' + esc(g.sec) +
-          '</td><td>' + days + '</td><td>' + g.start + '–' + g.end + '</td><td>' + esc(g.other) + '</td><td class="num">' + esc(g.enr) + '</td></tr>';
+          '</td><td>' + days + '</td><td>' + g.start + '–' + g.end + '</td><td class="o">' + esc(g.other) + '</td><td class="num">' + esc(g.enr) + '</td></tr>';
       }).join('');
       $('summary').textContent = table.length + (table.length === 1 ? ' section · ' : ' sections · ') + mine.length + (mine.length === 1 ? ' meeting a week' : ' meetings a week');
+      shown = { view: view, mine: mine, h0: h0, h1: h1, sel: sel, line: line };
+      $('png').disabled = $('print').disabled = !mine.length;
+      updateNow();
     }
+
+    // Now and next, in Birzeit's time whatever the visitor's clock says. The week runs Sat–Thu ('SUMTWR'),
+    // with Friday last so "next" from a Friday is Saturday's first class.
+    var WEEK = 'SUMTWRF', NAMES = { S: 'Sat', U: 'Sun', M: 'Mon', T: 'Tue', W: 'Wed', R: 'Thu', F: 'Fri' };
+    var shown = null;
+    function clock() {
+      var p = {};
+      new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Hebron', weekday: 'short', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' })
+        .formatToParts(new Date()).forEach(function (x) { p[x.type] = x.value; });
+      var day = { Sat: 'S', Sun: 'U', Mon: 'M', Tue: 'T', Wed: 'W', Thu: 'R', Fri: 'F' }[p.weekday];
+      return { day: day, idx: WEEK.indexOf(day), min: +p.hour * 60 + +p.minute, date: p.year + '-' + p.month + '-' + p.day };
+    }
+    function longDate(iso) { return new Date(iso + 'T12:00:00').toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' }); }
+    function inMins(n) { return n < 60 ? n + ' min' : Math.floor(n / 60) + ' h' + (n % 60 ? ' ' + n % 60 + ' min' : ''); }
+    function updateNow() {
+      var box = $('now');
+      document.querySelectorAll('.nowline').forEach(function (e) { e.remove(); });
+      document.querySelectorAll('.blk.live, .item.live').forEach(function (e) { e.classList.remove('live'); });
+      if (!shown || shown.view === 'course' || !shown.mine.length) { box.hidden = true; return; }
+      var t = clock(), cur = state.cur, mine = shown.mine, room = shown.view === 'room';
+      box.classList.remove('live');
+      if (cur && t.date < cur.teaching_starts) { box.hidden = false; box.innerHTML = '<span class="lead"><span class="dot"></span>Classes start ' + esc(longDate(cur.teaching_starts)) + '</span>'; return; }
+      if (cur && t.date > cur.teaching_ends) { box.hidden = false; box.innerHTML = '<span class="lead"><span class="dot"></span>Teaching ended ' + esc(longDate(cur.teaching_ends)) + '</span>' + (cur.exams_end && t.date <= cur.exams_end ? '<span class="then">exams run until ' + esc(longDate(cur.exams_end)) + '</span>' : ''); return; }
+
+      // Minutes from now until each meeting starts, around the week; meetings at the same time (cross-listed
+      // sections) read as one
+      var nowKey = t.idx * 1440 + t.min;
+      var live = mine.filter(function (r) { return r.day === t.day && mins(r.start) <= t.min && t.min < mins(r.end); });
+      var ahead = mine.map(function (r) { return { r: r, d: (WEEK.indexOf(r.day) * 1440 + mins(r.start) - nowKey + 10080) % 10080 }; })
+        .filter(function (x) { return x.d > 0; }).sort(function (a, b) { return a.d - b.d; });
+      var next = ahead.length ? ahead.filter(function (x) { return x.d === ahead[0].d; }).map(function (x) { return x.r; }) : [];
+      var nextD = ahead.length ? ahead[0].d : 0;
+      var what = function (rs) {
+        var r = rs[0], codes = rs.map(function (x) { return x.code + ' Sec ' + x.sec; }).join(' / ');
+        return '<b>' + esc(codes) + '</b> · ' + esc(room ? short(r.inst) : r.room);
+      };
+      var when = function (rs, d) {
+        var r = rs[0], days = Math.floor((t.min + d) / 1440);
+        var day = days === 0 ? 'today' : days === 1 ? 'tomorrow' : NAMES[r.day];
+        return day + ' ' + r.start + (days === 0 ? ' (in ' + inMins(d) + ')' : '');
+      };
+      var html;
+      if (live.length) {
+        var end = live.reduce(function (a, r) { return Math.max(a, mins(r.end)); }, 0);
+        var endS = live.filter(function (r) { return mins(r.end) === end; })[0].end;
+        var later = ahead.filter(function (x) { return x.r.day === t.day && mins(x.r.start) >= end && x.d < 1440; });
+        html = '<span class="lead"><span class="dot"></span>' + (room ? 'In use now' : 'Teaching now') + '</span><span>' + what(live) + ' · until ' + endS + '</span>';
+        if (room) html += '<span class="then">' + (later.length ? (mins(later[0].r.start) - end >= 15 ? 'then free ' + endS + '–' + later[0].r.start : 'then ' + esc(later[0].r.code) + ' at ' + later[0].r.start) : 'then free for the rest of the day') + '</span>';
+        else if (later.length) html += '<span class="then">next ' + what([later[0].r]) + ' · ' + later[0].r.start + '</span>';
+        box.classList.add('live');
+      } else if (next.length) {
+        var today = Math.floor((t.min + nextD) / 1440) === 0;
+        html = room
+          ? '<span class="lead"><span class="dot"></span>Free now</span><span class="then">' + (today ? 'until ' + next[0].start + ' (' + inMins(nextD) + ')' : 'for the rest of the day') + '</span><span>next ' + what(next) + ' · ' + when(next, nextD) + '</span>'
+          : '<span class="lead"><span class="dot"></span>Not teaching now</span><span>next ' + what(next) + ' · ' + when(next, nextD) + '</span>';
+      }
+      box.hidden = !html;
+      // Only touch it when it changes, so screen readers don't hear it again every tick
+      if (box.innerHTML !== (html || '')) box.innerHTML = html || '';
+
+      // Mark the meeting in progress, and a line at the current time on today's row
+      live.forEach(function (r) { document.querySelectorAll('[data-m="' + mine.indexOf(r) + '"]').forEach(function (e) { e.classList.add('live'); }); });
+      var lane = document.querySelector('.lane[data-day="' + t.day + '"]');
+      if (lane && t.min >= shown.h0 * 60 && t.min <= shown.h1 * 60) {
+        var line = document.createElement('div');
+        line.className = 'nowline';
+        line.title = 'Now';
+        line.style.left = ((t.min - shown.h0 * 60) / ((shown.h1 - shown.h0) * 60) * 100) + '%';
+        lane.appendChild(line);
+      }
+    }
+    setInterval(updateNow, 30000);
+
+    // Lock-screen image and print (assets/export.js)
+    $('png').addEventListener('click', function () {
+      if (!shown || !shown.mine.length) return;
+      var v = shown.view;
+      WeekImage.save({
+        title: label(v, shown.sel).replace(/\s+/g, ' '), sub: [NOUN[v][0].charAt(0).toUpperCase() + NOUN[v][0].slice(1), state.term].filter(Boolean).join(' · '),
+        weekTitle: $('file').textContent, table: document.querySelector('.tbl table'), note: $('updated').textContent,
+        file: (v + '-' + shown.sel).replace(/[^\w.-]+/g, '-'),
+        items: shown.mine.map(function (r) { return { day: r.day, s: mins(r.start), e: mins(r.end), code: r.code, line: v === 'room' ? 'Sec ' + r.sec : shown.line(r), inst: v === 'instructor' ? '' : r.inst, color: color(r.code) }; })
+      });
+    });
+    $('print').addEventListener('click', function () { window.print(); });
+    $('share').addEventListener('click', function () { WeekImage.copyLink(this, 'Copy link'); });
+    WeekImage.printing(function () { render('theme'); });
+    document.addEventListener('visibilitychange', function () { if (!document.hidden) updateNow(); });
 
     // Controls
     document.querySelector('.views').addEventListener('click', function (e) {

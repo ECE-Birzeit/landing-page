@@ -203,6 +203,24 @@
     grow(w);
   }
 
+  // What's left of the semester, as a line of HTML: weeks of teaching and days to the exams, the days
+  // left of the exams once they start, or nothing once they're over
+  function left(dates, today) {
+    if (!dates || !dates.teaching_starts || !dates.exams_start) return '';
+    today = today || new Date();
+    today = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    var days = function (d) { return Math.round((day(d) - today) / 864e5); };
+    var n = function (x, one, many) { return '<b>' + fmt(x) + '</b> ' + (x === 1 ? one : many); };
+    var toStart = days(dates.teaching_starts), toExams = days(dates.exams_start), toEnd = days(dates.exams_end || dates.exams_start);
+    if (toStart > 0) return 'Teaching starts in ' + n(toStart, 'day', 'days');
+    if (toExams > 0) {
+      var wk = week(dates, today), w = wk ? wk.of - wk.now : 0;
+      return (w > 0 ? n(w, 'week', 'weeks') + ' of teaching left' : 'Last week of teaching') + ' · ' + n(toExams, 'day', 'days') + ' to exams';
+    }
+    if (toEnd >= 0) return 'Exams until ' + short(day(dates.exams_end)) + ' · ' + (toEnd ? n(toEnd, 'day', 'days') + ' left' : 'last day');
+    return '';
+  }
+
   // Page views per weekday, Saturday first, as small bars with the numbers
   function byDay(box, v) {
     var t = {};
@@ -281,5 +299,5 @@
   }
 
   window.ECEWidgets = { load: load, fmt: fmt, reveal: reveal, countUp: countUp, byDay: byDay, MOTION: MOTION, day: day, short: short, daily: daily, heat: heat, busiest: busiest, busiestDay: busiestDay,
-    labBars: labBars, devices: devices, top: top, week: week, ordinal: ordinal, semester: semester, DAYS: DAYS };
+    labBars: labBars, devices: devices, top: top, week: week, left: left, ordinal: ordinal, semester: semester, DAYS: DAYS };
 })();
