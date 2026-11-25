@@ -13,7 +13,7 @@ interface Props {
   ogDescription?: string;
   ogImageAlt?: string;
   path: string;
-  nav?: 'labs' | 'schedules' | 'timetable' | 'stats' | '';
+  nav?: 'labs' | 'schedules' | 'timetable' | 'calendar' | 'stats' | '';
   skip?: { href: string; text: string };
   brandHref?: string;
   showUpdated?: boolean;
@@ -33,6 +33,7 @@ const links = [
   { href: '/labs/', label: 'Labs', id: 'labs' },
   { href: '/schedules/', label: 'Schedules', id: 'schedules' },
   { href: '/timetable/', label: 'Timetable', id: 'timetable' },
+  { href: '/calendar/', label: 'Calendar', id: 'calendar' },
   { href: '/stats/', label: 'Insights', id: 'stats' }
 ];
 ---
