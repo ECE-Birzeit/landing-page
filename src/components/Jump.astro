@@ -31,7 +31,7 @@
   .jump-btn:hover { color: var(--i); border-color: var(--line2) }
   .jump-btn svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round }
   .jump-btn .jump-label { margin-inline-end: 12px }
-  kbd { display: inline-grid; place-items: center; min-width: 22px; height: 22px; padding: 0 5px; border: 1px solid var(--line2); border-bottom-width: 2px; border-radius: 5px; background: var(--card); font: 500 11px/1 var(--sans); color: var(--mu) }
+  kbd { display: inline-grid; place-items: center; min-width: 22px; height: 22px; padding: 0 4px; border: 1px solid var(--line2); border-bottom-width: 2px; border-radius: 5px; background: var(--card); font: 500 11px/1 var(--sans); color: var(--mu) }
   @media (max-width: 640px) {
     header .wrap .jump-btn { order: 2; margin-inline-start: auto; padding: 0; width: 40px; justify-content: center }
     header .wrap .theme { margin-inline-start: 0 }
@@ -44,18 +44,18 @@
   #jump::part(body) { padding: 0 }
   .jump-field { display: flex; align-items: center; gap: 12px; padding: 0 16px; border-bottom: 1px solid var(--line) }
   .jump-field svg { flex: none; width: 18px; height: 18px; fill: none; stroke: var(--mu); stroke-width: 1.5; stroke-linecap: round }
-  .jump-field input { flex: 1; min-width: 0; height: 56px; border: 0; outline: 0; background: transparent; color: var(--i); font: 400 17px var(--sans) }
+  .jump-field input { flex: 1; min-width: 0; height: 56px; border: 0; outline: 0; background: transparent; color: var(--i); font: 400 18px var(--sans) }
   .jump-field input::placeholder { color: var(--mu) }
   #jump-list { max-height: min(56vh, 440px); margin: 0; padding: 8px; overflow-y: auto; list-style: none; overscroll-behavior: contain }
   #jump-list .jump-group { padding: 12px 12px 4px; font-size: 12px; color: var(--mu) }
-  #jump-list [role=option] { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 2px 16px; padding: 10px 12px; border-radius: 10px; cursor: pointer }
+  #jump-list [role=option] { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 2px 16px; padding: 12px 12px; border-radius: 10px; cursor: pointer }
   #jump-list [role=option][aria-selected=true] { background: var(--soft) }
   #jump-list b { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-weight: 500; color: var(--i) }
   #jump-list small { grid-column: 1; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-size: 13px; color: var(--mu) }
   #jump-list .go { grid-column: 2; grid-row: 1 / span 2; font-size: 13px; color: var(--mu) }
   #jump-list [aria-selected=true] .go { color: var(--i) }
   #jump-list .empty { padding: 24px 12px; color: var(--mu); font-size: 14px }
-  .jump-foot { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 20px; padding: 10px 16px; border-top: 1px solid var(--line); background: var(--bar); border-radius: 0 0 16px 16px; font-size: 12px; color: var(--mu) }
+  .jump-foot { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 20px; padding: 12px 16px; border-top: 1px solid var(--line); background: var(--bar); border-radius: 0 0 16px 16px; font-size: 12px; color: var(--mu) }
   .jump-foot span { display: inline-flex; align-items: center; gap: 4px }
   .jump-foot .jump-note { margin-inline-start: auto }
   @media (max-width: 640px) { .jump-foot { display: none } #jump-list .go { display: none } #jump-list [role=option] { grid-template-columns: minmax(0, 1fr) } }
@@ -86,7 +86,7 @@
     make('Page', 'Home', 'ECE Hub', '/'),
     make('Page', 'All labs', 'Every lab manual, with filters', '/labs/'),
     make('Page', 'Weekly schedules', 'Any instructor, course or room', '/schedules/'),
-    make('Page', 'Schedule builder', 'Every combination of sections with no overlapping classes', '/timetable/'),
+    make('Page', 'Timetable builder', 'Every combination of sections with no overlapping classes', '/timetable/'),
     make('Page', 'Insights', 'How the lab sites are used', '/stats/')
   ];
   let loading: Promise<void> | null = null;

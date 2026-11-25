@@ -2,45 +2,33 @@
 import Base from '../../layouts/Base.astro';
 import PageHead from '../../components/PageHead.astro';
 ---
-<Base title="Timetable builder · ECE Hub" description="Pick your Birzeit University courses and get every timetable with no overlapping classes: filter by start time, days off and instructor, then export it to your calendar. Updated daily from Ritaj." path="/timetable/" ogDescription="Pick your courses and get every timetable with no overlapping classes for the semester at Birzeit University." nav="timetable" skip={{ href: "#out", text: "Skip to the timetable" }}>
+<Base title="Timetable builder · ECE Hub" description="Pick your Birzeit University courses and get every timetable with no overlapping classes: filter by start and end time and days off, then add it to your calendar. Updated daily from Ritaj." path="/timetable/" ogDescription="Pick your courses and get every timetable with no overlapping classes for the semester at Birzeit University." nav="timetable" skip={{ href: "#out", text: "Skip to the timetable" }}>
 <Fragment slot="head">
   <link rel="preconnect" href="https://raw.githubusercontent.com" crossorigin>
 </Fragment>
 <style is:global>
   [data-theme=dark] { --bad: #f87171 }
   [data-theme=light] { --bad: #dc2626 }
-  .kicker { font: 400 12.5px var(--mono); color: var(--mu) }
-  .btn { cursor: pointer; transition: background .15s, border-color .15s, color .15s }
-  .btn:hover { background: var(--soft) }
-  button, input, select { font: inherit; color: inherit }
 
 
-  /* Panel: a card with a quiet header row for its count and actions */
-  .win { border: 1px solid var(--line); border-radius: 12px; background: var(--card); overflow: hidden }
-  .bar { display: flex; align-items: center; gap: 6px; height: 36px; padding: 0 14px; border-bottom: 1px solid var(--line); background: var(--bar); font: 400 12px var(--mono); color: var(--mu) }
-  .bar .t { overflow: hidden; white-space: nowrap; text-overflow: ellipsis }
-  .bar .r { margin-inline-start: auto; white-space: nowrap }
 
   /* Page: courses and filters on the left, the timetables on the right */
   main > .wrap { padding-top: 28px; padding-bottom: 72px }
   .cols { display: grid; grid-template-columns: 360px minmax(0, 1fr); gap: 24px; align-items: start }
   .side, .out { display: flex; flex-direction: column; gap: 16px; min-width: 0 }
-  .status { padding: 28px; font: 400 13px/1.6 var(--mono); color: var(--mu) }
-  .status b { color: var(--i); font-weight: 700 }
   @media (max-width: 960px) { .cols { grid-template-columns: minmax(0, 1fr) } }
 
   /* Course search */
   .find { position: relative }
   /* Step 1 is where every visit starts, so it is the most visible thing on the page until a course is added */
-  .start { display: flex; align-items: center; gap: 10px; font-size: 16px; font-weight: 500; color: var(--i) }
-  .step { flex: none; display: inline-grid; place-items: center; width: 24px; height: 24px; border-radius: 6px; background: var(--ok); color: var(--p); font-size: 13px; font-weight: 600 }
-  .find input { width: 100%; height: 48px; padding: 0 16px 0 42px; border: 1px solid var(--line2); border-radius: 10px; outline: 0; background: var(--card); font: 400 15px var(--sans); transition: border-color .15s }
+  .start { display: flex; align-items: center; gap: 12px; font-size: 16px; font-weight: 500; color: var(--i) }
+  .find input { width: 100%; height: 48px; padding: 0 16px 0 44px; border: 1px solid var(--line2); border-radius: 10px; outline: 0; background: var(--card); font: 400 16px var(--sans); transition: border-color .15s }
   .find.empty input { border-color: var(--ok) }
   .find input:hover, .find input:focus { border-color: var(--i) }
   .find input::placeholder { color: var(--mu2) }
-  .find > b { position: absolute; left: 17px; top: 24px; transform: translateY(-50%); font: 600 15px var(--display); color: var(--ok); pointer-events: none }
-  .hits { position: absolute; z-index: 5; top: 54px; left: 0; right: 0; max-height: 340px; overflow-y: auto; margin: 0; padding: 4px; list-style: none; border: 1px solid var(--line2); border-radius: 10px; background: var(--card); box-shadow: 0 12px 32px rgb(0 0 0 / .18) }
-  .hits li { display: flex; align-items: baseline; gap: 10px; padding: 9px 10px; border-radius: 7px; cursor: pointer; font: 400 12.5px var(--mono); color: var(--mu2) }
+  .find > b { position: absolute; left: 16px; top: 24px; transform: translateY(-50%); font: 600 16px var(--display); color: var(--ok); pointer-events: none }
+  .hits { position: absolute; z-index: 5; top: 56px; left: 0; right: 0; max-height: 340px; overflow-y: auto; margin: 0; padding: 4px; list-style: none; border: 1px solid var(--line2); border-radius: 10px; background: var(--card); box-shadow: 0 12px 32px rgb(0 0 0 / .18) }
+  .hits li { display: flex; align-items: baseline; gap: 12px; padding: 8px 12px; border-radius: 7px; cursor: pointer; font: 400 12px var(--mono); color: var(--mu2) }
   .hits li b { flex: none; color: var(--i) }
   .hits li span { overflow: hidden; white-space: nowrap; text-overflow: ellipsis }
   .hits li small { margin-inline-start: auto; flex: none; font-size: 11px; color: var(--mu) }
@@ -50,73 +38,47 @@ import PageHead from '../../components/PageHead.astro';
   /* Chosen courses: open one to switch its sections on and off */
   .course { border-bottom: 1px solid var(--line) }
   .course:last-child { border-bottom: 0 }
-  .course summary { display: grid; grid-template-columns: 10px minmax(0, 1fr) auto; align-items: center; gap: 12px; padding: 12px 8px 12px 14px; cursor: pointer; list-style: none }
+  .course summary { display: grid; grid-template-columns: 10px minmax(0, 1fr) auto; align-items: center; gap: 12px; padding: 12px 8px 12px 16px; cursor: pointer; list-style: none }
   .course summary::-webkit-details-marker { display: none }
   .course summary:hover { background: var(--soft) }
   .sw { width: 10px; height: 10px; border-radius: 3px; background: var(--c) }
   .course .name b { display: block; font: 600 14px var(--display); color: var(--c) }
   .course .name span { display: block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-size: 13px }
-  .course .name small { display: block; margin-top: 2px; font: 400 11.5px var(--mono); color: var(--mu) }
+  .course .name small { display: block; margin-top: 2px; font: 400 12px var(--mono); color: var(--mu) }
   .course .name small.warn { color: var(--bad) }
   .x { width: 36px; height: 36px; border: 0; border-radius: 8px; background: transparent; color: var(--mu); font: 400 18px var(--mono); cursor: pointer }
   .x:hover { background: var(--soft); color: var(--i) }
-  .secs { padding: 2px 14px 12px 36px }
-  .secs h3 { margin: 10px 0 4px; font: 400 11px var(--mono); color: var(--mu); text-transform: none }
-  .sec { display: grid; grid-template-columns: 18px minmax(0, 1fr); gap: 8px; padding: 6px 0; font: 400 12px/1.45 var(--mono); color: var(--mu2); cursor: pointer }
+  .secs { padding: 2px 16px 12px 36px}
+  .secs h3 { margin: 12px 0 4px; font: 400 11px var(--mono); color: var(--mu); text-transform: none }
+  .sec { display: grid; grid-template-columns: 18px minmax(0, 1fr); gap: 8px; padding: 8px 0; font: 400 12px/1.45 var(--mono); color: var(--mu2); cursor: pointer }
   .sec input { width: 15px; height: 15px; margin: 1px 0 0; accent-color: var(--c) }
   .sec b { color: var(--i) }
   .sec small { display: block; font-size: 11px; color: var(--mu) }
   .sec.cut { opacity: .5 }
 
   /* Filters */
-  .filters { display: grid; gap: 14px; padding: 14px }
-  .field { display: grid; gap: 6px; font: 400 12px var(--mono); color: var(--mu) }
+  .filters { display: grid; gap: 16px; padding: 16px}
+  .field { display: grid; gap: 8px; font: 400 12px var(--mono); color: var(--mu) }
   .field::part(form-control-label) { font-size: 12px; font-weight: 400; color: var(--mu) }
-  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px }
-  .daysoff { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px }
-  .seg { height: 40px; padding: 0 14px; border: 1px solid color-mix(in srgb, var(--i) 26%, transparent); border-radius: 8px; background: var(--card); color: var(--i); font: 500 13px var(--sans); cursor: pointer; transition: border-color .15s, color .15s, background-color .15s }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 12px}
+  .daysoff { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px}
+  .seg { height: 40px; padding: 0 16px; border: 1px solid color-mix(in srgb, var(--i) 26%, transparent); border-radius: 8px; background: var(--card); color: var(--i); font: 500 13px var(--sans); cursor: pointer; transition: border-color .15s, color .15s, background-color .15s }
   .seg:hover { color: var(--i) }
   .seg[aria-pressed=true] { border-color: var(--i); color: var(--i); background: var(--soft) }
   .seg:disabled { opacity: .4; cursor: default }
   .daysoff .seg { padding: 0 }
 
   /* Results: one timetable at a time */
-  .pager { display: flex; flex-wrap: wrap; align-items: center; gap: 10px }
+  .pager { display: flex; flex-wrap: wrap; align-items: center; gap: 12px}
   .pager .count { margin-inline-end: auto; font: 400 13px var(--mono); color: var(--mu2) }
-  .pager .count b { color: var(--i); font-weight: 700 }
-  .sum { display: flex; flex-wrap: wrap; gap: 6px 18px; font: 400 12.5px var(--mono); color: var(--mu) }
+  .pager .count b { color: var(--i); font-weight: 600 }
+  .sum { display: flex; flex-wrap: wrap; gap: 8px 20px; font: 400 12px var(--mono); color: var(--mu) }
   .sum b { color: var(--i); font-weight: 400 }
 
   /* Week: days are the rows, time runs across (same as the schedules page) */
-  .gantt { display: grid; grid-template-columns: 72px minmax(0, 1fr) }
-  .hhead { position: relative; height: 36px; border-bottom: 1px solid var(--line) }
-  .hhead span { position: absolute; top: 50%; transform: translate(-50%, -50%); font: 400 11px var(--mono); color: var(--mu) }
-  .hhead span:first-child { transform: translate(0, -50%) }
-  .hhead span:last-child { transform: translate(-100%, -50%) }
   /* Beside the courses panel the grid is narrow: label every other hour so the times don't run together */
-  .week { container-type: inline-size }
-  @container (max-width: 760px) { .hhead span:nth-child(even) { display: none } }
-  .dayl { height: 76px; display: flex; align-items: center; padding: 0 14px; border-bottom: 1px solid var(--line); font: 500 12px var(--mono); color: var(--mu2) }
-  .lane { position: relative; height: 76px; border-bottom: 1px solid var(--line); border-inline-start: 1px solid var(--line); background-image: linear-gradient(90deg, var(--line) 1px, transparent 1px); background-size: calc(100% / var(--hours, 9)) 100% }
-  .lane.free { background-color: var(--soft) }
-  .gantt > :nth-last-child(-n+2) { border-bottom: 0 }
   /* A message in place of the week spans both columns, not the narrow day column */
-  .gantt > .status { grid-column: 1 / -1 }
-  .blk { position: absolute; top: 8px; bottom: 8px; padding: 6px 8px; border-radius: 7px; border: 1px solid var(--c); background: color-mix(in srgb, var(--c) 14%, var(--card)); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font: 400 11px/1.35 var(--mono); color: var(--mu2) }
-  .blk b { display: block; overflow: hidden; text-overflow: ellipsis; font-size: 12px; font-weight: 700; color: var(--c) }
 
-  /* Phone: day tabs and a list instead of the grid */
-  .days { display: none; grid-template-columns: repeat(var(--days, 5), minmax(0, 1fr)); gap: 6px }
-  .dtab { height: 46px; border: 1px solid var(--line); border-radius: 8px; background: transparent; color: var(--mu2); font: 500 12.5px var(--mono); cursor: pointer }
-  .dtab small { display: block; font-size: 10px; color: var(--mu) }
-  .dtab[aria-pressed=true] { border-color: var(--i); color: var(--i); background: var(--soft) }
-  .agenda { display: none }
-  .item { display: grid; grid-template-columns: 58px minmax(0, 1fr); gap: 12px; padding: 12px 14px; border-bottom: 1px solid var(--line) }
-  .item:last-child { border-bottom: 0 }
-  .item .tm { font: 500 12.5px/1.45 var(--mono); color: var(--mu2) }
-  .item b { display: block; font: 600 14px var(--display); color: var(--c) }
-  .item span { display: block; margin-top: 2px; font-size: 13.5px }
-  .item small { display: block; margin-top: 2px; font: 400 11.5px var(--mono); color: var(--mu) }
   @media (max-width: 720px) {
     .week { display: none }
     .days { display: grid }
@@ -124,33 +86,14 @@ import PageHead from '../../components/PageHead.astro';
   }
 
   /* The sections in this timetable */
-  .tbl { overflow-x: auto }
-  table { width: 100%; border-collapse: collapse; font: 400 12.5px var(--mono) }
-  th { height: 38px; padding: 0 14px; border-bottom: 1px solid var(--line); background: var(--bar); color: var(--mu); font: 500 12.5px var(--mono); text-align: start; white-space: nowrap }
-  td { height: 42px; padding: 0 14px; border-bottom: 1px solid var(--line); color: var(--mu2); white-space: nowrap }
-  tr:last-child td { border-bottom: 0 }
-  th.num, td.num { text-align: end }
-  td.c { color: var(--i); font-weight: 500 }
   /* The title and the instructors share whatever width is left and end in "…" (the full text shows on hover), so the
      whole table fits on a laptop without scrolling sideways; phones still scroll it */
   td.t, td.i { max-width: 0; overflow: hidden; text-overflow: ellipsis }
   td.t { width: 55% } td.i { width: 45% }
   @media (max-width: 720px) { td.t, td.i { width: auto; max-width: none } }
-  td .sw { display: inline-block; width: 8px; height: 8px; margin-inline-end: 8px; border-radius: 2px }
 
 
-  /* Motion (same language as the schedules page) */
-  :root { --spring: cubic-bezier(.22, 1, .36, 1) }
-  @keyframes rise { from { opacity: 0; transform: translateY(14px) } to { opacity: 1; transform: none } }
-  @keyframes blk-in { from { opacity: 0; transform: translateY(6px) scaleX(.55) } to { opacity: 1; transform: none } }
-  @media (prefers-reduced-motion: no-preference) {
-    .phead .wrap > *, main .side, main .out { animation: rise .7s var(--spring) backwards }
-    main .side { animation-delay: 60ms } main .out { animation-delay: 120ms }
-    [data-anim=all] .blk { transform-origin: left center; animation: blk-in .5s var(--spring) backwards; animation-delay: var(--k, 0ms) }
-    .seg, .dtab { transition: border-color .15s, color .15s, background .15s, transform .35s var(--spring) }
-    .seg:active:not(:disabled), .dtab:active { transform: scale(.96) }
-  }
-  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important } }
+  /* Motion: the shared entrance and block fade are in base.css */
   /* Print: the week and the sections to register, on one landscape page */
   @media print {
     .phead, .side, .pager, .days, .agenda, #updated { display: none !important }
@@ -177,7 +120,7 @@ import PageHead from '../../components/PageHead.astro';
   <div class="wrap">
     <div class="cols">
       <div class="side">
-        <label class="start" for="q"><span class="step" aria-hidden="true">1</span>Add the courses you plan to take</label>
+        <label class="start" for="q">Add the courses you plan to take</label>
         <div class="find empty" id="find">
           <b aria-hidden="true">+</b>
           <input id="q" type="search" role="combobox" aria-expanded="false" aria-controls="hits" aria-autocomplete="list" aria-label="Add a course" placeholder="Course code or name, like ENCS4110" autocomplete="off" spellcheck="false" disabled>
@@ -212,8 +155,8 @@ import PageHead from '../../components/PageHead.astro';
       <div class="out" id="out">
         <div class="pager">
           <span class="count" id="count" aria-live="polite"></span>
-          <wa-button appearance="outlined" size="s" id="prev" aria-label="Previous timetable">‹ Prev</wa-button>
-          <wa-button appearance="outlined" size="s" id="next" aria-label="Next timetable">Next ›</wa-button>
+          <wa-button appearance="outlined" size="s" id="prev" aria-label="Previous timetable"><svg slot="start" class="ico s" viewBox="0 0 12 12" aria-hidden="true"><path d="M7.5 2.5 4 6l3.5 3.5"/></svg>Prev</wa-button>
+          <wa-button appearance="outlined" size="s" id="next" aria-label="Next timetable">Next<svg slot="end" class="ico s" viewBox="0 0 12 12" aria-hidden="true"><path d="m4.5 2.5 3.5 3.5-3.5 3.5"/></svg></wa-button>
           <wa-button appearance="outlined" size="s" id="ics">Add to calendar</wa-button>
           <wa-button appearance="outlined" size="s" id="share">Copy link</wa-button>
           <wa-button appearance="outlined" size="s" id="png" title="An image of this week and its sections">Save image</wa-button>
@@ -248,22 +191,9 @@ import PageHead from '../../components/PageHead.astro';
 <script is:inline src="/assets/export.js"></script>
 <script is:inline>
   (function () {
-    // Theme switch (same as the landing page)
     var root = document.documentElement;
-    var mq = window.matchMedia('(prefers-color-scheme: dark)');
-    var toggle = document.querySelector('.theme');
-    var chosen = false;
-    try { chosen = !!localStorage.getItem('ece-labs-theme'); } catch (e) {}
-    function apply(mode) { root.setAttribute('data-theme', mode); toggle.setAttribute('aria-checked', mode === 'dark' ? 'true' : 'false'); }
-    apply(root.getAttribute('data-theme'));
-    toggle.addEventListener('click', function () {
-      var mode = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-      chosen = true;
-      try { localStorage.setItem('ece-labs-theme', mode); } catch (e) {}
-      apply(mode);
-      draw('theme');
-    });
-    mq.addEventListener('change', function (e) { if (!chosen) { apply(e.matches ? 'dark' : 'light'); draw('theme'); } });
+    // The theme switch lives in Base.astro; course colours depend on the theme, so redraw when it changes
+    document.addEventListener('themechange', function () { draw('theme'); });
 
     // Live data from bzu-course-catalog, scraped daily from Ritaj (the same files the schedules page reads)
     var DATA = 'https://raw.githubusercontent.com/mabushelbaia/bzu-course-catalog/main/data/';
@@ -311,11 +241,10 @@ import PageHead from '../../components/PageHead.astro';
         return '<div><dt>' + esc(p[1]) + '</dt><dd>' + esc(typeof p[0] === 'number' ? p[0].toLocaleString('en') : p[0]) + '</dd></div>';
       }).join('');
     }
-    // "First Semester 2026/2027" reads as the figure 2026/27 with the label "first semester"
-    function termFact(name) {
-      var m = String(name || '').match(/^(.*?)\s+(\d{4})\/\d{2}(\d{2})$/);
-      return m ? [m[2] + '/' + m[3], m[1].toLowerCase()] : [name || '', 'semester'];
-    }
+    // The semester as Ritaj names it ("First Semester 2026/2027"), the same everywhere on the site
+    function termFact(name) { return [name || '', '']; }
+    // "2026-11-25" -> "25 Nov 2026", the one date format on the site
+    function longDay(iso) { return new Date(iso + 'T12:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }); }
 
     // What you picked survives a reload (localStorage); a shared link (?c=…&t=…) wins over it
     function save() {
@@ -384,13 +313,13 @@ import PageHead from '../../components/PageHead.astro';
         termName = d.name;
         facts([termFact(d.name), [codes.length, 'courses'], [d.courses.reduce(function (a, c) { return a + c.sections.length; }, 0), 'sections']]);
         var c = (checked || d.updated_at).slice(0, 10);
-        $('updated').textContent = 'Checked ' + c + ' from Ritaj. Sections and rooms can change until registration closes, so confirm on Ritaj before you register.';
+        $('updated').textContent = 'Checked ' + longDay(c) + ' from Ritaj. Sections and rooms can change until registration closes, so confirm on Ritaj before you register.';
         $('q').disabled = false;
         fill();
         build(want);
       }).catch(function () {
         $('courses').innerHTML = '<div class="status">Couldn’t load the courses. Check your connection and reload.</div>';
-        $('gantt').innerHTML = '<div class="status">Couldn’t load the schedule.</div>';
+        $('gantt').innerHTML = '<div class="status">Couldn’t load the schedule. Check your connection and reload.</div>';
       });
     }
 
@@ -525,7 +454,7 @@ import PageHead from '../../components/PageHead.astro';
         }).join('');
         return '<details class="course" data-code="' + esc(code) + '" style="--c:' + color(code) + '"' + (state.open[code] ? ' open' : '') + '>' +
           '<summary><span class="sw"></span><span class="name"><b>' + esc(code) + '</b><span>' + esc(c.name) + '</span>' +
-          '<small' + (on ? '' : ' class="warn"') + '>' + on + ' of ' + plural(c.sections.length, 'section', 'sections') + ' in play</small></span>' +
+          '<small' + (on ? '' : ' class="warn"') + '>' + on + ' of ' + plural(c.sections.length, 'section', 'sections') + ' on</small></span>' +
           '<button type="button" class="x" data-remove="' + esc(code) + '" aria-label="Remove ' + esc(code) + '">×</button></summary>' +
           '<div class="secs">' + body + '</div></details>';
       }).join('');
@@ -557,7 +486,7 @@ import PageHead from '../../components/PageHead.astro';
       var loose = opt.secs.filter(function (x) { return !x.sec.meet.length; }).length;
       $('sum').innerHTML = opt.days
         ? '<span><b>' + plural(opt.days, 'day', 'days') + '</b> on campus</span><span>starts <b>' + hhmm(opt.first) + '</b> at the earliest</span><span>ends <b>' + hhmm(opt.last) + '</b> at the latest</span>' +
-          '<span><b>' + (opt.gaps ? (opt.gaps / 60).toFixed(1).replace('.0', '') + ' h' : 'no') + '</b> gaps a week</span>' +
+          '<span><b>' + (opt.gaps ? (opt.gaps >= 60 ? Math.floor(opt.gaps / 60) + ' h' + (opt.gaps % 60 ? ' ' + opt.gaps % 60 + ' min' : '') : opt.gaps + ' min') : 'no') + '</b> ' + (opt.gaps ? 'of gaps' : 'gaps') + ' a week</span>' +
           (loose ? '<span><b>' + plural(loose, 'section', 'sections') + '</b> with no fixed time</span>' : '') +
           (result.capped ? '<span>showing the first ' + n.toLocaleString('en') + ' found; add filters to narrow them</span>' : '')
         : '<span>None of these sections has a fixed time.</span>';

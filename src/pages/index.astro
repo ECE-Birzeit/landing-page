@@ -117,10 +117,10 @@ const quick = [
   .sec > .wrap { display: flex; flex-direction: column; gap: 40px; padding-block: 96px }
   .sec-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px 32px }
   .sec-head h2 { margin: 0; max-width: 20ch; font: 500 clamp(30px, 3.4vw, 44px)/1.1 var(--sans); letter-spacing: -.025em; text-wrap: balance }
-  .sec-head p { margin: 12px 0 0; max-width: 56ch; font-size: 17px; line-height: 1.6; color: var(--mu2); text-wrap: pretty }
+  .sec-head p { margin: 12px 0 0; max-width: 56ch; font-size: 18px; line-height: 1.6; color: var(--mu2); text-wrap: pretty }
   @media (max-width: 720px) { .sec > .wrap { gap: 32px; padding-block: 64px } }
 
-  /* ---- Hero ------------------------------------------------------------------------------- */
+  /* ---- Hero (it rises in once on load, from base.css; it is complete without scripts) ------------------------------------------------------------------------------- */
   .hero { border-bottom: 1px solid var(--line); overflow: clip }
   .hero .wrap { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr); gap: 48px 80px; align-items: center; padding-block: clamp(64px, 9vw, 120px) }
   .hero-main { min-width: 0; display: flex; flex-direction: column; gap: 24px }
@@ -137,7 +137,7 @@ const quick = [
   .now-week { display: flex; align-items: flex-end; gap: 16px; margin-top: -4px }
   .now-week b { font: 500 clamp(96px, 11vw, 152px)/.8 var(--sans); letter-spacing: -.06em }
   .now-week b small { font-size: .38em; letter-spacing: -.02em; margin-inline-start: .04em; vertical-align: .95em }
-  .now-week > span { padding-bottom: 6px; font-size: 18px; line-height: 1.2; color: var(--mu2) }
+  .now-week > span { padding-bottom: 8px; font-size: 18px; line-height: 1.2; color: var(--mu2) }
   .now-left { margin: -12px 0 0; font-size: 14px; color: var(--mu2) }
   .now-left b { color: var(--i); font-weight: 500 }
   .now-figs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); margin: 0; padding-top: 20px; border-top: 1px solid var(--line) }
@@ -160,14 +160,14 @@ const quick = [
   @media (max-width: 960px) { .show-row, .show-row.flip { grid-template-columns: minmax(0, 1fr) } .show-row.flip .show-text { order: 0 } }
   .show-text { display: flex; flex-direction: column; align-items: flex-start; gap: 20px }
   .show-text h2 { margin: 0; font: 500 clamp(30px, 3.4vw, 44px)/1.1 var(--sans); letter-spacing: -.025em; text-wrap: balance }
-  .show-text p { margin: 0; max-width: 46ch; font-size: 17px; line-height: 1.6; color: var(--mu2); text-wrap: pretty }
+  .show-text p { margin: 0; max-width: 46ch; font-size: 18px; line-height: 1.6; color: var(--mu2); text-wrap: pretty }
   .figs { display: flex; gap: 32px; margin: 4px 0 }
   .figs div { display: flex; flex-direction: column-reverse; gap: 4px }
   .figs dt { font-size: 13px; color: var(--mu) }
   .figs dd { margin: 0; font-size: 28px; font-weight: 500; letter-spacing: -.02em; font-variant-numeric: tabular-nums }
-  .ticks { display: flex; flex-direction: column; gap: 10px; margin: 4px 0; padding: 0; list-style: none; font-size: 15px; color: var(--mu2) }
+  .ticks { display: flex; flex-direction: column; gap: 12px; margin: 4px 0; padding: 0; list-style: none; font-size: 16px; color: var(--mu2) }
   .ticks li { display: flex; align-items: center; gap: 12px }
-  .ticks li::before { content: ''; flex: none; width: 8px; height: 8px; border: 1.5px solid var(--ok); border-radius: 2px; background: color-mix(in srgb, var(--ok) 20%, var(--card)) }
+  .ticks li::before { content: ''; flex: none; width: 8px; height: 8px; border: 1.5px solid var(--mu); border-radius: 2px; background: var(--card) }
   /* The example: a quiet card with real sections from this semester */
   .preview { display: flex; flex-direction: column; gap: 16px; padding: 20px; border: 1px solid var(--line); border-radius: 16px; background: var(--card); box-shadow: var(--sh); text-decoration: none; transition: border-color .2s var(--ease) }
   .preview:hover { border-color: var(--line2) }
@@ -182,18 +182,16 @@ const quick = [
   .pv-foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 16px; font-size: 13px; color: var(--mu) }
   /* Course colours inside the examples: the one in focus in the accent, the rest in neutral steps */
   .on { --c: var(--ok) } .alt { --c: var(--i) } .mu { --c: var(--mu) }
-  /* A lab course is in its lab's colour, as on the lab cards, the schedules and the timetable */
-  .on[data-lab] { --c: var(--a) }
-  .wk { display: grid; grid-template-columns: 44px minmax(0, 1fr); grid-template-rows: 24px repeat(5, 52px); border: 1px solid var(--line); border-radius: 10px; overflow: hidden }
+  .wk { display: grid; grid-template-columns: 44px minmax(0, 1fr); grid-template-rows: 28px repeat(5, 64px); border: 1px solid var(--line); border-radius: 10px; overflow: hidden }
   .wk-h { position: relative; border-inline-start: 1px solid var(--line) }
-  .wk-h span { position: absolute; top: 5px; padding-inline-start: 6px; font: 400 11px var(--mono); color: var(--mu) }
-  .wk-d { display: flex; align-items: center; padding-inline-start: 10px; border-top: 1px solid var(--line); font-size: 12px; color: var(--mu2) }
+  .wk-h span { position: absolute; top: 8px; padding-inline-start: 8px; font: 400 12px var(--mono); color: var(--mu) }
+  .wk-d { display: flex; align-items: center; padding-inline-start: 12px; border-top: 1px solid var(--line); font-size: 13px; color: var(--mu2) }
   .wk-l { position: relative; border-top: 1px solid var(--line); border-inline-start: 1px solid var(--line); background-image: linear-gradient(90deg, var(--line) 1px, transparent 1px); background-size: calc(200% / var(--hours)) 100% }
   .wk-l.free { background-color: var(--soft) }
-  .wk-b { position: absolute; top: 6px; bottom: 6px; left: calc(var(--l) * 1% + 2px); width: calc(var(--w) * 1% - 4px); padding: 4px 8px; overflow: hidden; white-space: nowrap; border: 1px solid color-mix(in srgb, var(--c, var(--mu2)) 70%, transparent); border-radius: 6px; background: color-mix(in srgb, var(--c, var(--mu2)) 12%, var(--card)); font: 400 11px/1.35 var(--mono); color: var(--mu2); transform-origin: left center }
-  .wk-b b { display: block; font-weight: 400; color: var(--c, var(--i)) }
+  .wk-b { position: absolute; top: 8px; bottom: 8px; left: calc(var(--l) * 1% + 2px); width: calc(var(--w) * 1% - 4px); padding: 8px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; border: 1px solid color-mix(in srgb, var(--c, var(--mu2)) 70%, transparent); border-radius: 6px; background: color-mix(in srgb, var(--c, var(--mu2)) 12%, var(--card)); font: 400 12px/1.4 var(--mono); color: var(--mu2) }
+  .wk-b b { display: block; overflow: hidden; text-overflow: ellipsis; font-size: 13px; font-weight: 500; color: var(--c, var(--i)) }
   .wk-b:not(.on):not(.alt):not(.mu) { --c: var(--mu2) }
-  @media (max-width: 560px) { .preview { padding: 12px } .wk { grid-template-columns: 36px minmax(0, 1fr); grid-template-rows: 24px repeat(5, 44px) } .pick { min-width: 0 }
+  @media (max-width: 560px) { .preview { padding: 12px } .wk { grid-template-columns: 36px minmax(0, 1fr); grid-template-rows: 28px repeat(5, 52px) } .pick { min-width: 0 }
     /* On a phone the blocks are too narrow for words: the colours and the chips above carry them */
     .wk-b { padding: 0; font-size: 0 } .wk-b b { display: none } }
 
@@ -210,10 +208,12 @@ const quick = [
   .arrow::part(label) { display: grid; place-items: center }
   .arrow svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round }
   .lab-links wa-button.open { flex: 1 }
+  /* Start is the card's main action: a quiet filled button that takes the lab's colour when you point at the card */
+  .lab:hover .lab-links wa-button.open, .lab:focus-within .lab-links wa-button.open { --wa-color-neutral-fill-normal: color-mix(in srgb, var(--a) 22%, var(--card)) }
   .lab-links wa-button.open::part(button) { width: 100% }
   .lab-links wa-button.open::part(label) { flex: 1; text-align: start }
   .codeblock wa-copy-button { color: #c9c6be }
-  wa-button [slot=end] svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round }
+  wa-button [slot=end] svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round }
   @media (hover: none) { .arrow { display: none } }
   .rail-ctl.static .arrow, .rail-ctl.static .rail-pos { display: none }
   /* The usage line keeps its space before the numbers load, so every card is the same height from the start */
@@ -227,12 +227,12 @@ const quick = [
   .lab-top { display: flex; justify-content: space-between; align-items: center; gap: 12px; font-size: 13px; color: var(--mu) }
   .lab-ens { display: flex; align-items: center; gap: 8px }
   .lab-ens::before { content: ''; width: 8px; height: 8px; border-radius: 2px; background: var(--a) }
-  .lab-num { margin-top: 20px; font: 500 56px/1 var(--sans); letter-spacing: -.035em; margin-inline-start: -3px; font-variant-numeric: tabular-nums }
-  .lab-name { margin: 16px 0 0; height: calc(2 * 1.3em); font: 500 17px/1.3 var(--sans); display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden }
+  .lab-num { margin-top: 20px; font: 500 56px/1 var(--sans); letter-spacing: -.035em; margin-inline-start: -4px; font-variant-numeric: tabular-nums }
+  .lab-name { margin: 16px 0 0; height: calc(2 * 1.3em); font: 500 18px/1.3 var(--sans); display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden }
   .lab-name a { text-decoration: none }
   .lab-name a::after { content: ''; position: absolute; inset: 0; border-radius: 16px }
   .lab-plat { margin-top: 8px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-size: 14px; color: var(--mu2) }
-  .lab-use { display: grid; grid-template-columns: auto auto; justify-content: start; gap: 4px 16px; min-height: 61px; margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--line); font-size: 13px; color: var(--mu); font-variant-numeric: tabular-nums }
+  .lab-use { display: grid; grid-template-columns: auto auto; justify-content: start; gap: 4px 16px; min-height: 64px; margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--line); font-size: 13px; color: var(--mu); font-variant-numeric: tabular-nums }
   .lab-use b { color: var(--i); font-weight: 500 }
   .lab-links { position: relative; z-index: 1; display: flex; gap: 8px; margin-top: auto; padding-top: 24px }
 
@@ -250,7 +250,7 @@ const quick = [
   .widgets { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, .8fr) }
   .widgets .cell { display: flex; flex-direction: column; gap: 16px; padding: 24px; border-inline-end: 1px solid var(--line); min-width: 0 }
   .widgets .cell:last-child { border-inline-end: 0 }
-  .w-title h3 { margin: 0; font: 500 15px var(--sans) }
+  .w-title h3 { margin: 0; font: 500 16px var(--sans) }
   @media (max-width: 1000px) { .widgets { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) } .widgets .cell:first-child { grid-column: 1 / -1; border-inline-end: 0; border-bottom: 1px solid var(--line) } }
   @media (max-width: 640px) { .widgets { grid-template-columns: minmax(0, 1fr) } .widgets .cell { border-inline-end: 0; border-bottom: 1px solid var(--line) } .widgets .cell:last-child { border-bottom: 0 } }
   .panel-foot { display: flex; justify-content: space-between; gap: 16px; padding: 12px 24px; border-top: 1px solid var(--line); background: var(--bar); font-size: 13px; color: var(--mu) }
@@ -265,7 +265,7 @@ const quick = [
   .feat .pad { width: 10px; height: 10px; margin-top: 6px; border: 1.5px solid var(--mu2); border-radius: 2px; background: var(--card); transition: background-color .2s var(--ease), border-color .2s var(--ease) }
   .feat[aria-selected=true] .pad { border-color: var(--ok); background: var(--ok) }
   .feat b { display: block; font: 500 16px/1.4 var(--sans) }
-  .feat-d { display: block; margin-top: 4px; font-size: 15px; line-height: 1.5; color: var(--mu2) }
+  .feat-d { display: block; margin-top: 4px; font-size: 16px; line-height: 1.5; color: var(--mu2) }
   .demo { border: 1px solid var(--line); border-radius: 16px; background: var(--card); box-shadow: var(--sh); overflow: hidden }
   .demo-cap { display: flex; justify-content: space-between; padding: 12px 24px; border-bottom: 1px solid var(--line); background: var(--bar); font-size: 13px; color: var(--mu) }
   .demo-cap span:last-child { font: 400 12px var(--mono) }
@@ -275,15 +275,17 @@ const quick = [
   @media (max-width: 960px) {
     .why { row-gap: 16px }
     .feats { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px; margin-top: 24px; border-top: 0 }
-    .feat { gap: 10px; padding: 12px; border: 1px solid var(--line); border-radius: 10px }
+    .feat { gap: 12px; padding: 12px; border: 1px solid var(--line); border-radius: 10px }
     .feat[aria-selected=true] { border-color: var(--ok) }
-    .feat .pad { margin-top: 5px }
-    .feat b { font-size: 15px }
+    .feat .pad { margin-top: 4px}
+    .feat b { font-size: 16px }
     .feat-d { display: none }
     .demo-body { min-height: 0 }
   }
   .dpanel { display: flex; flex-direction: column; gap: 16px }
-  .dnote { margin: 0; font-size: 15px; line-height: 1.55; color: var(--mu2) }
+  @keyframes dp-in { from { opacity: 0 } to { opacity: 1 } }
+  @media (prefers-reduced-motion: no-preference) { .dpanel:not([hidden]) { animation: dp-in .25s var(--ease) } }
+  .dnote { margin: 0; font-size: 16px; line-height: 1.55; color: var(--mu2) }
   .dstatus { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; min-height: 48px; padding: 12px 16px; white-space: nowrap; border: 1px solid var(--line); border-radius: 10px; font-size: 14px }
   .dstatus .dot { flex: none; width: 8px; height: 8px; border-radius: 50%; background: var(--mu) }
   .dstatus small { margin-inline-start: auto; font: 400 12px var(--mono); color: var(--mu); text-align: end }
@@ -291,13 +293,13 @@ const quick = [
   .dresume small { font-size: 13px; color: var(--a) }
   .dresume b { font: 500 16px/1.35 var(--sans) }
   .dresume span { font-size: 13px; color: var(--mu) }
-  .dresume i { grid-column: 2; grid-row: 1 / span 3; align-self: center; font-style: normal; font-size: 20px; color: var(--a) }
+  .dresume i { grid-column: 2; grid-row: 1 / span 3; align-self: center; display: flex; color: var(--a) }
   .dresults { border: 1px solid var(--line); border-radius: 10px; overflow: hidden }
   .dresults div { padding: 12px 16px; border-bottom: 1px solid var(--line) }
   .dresults div:first-child { background: var(--soft) }
   .dresults div:last-child { border-bottom: 0 }
   .dresults small { display: block; font-size: 13px; color: var(--mu) }
-  .dresults p { margin: 4px 0 0; font-size: 15px; line-height: 1.5 }
+  .dresults p { margin: 4px 0 0; font-size: 16px; line-height: 1.5 }
   .codeblock { border-radius: 10px; background: #141311; color: #e8e6e1; overflow: hidden; border: 1px solid #2a2b29 }
   .codeblock-bar { display: flex; align-items: center; justify-content: space-between; height: 40px; padding: 4px 8px 4px 16px; border-bottom: 1px solid #2a2b29; font: 400 12px var(--code); color: #8d8f89 }
   .codeblock pre { margin: 0; padding: 16px; font: 400 13px/1.7 var(--code); white-space: pre; overflow-x: auto }
@@ -321,7 +323,7 @@ const quick = [
   .join .ctas { margin: 0 }
   /* Who built it: round portraits, and an open spot inviting the next contributor */
   .crew { display: flex; flex-direction: column; gap: 28px; margin-top: 48px; padding-top: 28px; border-top: 1px solid var(--line) }
-  .crew-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 10px 32px }
+  .crew-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 12px 32px}
   .crew-head h3 { margin: 0; font: 500 20px/1.3 var(--sans); letter-spacing: -.01em }
   .team { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 28px 16px; margin: 0; padding: 0; list-style: none }
   .team a { display: flex; flex-direction: column; align-items: center; gap: 2px; color: inherit; text-align: center; text-decoration: none }
@@ -329,11 +331,11 @@ const quick = [
   .team wa-avatar { font-size: 26px }
   @media (max-width: 560px) { .team { grid-template-columns: repeat(2, minmax(0, 1fr)) } .team wa-avatar, .team .slot { --size: 96px } }
   .team a:hover wa-avatar, .team a:hover .slot { outline-color: var(--line2) }
-  .team b { font-weight: 500; font-size: 15px; text-wrap: balance }
+  .team b { font-weight: 500; font-size: 16px; text-wrap: balance }
   .team span:not(.slot) { color: var(--mu); font-size: 13px }
-  .team .slot { display: grid; place-items: center; outline: 0; border: 1.5px dashed var(--line2); color: var(--ok); font-size: 34px; font-weight: 300; transition: border-color .15s }
+  .team .slot { display: grid; place-items: center; outline: 0; border: 1.5px dashed var(--line2); color: var(--mu); font-size: 34px; font-weight: 300; transition: border-color .15s }
   .team .you a:hover .slot { border-color: var(--ok) }
-  .team .you b { color: var(--ok) }
+  .team .you b { color: var(--i) }
   /* The maintainer: the same portrait, with two small links underneath */
   .team .lead { display: flex; flex-direction: column; align-items: center; gap: 2px; text-align: center }
   .team .icons { display: flex; gap: 12px; margin-top: 4px }
@@ -341,14 +343,13 @@ const quick = [
   .team .icons a:hover { color: var(--i) }
   .team .icons svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.2 }
   .team .icons svg.fill { fill: currentColor; stroke: none }
-  .quick { display: flex; flex-wrap: wrap; gap: 8px 24px; font-size: 15px }
+  .quick { display: flex; flex-wrap: wrap; gap: 8px 24px; font-size: 16px }
   .quick a { display: inline-flex; align-items: baseline; gap: 4px; color: var(--mu2); text-decoration: underline; text-decoration-color: color-mix(in srgb, currentColor 40%, transparent); text-underline-offset: 4px; transition: color .15s, text-decoration-color .15s }
   .quick a:hover { color: var(--i); text-decoration-color: currentColor }
-  .quick .ext { width: 9px; height: 9px; fill: none; stroke: currentColor; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round }
+  .quick .ext { width: 9px; height: 9px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round }
   @media (max-width: 860px) { .join { grid-template-columns: minmax(0, 1fr); align-items: start } }
 
 
-  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important } }
 </style>
 
 <main id="top">
@@ -356,10 +357,10 @@ const quick = [
     <div class="wrap">
       <div class="hero-main">
         <h1>Lab manuals and schedules for Birzeit ECE</h1>
-        <p class="lede">Lab manuals that work offline, the weekly schedule of every course and room from Ritaj, and a schedule builder for registration</p>
+        <p class="lede">Lab manuals that work offline, the weekly schedule of every course, instructor and room from Ritaj, and a timetable builder for registration</p>
         <div class="ctas">
-          <wa-button variant="brand" size="l" href="#labs">Browse the labs <span slot="end" aria-hidden="true">↓</span></wa-button>
-          <wa-button appearance="outlined" size="l" href="/timetable/">Build your schedule <span slot="end" aria-hidden="true">→</span></wa-button>
+          <wa-button variant="brand" size="l" href="#labs">Browse the labs <span slot="end" aria-hidden="true"><svg class="ico s" viewBox="0 0 12 12"><path d="M6 2v8M2.5 6.5 6 10l3.5-3.5"/></svg></span></wa-button>
+          <wa-button appearance="outlined" size="l" href="/timetable/">Build your timetable <span slot="end" aria-hidden="true"><svg class="ico s" viewBox="0 0 12 12"><path d="M2 6h8M6.5 2.5 10 6l-3.5 3.5"/></svg></span></wa-button>
         </div>
       </div>
 
@@ -383,14 +384,14 @@ const quick = [
     <div class="wrap">
       <div class="sec-head">
         <div>
-          <h2 id="labs-h">Featured laboratories</h2>
+          <h2 id="labs-h">The labs</h2>
           <p>Each manual is its own site, with experiments, code listings and a setup guide for the boards and tools it uses</p>
         </div>
         <div class="rail-ctl">
           <wa-button appearance="outlined" class="arrow" id="rail-prev" aria-label="Previous labs"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M11 4 6 9l5 5"/></svg></wa-button>
           <span class="rail-pos" id="rail-pos" aria-live="polite"></span>
           <wa-button appearance="outlined" class="arrow" id="rail-next" aria-label="Next labs"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="m7 4 5 5-5 5"/></svg></wa-button>
-          <wa-button appearance="outlined" href="/labs/">All labs <span slot="end" aria-hidden="true">→</span></wa-button>
+          <wa-button appearance="outlined" href="/labs/">All labs <span slot="end" aria-hidden="true"><svg class="ico s" viewBox="0 0 12 12"><path d="M2 6h8M6.5 2.5 10 6l-3.5 3.5"/></svg></span></wa-button>
         </div>
       </div>
       <div class="rail" id="rail" tabindex="0" aria-label="Laboratories, scroll sideways for more">
@@ -401,7 +402,7 @@ const quick = [
           <span class="lab-plat">TM4C123 · ARM Cortex-M4</span>
           <div class="lab-use" data-use="encs4110" hidden><span><b data-u="students"></b> students</span><span><b data-u="experiment_views"></b> page views</span><span><b data-u="experiments"></b> experiments</span></div>
           <div class="lab-links">
-            <wa-button class="open" variant="brand" size="s" href="https://encs4110.birzeit.me/" aria-label="Start the ENCS4110 lab" target="_blank" rel="noopener">Start <span slot="end" aria-hidden="true">→</span></wa-button>
+            <wa-button class="open" variant="neutral" appearance="filled" size="s" href="https://encs4110.birzeit.me/" aria-label="Start the ENCS4110 lab" target="_blank" rel="noopener">Start <span slot="end" aria-hidden="true"><svg class="ico s" viewBox="0 0 12 12"><path d="M2 6h8M6.5 2.5 10 6l-3.5 3.5"/></svg></span></wa-button>
             <wa-button appearance="outlined" size="s" href="https://encs4110.birzeit.me/manual/encs4110_manual.pdf" aria-label="ENCS4110 manual PDF" target="_blank" rel="noopener">PDF</wa-button>
             <wa-button appearance="outlined" size="s" href="https://encs4110.birzeit.me/setup/" aria-label="ENCS4110 setup guide" target="_blank" rel="noopener">Setup</wa-button>
           </div>
@@ -413,7 +414,7 @@ const quick = [
           <span class="lab-plat">STM32 · CubeIDE · HAL</span>
           <div class="lab-use" data-use="encs4101" hidden><span><b data-u="students"></b> students</span><span><b data-u="experiment_views"></b> page views</span><span><b data-u="experiments"></b> experiments</span></div>
           <div class="lab-links">
-            <wa-button class="open" variant="brand" size="s" href="https://encs4101.birzeit.me/" aria-label="Start the ENCS4101 lab" target="_blank" rel="noopener">Start <span slot="end" aria-hidden="true">→</span></wa-button>
+            <wa-button class="open" variant="neutral" appearance="filled" size="s" href="https://encs4101.birzeit.me/" aria-label="Start the ENCS4101 lab" target="_blank" rel="noopener">Start <span slot="end" aria-hidden="true"><svg class="ico s" viewBox="0 0 12 12"><path d="M2 6h8M6.5 2.5 10 6l-3.5 3.5"/></svg></span></wa-button>
             <wa-button appearance="outlined" size="s" href="https://encs4101.birzeit.me/ENCS4101-Manual.pdf" aria-label="ENCS4101 manual PDF" target="_blank" rel="noopener">PDF</wa-button>
             <wa-button appearance="outlined" size="s" href="https://encs4101.birzeit.me/setup/" aria-label="ENCS4101 setup guide" target="_blank" rel="noopener">Setup</wa-button>
           </div>
@@ -425,7 +426,7 @@ const quick = [
           <span class="lab-plat">Android (Java) · Spring Boot</span>
           <div class="lab-use" data-use="encs5150" hidden><span><b data-u="students"></b> students</span><span><b data-u="experiment_views"></b> page views</span><span><b data-u="experiments"></b> experiments</span></div>
           <div class="lab-links">
-            <wa-button class="open" variant="brand" size="s" href="https://encs5150.birzeit.me/" aria-label="Start the ENCS5150 lab" target="_blank" rel="noopener">Start <span slot="end" aria-hidden="true">→</span></wa-button>
+            <wa-button class="open" variant="neutral" appearance="filled" size="s" href="https://encs5150.birzeit.me/" aria-label="Start the ENCS5150 lab" target="_blank" rel="noopener">Start <span slot="end" aria-hidden="true"><svg class="ico s" viewBox="0 0 12 12"><path d="M2 6h8M6.5 2.5 10 6l-3.5 3.5"/></svg></span></wa-button>
             <wa-button appearance="outlined" size="s" href="https://encs5150.birzeit.me/ENCS515-Manual-2025.pdf" aria-label="ENCS5150 manual PDF" target="_blank" rel="noopener">PDF</wa-button>
             <wa-button appearance="outlined" size="s" href="https://encs5150.birzeit.me/setup/" aria-label="ENCS5150 setup guide" target="_blank" rel="noopener">Setup</wa-button>
           </div>
@@ -437,7 +438,7 @@ const quick = [
           <span class="lab-plat">Cortex-M4 · Arduino Mega · Raspberry Pi</span>
           <div class="lab-use" data-use="encs5101" hidden><span><b data-u="students"></b> students</span><span><b data-u="experiment_views"></b> page views</span><span><b data-u="experiments"></b> experiments</span></div>
           <div class="lab-links">
-            <wa-button class="open" variant="brand" size="s" href="https://encs5101.birzeit.me/" aria-label="Start the ENCS5101 lab" target="_blank" rel="noopener">Start <span slot="end" aria-hidden="true">→</span></wa-button>
+            <wa-button class="open" variant="neutral" appearance="filled" size="s" href="https://encs5101.birzeit.me/" aria-label="Start the ENCS5101 lab" target="_blank" rel="noopener">Start <span slot="end" aria-hidden="true"><svg class="ico s" viewBox="0 0 12 12"><path d="M2 6h8M6.5 2.5 10 6l-3.5 3.5"/></svg></span></wa-button>
             <wa-button appearance="outlined" size="s" href="https://encs5101.birzeit.me/ENCS5101-Manual.pdf" aria-label="ENCS5101 manual PDF" target="_blank" rel="noopener">PDF</wa-button>
             <wa-button appearance="outlined" size="s" href="https://encs5101.birzeit.me/setup/" aria-label="ENCS5101 setup guide" target="_blank" rel="noopener">Setup</wa-button>
           </div>
@@ -445,11 +446,11 @@ const quick = [
         <article class="lab ask" data-lab="ask">
           <div class="lab-top"><span class="lab-ens">Your lab</span><span>Open source</span></div>
           <span class="lab-num" aria-hidden="true">+</span>
-          <h3 class="lab-name"><a href="mailto:support@birzeit.me?subject=New%20lab%20manual">Teaching a lab? Bring your manual</a></h3>
+          <h3 class="lab-name"><a href="mailto:support@birzeit.me?subject=New%20lab%20manual">Your lab here</a></h3>
           <span class="lab-plat">Any lab in the department</span>
           <div class="lab-use"><span>It becomes a site like these, with pages that work offline and code you can copy</span></div>
           <div class="lab-links">
-            <wa-button class="open" variant="brand" size="s" href="mailto:support@birzeit.me?subject=New%20lab%20manual">Get in touch <span slot="end" aria-hidden="true">→</span></wa-button>
+            <wa-button class="open" variant="neutral" appearance="filled" size="s" href="mailto:support@birzeit.me?subject=New%20lab%20manual">Get in touch <span slot="end" aria-hidden="true"><svg class="ico s" viewBox="0 0 12 12"><path d="M2 6h8M6.5 2.5 10 6l-3.5 3.5"/></svg></span></wa-button>
             <wa-button appearance="outlined" size="s" href="https://github.com/ECE-Birzeit" target="_blank" rel="noopener">GitHub</wa-button>
           </div>
         </article>
@@ -460,7 +461,7 @@ const quick = [
     <div class="wrap">
       <div class="why">
         <div>
-          <div class="sec-head"><div><h2 id="why-h">A manual you can actually work in</h2></div></div>
+          <div class="sec-head"><div><h2 id="why-h">A manual you can work in</h2></div></div>
           <div class="feats" role="tablist" aria-label="What the web manuals do" aria-orientation="vertical">
             <button type="button" class="feat" role="tab" id="ft-offline" aria-controls="dp-offline" aria-selected="true">
               <span class="pad" aria-hidden="true"></span><span><b>Works offline</b><span class="feat-d">Install a lab once and every page, image and code listing opens without internet</span></span>
@@ -495,7 +496,7 @@ const quick = [
                 <small>Continue where you left off</small>
                 <b>Exp 3 · Introduction to Microcontrollers and Arduino</b>
                 <span>Materials</span>
-                <i>→</i>
+                <i><svg class="ico" viewBox="0 0 12 12"><path d="M2 6h8M6.5 2.5 10 6l-3.5 3.5"/></svg></i>
               </div>
               <p class="dnote">Close the tab halfway through a lab. Next time you open the site, it offers to take you back to the same experiment and section.</p>
             </div>
@@ -536,7 +537,7 @@ __HAL_TIM_SET_COMPARE(&amp;htim2, TIM_CHANNEL_1, duty);</code></pre>
             <div><dt>instructors</dt><dd data-count="instructor">714</dd></div>
             <div><dt>rooms</dt><dd data-count="room">260</dd></div>
           </dl>
-          <wa-button appearance="outlined" href="/schedules/">Open the schedules <span slot="end" aria-hidden="true">→</span></wa-button>
+          <wa-button appearance="outlined" href="/schedules/">Open the schedules <span slot="end" aria-hidden="true"><svg class="ico s" viewBox="0 0 12 12"><path d="M2 6h8M6.5 2.5 10 6l-3.5 3.5"/></svg></span></wa-button>
         </div>
         <a class="preview" href="/schedules/?view=room&amp;q=Masri207" aria-label="Example: the week of room Masri207">
           <div class="pv-top"><span class="seg">Instructors</span><span class="seg">Courses</span><span class="seg on">Rooms</span><span class="pick">Masri207</span></div>
@@ -550,14 +551,14 @@ __HAL_TIM_SET_COMPARE(&amp;htim2, TIM_CHANNEL_1, duty);</code></pre>
     <div class="wrap">
       <div class="show-row flip">
         <div class="show-text">
-          <h2 id="build-h">Plan next semester with no overlapping classes</h2>
+          <h2 id="build-h">Plan your next semester</h2>
           <p>Add the courses you plan to take and step through every combination of sections that fits, best first. Keep days free or skip early starts, then add the week to your calendar.</p>
           <ul class="ticks">
-            <li>Lectures, labs and discussions, one section of each</li>
+            <li>One section of each lecture, lab and discussion</li>
             <li>Filter by start time, end time and days off</li>
-            <li>A link that opens the same timetable</li>
+            <li>Share it with a link</li>
           </ul>
-          <wa-button appearance="outlined" href="/timetable/">Build your schedule <span slot="end" aria-hidden="true">→</span></wa-button>
+          <wa-button appearance="outlined" href="/timetable/">Build your timetable <span slot="end" aria-hidden="true"><svg class="ico s" viewBox="0 0 12 12"><path d="M2 6h8M6.5 2.5 10 6l-3.5 3.5"/></svg></span></wa-button>
         </div>
         <a class="preview" href="/timetable/?c=ENCS4110,ENCS3320,ENEE2360" aria-label="Example: three courses fitted into two days">
           <div class="pv-top"><span class="chip on" data-lab="encs4110">ENCS4110</span><span class="chip alt">ENCS3320</span><span class="chip mu">ENEE2360</span><span class="pv-count">1 of <b>108</b></span></div>
@@ -572,9 +573,9 @@ __HAL_TIM_SET_COMPARE(&amp;htim2, TIM_CHANNEL_1, duty);</code></pre>
       <div class="sec-head">
         <div>
           <h2 id="numbers-h">This semester in numbers</h2>
-          <p id="numbers-note">Counted every day from the four lab sites and their analytics</p>
+          <p id="numbers-note">Counted every day from the lab sites and their analytics</p>
         </div>
-        <wa-button appearance="outlined" href="/stats/">All insights <span slot="end" aria-hidden="true">→</span></wa-button>
+        <wa-button appearance="outlined" href="/stats/">All insights <span slot="end" aria-hidden="true"><svg class="ico s" viewBox="0 0 12 12"><path d="M2 6h8M6.5 2.5 10 6l-3.5 3.5"/></svg></span></wa-button>
       </div>
       <div class="panel">
         <div class="stats-grid" id="stats-grid">
@@ -589,7 +590,7 @@ __HAL_TIM_SET_COMPARE(&amp;htim2, TIM_CHANNEL_1, duty);</code></pre>
           <div class="cell"><div class="w-title"><h3>When they read</h3><span id="w-heat-note"></span></div><div id="w-heat"></div></div>
           <div class="cell"><div class="w-title"><h3>Students by lab</h3></div><div id="w-labs"></div></div>
         </div>
-        <div class="panel-foot"><span>stats.json</span><span id="stats-when">updated daily</span></div>
+        <div class="panel-foot"><span>From the lab sites’ analytics</span><span id="stats-when">updated daily</span></div>
       </div>
     </div>
   </section>
@@ -603,7 +604,7 @@ __HAL_TIM_SET_COMPARE(&amp;htim2, TIM_CHANNEL_1, duty);</code></pre>
           </div>
         </div>
         <div class="ctas">
-          <wa-button variant="brand" size="l" href="mailto:support@birzeit.me?subject=New%20lab%20manual">Bring your manual <span slot="end" aria-hidden="true">→</span></wa-button>
+          <wa-button variant="neutral" appearance="filled" size="l" href="mailto:support@birzeit.me?subject=New%20lab%20manual">Bring your manual <span slot="end" aria-hidden="true"><svg class="ico s" viewBox="0 0 12 12"><path d="M2 6h8M6.5 2.5 10 6l-3.5 3.5"/></svg></span></wa-button>
           <wa-button appearance="outlined" size="l" href="https://github.com/ECE-Birzeit" target="_blank" rel="noopener">GitHub <span slot="end" aria-hidden="true"><svg class="cta-ext" viewBox="0 0 10 10" aria-hidden="true"><path d="M3 7l4-4M3.5 3H7v3.5"/></svg></span></wa-button>
         </div>
       </div>
@@ -652,24 +653,9 @@ __HAL_TIM_SET_COMPARE(&amp;htim2, TIM_CHANNEL_1, duty);</code></pre>
 
 
 <script is:inline src="/assets/widgets.js"></script>
-<script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" integrity="sha512-7eHRwcbYkK4d9g/6tD/mhkf++eoTHwpNM9woBxtPUBWm67zeAfFC+HrdoE2GanKeocly/VxeLvIqwvCdk7qScg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" integrity="sha512-onMTRKJBKz8M1TnqqDuGBlowlH0ohFzMXYRNebz+yOcc5TQr/zAKsthzhuv0hiyUKEiQEQXEynnXCvNTOk50dg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script is:inline>
   (function () {
     var root = document.documentElement;
-    var mq = window.matchMedia('(prefers-color-scheme: dark)');
-    var toggle = document.querySelector('.theme');
-    var chosen = false;
-    try { chosen = !!localStorage.getItem('ece-labs-theme'); } catch (e) {}
-    function apply(mode) { root.setAttribute('data-theme', mode); toggle.setAttribute('aria-checked', mode === 'dark' ? 'true' : 'false'); }
-    apply(root.getAttribute('data-theme'));
-    toggle.addEventListener('click', function () {
-      var mode = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-      chosen = true;
-      try { localStorage.setItem('ece-labs-theme', mode); } catch (e) {}
-      apply(mode);
-    });
-    mq.addEventListener('change', function (e) { if (!chosen) apply(e.matches ? 'dark' : 'light'); });
 
     function all(sel, scope) { return Array.prototype.slice.call((scope || document).querySelectorAll(sel)); }
     function pad(n) { return String(n).padStart(2, '0'); }
@@ -751,17 +737,17 @@ __HAL_TIM_SET_COMPARE(&amp;htim2, TIM_CHANNEL_1, duty);</code></pre>
       if (!s) return;
       all('[data-stat]').forEach(function (el) {
         if (s[el.dataset.stat] == null) return;
-        if (el.closest('#numbers')) W.countUp(el, s[el.dataset.stat]); else el.textContent = W.fmt(s[el.dataset.stat]);
+        el.textContent = W.fmt(s[el.dataset.stat]);
       });
-      if (s.generated_at) document.getElementById('stats-when').textContent = 'counted ' + s.generated_at.slice(0, 10);
+      if (s.generated_at) document.getElementById('stats-when').textContent = 'counted ' + new Date(s.generated_at.slice(0, 10) + 'T12:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
       var v = s.visitors;
       if (!v || !v.students) return;
-      all('[data-visit]').forEach(function (el) { el.parentNode.hidden = false; W.countUp(el, v[el.dataset.visit]); });
+      all('[data-visit]').forEach(function (el) { el.parentNode.hidden = false; el.textContent = W.fmt(v[el.dataset.visit]); });
       document.getElementById('stats-grid').classList.add('visits');
       var first = v.daily && v.daily.length ? W.day(v.daily[0][0]) : null;
       document.getElementById('since-note').textContent = first ? 'since ' + W.short(first) : '';
       document.getElementById('per-note').textContent = (v.experiment_views / v.students).toFixed(1) + ' per student';
-      if (v.term) document.getElementById('numbers-note').textContent = v.term + ', counted every day from the four lab sites and their analytics';
+      if (v.term) document.getElementById('numbers-note').textContent = v.term + ', counted every day from the lab sites and their analytics';
       all('[data-use]').forEach(function (el) {
         var l = s.labs && s.labs[el.dataset.use];
         if (!l || l.students == null) return;
@@ -775,7 +761,6 @@ __HAL_TIM_SET_COMPARE(&amp;htim2, TIM_CHANNEL_1, duty);</code></pre>
       document.getElementById('w-heat-note').textContent = 'busiest ' + W.DAYS[best[0]] + ' ' + pad(best[1]) + ':00';
       W.labBars(document.getElementById('w-labs'), s.labs, 'students');
       document.getElementById('widgets').hidden = false;
-      if (window.ScrollTrigger) ScrollTrigger.refresh();
     }).catch(function () {});
 
     // A manual you can work in: tabs with arrow keys; the example crossfades
@@ -785,7 +770,6 @@ __HAL_TIM_SET_COMPARE(&amp;htim2, TIM_CHANNEL_1, duty);</code></pre>
       feats.forEach(function (t, j) { t.setAttribute('aria-selected', j === i ? 'true' : 'false'); t.tabIndex = j === i ? 0 : -1; });
       dpanels.forEach(function (p, j) { p.hidden = j !== i; });
       document.getElementById('demo-which').textContent = hosts[i];
-      if (window.gsap && !reduce) gsap.fromTo(dpanels[i], { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: .4, ease: 'power3.out' });
     }
     feats.forEach(function (f, i) { f.addEventListener('click', function () { selectTab(i); }); });
     document.querySelector('.feats').addEventListener('keydown', function (e) {
@@ -805,39 +789,6 @@ __HAL_TIM_SET_COMPARE(&amp;htim2, TIM_CHANNEL_1, duty);</code></pre>
       }, function () {});
     });
 
-    // ---- Motion (GSAP). Everything is visible without it; none of it runs for reduced motion ----
-    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    if (!window.gsap || reduce) return;
-    gsap.registerPlugin(ScrollTrigger);
-    gsap.defaults({ ease: 'power3.out', duration: .6 });
-
-    // Load: the hero's text rises in once
-    gsap.from('.hero-main > *, .now', { y: 12, opacity: 0, stagger: .06, delay: .05 });
-
-    // The examples: once in view, each week fills in, day by day
-    all('.preview').forEach(function (pv) {
-      gsap.from(pv.querySelectorAll('.wk-b'), { scaleX: 0, opacity: 0, duration: .5, stagger: .06, scrollTrigger: { trigger: pv, start: 'top 80%', once: true } });
-    });
-
-    // Everything else rises into place once, as it comes into view
-    function rise(sel, opts) {
-      var els = all(sel);
-      if (!els.length) return;
-      gsap.set(els, { opacity: 0, y: 12 });
-      ScrollTrigger.batch(els, { start: 'top 88%', once: true, onEnter: function (b) { gsap.to(b, Object.assign({ opacity: 1, y: 0, stagger: .06, overwrite: true }, opts)); } });
-    }
-    rise('#labs .sec-head, #numbers .sec-head, #why .sec-head, #join .sec-head, #join .ctas, .show-text, .preview');
-    // The labs arrive as a stack on the first card and deal out into the row
-    (function () {
-      var cards = all('#rail .lab');
-      if (!cards.length) return;
-      var w = cards[0].getBoundingClientRect().width + 16;
-      gsap.set(cards, { x: function (i) { return -i * w + i * 6; }, y: function (i) { return i * 6; }, rotation: function (i) { return i ? (i % 2 ? 2 : -2) * Math.min(i, 2) : 0; }, zIndex: function (i) { return cards.length - i; }, opacity: function (i) { return i ? .9 : 1; } });
-      gsap.to(cards, { x: 0, y: 0, rotation: 0, opacity: 1, duration: .8, ease: 'power3.inOut', stagger: .08, clearProps: 'zIndex,transform',
-        scrollTrigger: { trigger: '#rail', start: 'top 78%', once: true } });
-    })();
-    rise('#numbers .panel, .feat, .demo');
   })();
 </script>
 </Base>

@@ -27,7 +27,7 @@ import '../../styles/base.css';
 <style is:global>
   html, body { min-height: 0; background: transparent }
   body { padding: 4px }
-  .card { display: flex; flex-direction: column; gap: 14px; padding: 18px 20px; border: 1px solid var(--line); border-radius: 14px; background: var(--card); color: var(--i) }
+  .card { display: flex; flex-direction: column; gap: 16px; padding: 20px 20px; border: 1px solid var(--line); border-radius: 14px; background: var(--card); color: var(--i) }
   .bare .card { padding: 4px 2px; border: 0; background: transparent }
   .top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; font-size: 13px; color: var(--mu) }
   .top b { color: var(--mu2); font-weight: 500; overflow: hidden; white-space: nowrap; text-overflow: ellipsis }
@@ -37,14 +37,14 @@ import '../../styles/base.css';
   .wk b { font: 500 64px/.8 var(--sans); letter-spacing: -.05em }
   .wk b small { font-size: .38em; letter-spacing: -.02em; margin-inline-start: .04em; vertical-align: .95em }
   .wk span { padding-bottom: 2px; font-size: 14px; line-height: 1.2; color: var(--mu2) }
-  .left { margin: 0; font-size: 13.5px; color: var(--mu2) }
+  .left { margin: 0; font-size: 13px; color: var(--mu2) }
   .left b { color: var(--i); font-weight: 500 }
   .status { font-size: 13px; color: var(--mu) }
 </style>
 </head>
 <body>
   <div class="card" id="card">
-    <div class="top"><b id="term">This semester</b><a href="https://birzeit.me" target="_blank" rel="noopener">birzeit.me ↗</a></div>
+    <div class="top"><b id="term">This semester</b><a href="https://birzeit.me" target="_blank" rel="noopener">birzeit.me <svg aria-hidden="true" class="ico s" viewBox="0 0 12 12"><path d="M4 8l4-4M4.5 4H8v3.5"/></svg></a></div>
     <div class="wk" id="wk" hidden><b id="n"></b><span id="l"></span></div>
     <div id="track"></div>
     <p class="left" id="left" hidden></p>
