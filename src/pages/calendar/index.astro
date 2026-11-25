@@ -1,0 +1,276 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHead from '../../components/PageHead.astro';
+---
+<Base title="Academic calendar · ECE Hub" description="Birzeit University's academic calendar: holidays, add/drop and withdrawal deadlines, make-up days and exam periods for every semester, from Ritaj, checked daily. Add it to your own calendar." path="/calendar/" ogDescription="Holidays, deadlines, make-up days and exams at Birzeit University, from Ritaj's academic calendar." nav="calendar" skip={{ href: "#list", text: "Skip to the dates" }}>
+<Fragment slot="head">
+  <link rel="preconnect" href="https://raw.githubusercontent.com" crossorigin>
+</Fragment>
+<style is:global>
+  /* What each kind of date is, as a small square in its colour; green is the site's one accent, kept for
+     days off, the dates students care about most */
+  [data-theme=light] { --k-holiday: var(--ok); --k-deadline: #b45309; --k-exams: #dc2626; --k-term: var(--i); --k-swap: #0369a1; --k-staff: var(--mu); --k-ceremony: var(--mu2); --k-other: var(--mu) }
+  [data-theme=dark] { --k-holiday: var(--ok); --k-deadline: #fbbf24; --k-exams: #f87171; --k-term: var(--i); --k-swap: #38bdf8; --k-staff: var(--mu); --k-ceremony: var(--mu2); --k-other: var(--mu) }
+
+  main > .wrap { display: flex; flex-direction: column; gap: 16px; padding-top: 28px; padding-bottom: 72px }
+  .cols { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 24px; align-items: start }
+  .side { display: flex; flex-direction: column; gap: 16px; position: sticky; top: 88px }
+  @media (max-width: 960px) { .cols { grid-template-columns: minmax(0, 1fr) } .side { position: static; order: -1 } }
+
+  /* Filters: which kinds of dates to show */
+  .tools { display: flex; flex-wrap: wrap; align-items: center; gap: 8px }
+  .seg { display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 16px; border: 1px solid var(--line2); border-radius: 8px; background: var(--card); color: var(--mu2); font: 500 13px var(--sans); cursor: pointer; transition: border-color .15s var(--ease), color .15s var(--ease), background-color .15s var(--ease) }
+  .seg:hover { color: var(--i) }
+  .seg[aria-pressed=true] { border-color: var(--i); color: var(--i); background: var(--soft) }
+  .seg .k { width: 8px; height: 8px; border-radius: 2px; background: var(--kc) }
+  .tools select { height: 40px; padding: 0 12px; border: 1px solid var(--line2); border-radius: 8px; background: var(--card); color: var(--i); font: 500 13px var(--sans); cursor: pointer }
+  .tools .r { margin-inline-start: auto; display: flex; gap: 8px }
+  @media (max-width: 720px) { .tools .r { margin-inline-start: 0 } }
+
+  /* The dates, month by month */
+  .month { display: flex; align-items: baseline; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--line); background: var(--bar); font: 500 13px var(--sans); color: var(--mu2) }
+  .month small { font: 400 12px var(--mono); color: var(--mu) }
+  .ev { display: grid; grid-template-columns: 120px 12px minmax(0, 1fr) auto; align-items: baseline; gap: 4px 16px; padding: 12px 16px; border-bottom: 1px solid var(--line) }
+  .ev:last-child { border-bottom: 0 }
+  .ev .when { font: 500 13px var(--mono); color: var(--mu2); white-space: nowrap }
+  .ev .k { width: 10px; height: 10px; border-radius: 3px; background: var(--kc); transform: translateY(1px) }
+  .ev b { font: 500 14px/1.4 var(--sans); color: var(--i) }
+  .ev .ar { grid-column: 3 / 5; font: 400 13px/1.6 var(--sans); color: var(--mu) }
+  .ev .tag { font: 400 12px var(--mono); color: var(--mu); white-space: nowrap }
+  .ev.past { opacity: .5 }
+  /* Today, between the past and the coming dates */
+  .today { display: flex; align-items: center; gap: 12px; padding: 8px 16px; border-bottom: 1px solid var(--line); font: 500 12px var(--mono); color: var(--ok) }
+  .today::after { content: ''; flex: 1; height: 1px; background: var(--ok) }
+  @media (max-width: 560px) {
+    .ev { grid-template-columns: 12px minmax(0, 1fr); padding: 12px }
+    .ev .when { grid-column: 2; grid-row: 1 } .ev .k { grid-row: 1 / span 2; align-self: start; transform: translateY(4px) }
+    .ev b { grid-column: 2 } .ev .tag { grid-column: 2 } .ev .ar { grid-column: 2 }
+  }
+
+  /* Coming up: the next dates, with how far away they are */
+  .next { margin: 0; padding: 0; list-style: none }
+  .next li { display: grid; grid-template-columns: 10px minmax(0, 1fr) auto; align-items: baseline; gap: 4px 12px; padding: 12px 16px; border-bottom: 1px solid var(--line) }
+  .next li:last-child { border-bottom: 0 }
+  .next .k { width: 10px; height: 10px; border-radius: 3px; background: var(--kc) }
+  .next b { font: 500 14px/1.4 var(--sans) }
+  .next small { grid-column: 2; font: 400 12px var(--mono); color: var(--mu) }
+  .next em { grid-row: 1; grid-column: 3; font: 500 13px var(--mono); font-style: normal; color: var(--i); white-space: nowrap }
+  .note { margin: 0; font: 400 12px/1.6 var(--mono); color: var(--mu) }
+  .note a { color: var(--mu2) }
+
+  @media print {
+    .phead, .side, .tools, #updated { display: none !important }
+    main > .wrap { padding: 0 !important }
+    .cols { display: block !important }
+    .ev { padding: 6px 12px; break-inside: avoid } .ev.past { opacity: 1 } .today { display: none }
+  }
+</style>
+
+<main id="main">
+  <PageHead title="Academic calendar">Holidays, deadlines, make-up days and exams for every semester at Birzeit University, from Ritaj's academic calendar and checked every day. To plan your classes, use the <a href="/timetable/">timetable builder</a>.</PageHead>
+
+  <div class="wrap">
+    <div class="tools noprint" role="group" aria-label="Show">
+      <button type="button" class="seg" data-show="all" aria-pressed="true">All</button>
+      <button type="button" class="seg" data-show="holiday" aria-pressed="false" style="--kc:var(--k-holiday)"><span class="k" aria-hidden="true"></span>Days off</button>
+      <button type="button" class="seg" data-show="deadline" aria-pressed="false" style="--kc:var(--k-deadline)"><span class="k" aria-hidden="true"></span>Deadlines</button>
+      <button type="button" class="seg" data-show="exams" aria-pressed="false" style="--kc:var(--k-exams)"><span class="k" aria-hidden="true"></span>Teaching and exams</button>
+      <button type="button" class="seg" data-show="swap" aria-pressed="false" style="--kc:var(--k-swap)"><span class="k" aria-hidden="true"></span>Make-up days</button>
+      <span class="r">
+        <select id="year" aria-label="Academic year" hidden></select>
+        <select id="term" aria-label="Semester"><option value="">Every semester</option></select>
+      </span>
+    </div>
+
+    <div class="cols">
+      <div class="win" id="list">
+        <div class="bar"><span class="t" id="file">Academic calendar</span><span class="r"><label class="kicker" style="display:inline-flex;gap:8px;align-items:center;cursor:pointer"><input type="checkbox" id="past"> show past dates</label></span></div>
+        <div id="rows"><div class="status">Loading the calendar…</div></div>
+      </div>
+
+      <div class="side">
+        <div class="win">
+          <div class="bar"><span class="t">Coming up</span><span class="r" id="today"></span></div>
+          <ol class="next" id="next"></ol>
+        </div>
+        <wa-button appearance="outlined" id="ics" disabled>Add to my calendar</wa-button>
+        <label class="kicker" style="display:flex;gap:8px;align-items:center;cursor:pointer"><input type="checkbox" id="staff"> Include dates for academic staff</label>
+        <p class="note" id="src"></p>
+      </div>
+    </div>
+    <span class="kicker" id="updated"></span>
+  </div>
+</main>
+
+<script is:inline>
+  (function () {
+    // bzu-course-catalog reads Ritaj's public academic calendar every day and keeps every event in
+    // calendar.json: per academic year, each event's date (and end), kind, English title, Ritaj's Arabic
+    // text, and the semester it belongs to
+    var DATA = 'https://raw.githubusercontent.com/mabushelbaia/bzu-course-catalog/main/data/';
+    var KIND = { holiday: 'Day off', deadline: 'Deadline', exams: 'Exams', term: 'Teaching', swap: 'Make-up day', staff: 'Staff', ceremony: 'Ceremony', other: '' };
+    var GROUP = { holiday: 'holiday', deadline: 'deadline', exams: 'exams', term: 'exams', swap: 'swap' };
+    var SEM = { '1': 'First semester', '2': 'Second semester', '3': 'Summer session' };
+    var $ = function (id) { return document.getElementById(id); };
+    var cal = null, state = { show: 'all', year: null, term: '', past: false, staff: false };
+
+    function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+    function day(iso) { return new Date(iso + 'T12:00:00'); }
+    function fmt(iso, o) { return day(iso).toLocaleDateString('en-GB', o); }
+    // Today in Birzeit, whatever the visitor's clock says
+    function today() { return new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Hebron', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date()); }
+    function daysTo(iso) { return Math.round((day(iso) - day(today())) / 864e5); }
+    function when(e) {
+      var a = fmt(e.date, { weekday: 'short', day: 'numeric', month: 'short' });
+      if (!e.end) return a;
+      return fmt(e.date, { day: 'numeric', month: 'short' }) + ' – ' + fmt(e.end, { day: 'numeric', month: 'short' });
+    }
+    function semName(term) { return term ? SEM[term.slice(-1)] + ' ' + (1900 + +term.slice(0, 3)) + '/' + (1901 + +term.slice(0, 3)) : ''; }
+    function kc(e) { return 'var(--k-' + (KIND[e.kind] === undefined ? 'other' : e.kind) + ')'; }
+    function title(e) { return e.title || e.ar; }
+
+    // ?show=holiday&term=1262 makes a view shareable
+    function readUrl() {
+      var u = new URLSearchParams(location.search);
+      if (/^(all|holiday|deadline|exams|swap)$/.test(u.get('show') || '')) state.show = u.get('show');
+      if (/^\d{4}$/.test(u.get('term') || '')) state.term = u.get('term');
+    }
+    function writeUrl() {
+      var u = new URLSearchParams();
+      if (state.show !== 'all') u.set('show', state.show);
+      if (state.term) u.set('term', state.term);
+      var q = u.toString();
+      history.replaceState(null, '', q ? '?' + q : location.pathname);
+    }
+
+    // The year a date falls in: the academic year that holds today, else the newest
+    function pickYear() {
+      var t = today(), ys = Object.keys(cal.years);
+      return ys.filter(function (y) { var ev = cal.years[y].events; return ev.length && ev[0].date <= t && t <= ev[ev.length - 1].date; })[0] || ys[0];
+    }
+    function shown(events) {
+      return events.filter(function (e) {
+        if (!state.staff && e.kind === 'staff') return false;
+        if (state.show !== 'all' && GROUP[e.kind] !== state.show) return false;
+        if (state.term && e.term && e.term !== state.term) return false;
+        if (state.term && !e.term && !inTerm(e, state.term)) return false;
+        return true;
+      });
+    }
+    // Holidays and make-up days don't name a semester: they belong to the one whose teaching weeks hold them
+    function inTerm(e, term) {
+      var ev = cal.years[state.year].events;
+      var start = ev.filter(function (x) { return x.term === term && x.title === 'Teaching starts'; })[0];
+      var end = ev.filter(function (x) { return x.term === term && x.title === 'Final exams end'; })[0];
+      return start && end && e.date >= start.date && e.date <= end.date;
+    }
+
+    function render() {
+      if (!cal) return;
+      writeUrl();
+      document.querySelectorAll('.tools .seg').forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.show === state.show ? 'true' : 'false'); });
+      var y = cal.years[state.year], t = today();
+      var list = shown(y.events), html = '', month = null, marked = false;
+      var visible = list.filter(function (e) { return state.past || (e.end || e.date) >= t; });
+      if (!visible.length) {
+        $('rows').innerHTML = '<div class="status">' + (list.length ? 'Nothing more this year. Tick “show past dates” to see the ones already gone.' : 'No dates of this kind.') + '</div>';
+      } else {
+        visible.forEach(function (e) {
+          var m = e.date.slice(0, 7);
+          if (state.past && !marked && e.date >= t) { html += '<div class="today">Today · ' + fmt(t, { weekday: 'short', day: 'numeric', month: 'short' }) + '</div>'; marked = true; }
+          if (m !== month) {
+            month = m;
+            var n = visible.filter(function (x) { return x.date.slice(0, 7) === m; }).length;
+            html += '<div class="month">' + fmt(e.date, { month: 'long', year: 'numeric' }) + '<small>' + n + (n === 1 ? ' date' : ' dates') + '</small></div>';
+          }
+          var past = (e.end || e.date) < t;
+          var tag = [KIND[e.kind], e.term && !state.term ? semName(e.term).replace(/ \d{4}\/\d{4}$/, '') : '', e.expected ? 'expected' : ''].filter(Boolean).join(' · ');
+          html += '<div class="ev' + (past ? ' past' : '') + '" style="--kc:' + kc(e) + '"><span class="when">' + esc(when(e)) + '</span><span class="k" aria-hidden="true"></span><b>' + esc(title(e)) + '</b>' +
+            '<span class="tag">' + esc(tag) + '</span>' + (e.title ? '<span class="ar" lang="ar" dir="rtl">' + esc(e.ar) + '</span>' : '') + '</div>';
+        });
+        $('rows').innerHTML = html;
+      }
+      $('file').textContent = 'Academic year ' + state.year + (state.term ? ' · ' + semName(state.term).replace(/ \d{4}\/\d{4}$/, '') : '');
+
+      // Coming up: the next five dates across every year, whatever the filters, except staff dates
+      var all = [];
+      Object.keys(cal.years).forEach(function (k) { all = all.concat(cal.years[k].events); });
+      var next = all.filter(function (e) { return (e.end || e.date) >= t && (state.staff || e.kind !== 'staff'); })
+        .sort(function (a, b) { return a.date < b.date ? -1 : a.date > b.date ? 1 : 0; }).slice(0, 5);
+      $('today').textContent = fmt(t, { weekday: 'short', day: 'numeric', month: 'short' });
+      $('next').innerHTML = next.length ? next.map(function (e) {
+        var d = daysTo(e.date), away = e.date <= t ? (e.end ? 'until ' + fmt(e.end, { day: 'numeric', month: 'short' }) : 'today') : d === 1 ? 'tomorrow' : 'in ' + d + ' days';
+        return '<li style="--kc:' + kc(e) + '"><span class="k" aria-hidden="true"></span><b>' + esc(title(e)) + '</b><em>' + esc(away) + '</em><small>' + esc(when(e)) + '</small></li>';
+      }).join('') : '<li class="status">Nothing coming up on the calendar.</li>';
+      $('ics').disabled = !list.length;
+    }
+
+    // A calendar file of the dates shown: all-day events, so they sit at the top of the day in any calendar app
+    $('ics').addEventListener('click', function () {
+      var list = shown(cal.years[state.year].events);
+      var ymd = function (iso, plus) { var d = day(iso); d.setDate(d.getDate() + (plus || 0)); return d.getFullYear() + String(d.getMonth() + 1).padStart(2, '0') + String(d.getDate()).padStart(2, '0'); };
+      var text = function (s) { return String(s).replace(/[\\;,]/g, function (c) { return '\\' + c; }); };
+      var stamp = new Date().toISOString().replace(/[-:]/g, '').slice(0, 15) + 'Z';
+      var out = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//ECE Hub//Academic calendar//EN', 'CALSCALE:GREGORIAN', 'X-WR-CALNAME:Birzeit academic calendar ' + state.year];
+      list.forEach(function (e, i) {
+        out.push('BEGIN:VEVENT', 'UID:' + e.date + '-' + i + '-' + state.year.replace('/', '') + '@birzeit.me', 'DTSTAMP:' + stamp,
+          'DTSTART;VALUE=DATE:' + ymd(e.date), 'DTEND;VALUE=DATE:' + ymd(e.end || e.date, 1),
+          'SUMMARY:' + text(title(e) + (e.expected ? ' (expected)' : '')), 'DESCRIPTION:' + text(e.ar), 'TRANSP:TRANSPARENT', 'END:VEVENT');
+      });
+      out.push('END:VCALENDAR');
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(new Blob([out.join('\r\n') + '\r\n'], { type: 'text/calendar' }));
+      a.download = 'birzeit-calendar-' + state.year.replace('/', '-') + (state.show !== 'all' ? '-' + state.show : '') + '.ics';
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
+    });
+
+    document.querySelector('.tools').addEventListener('click', function (e) { var b = e.target.closest('.seg'); if (b) { state.show = b.dataset.show; render(); } });
+    $('year').addEventListener('change', function () { state.year = this.value; state.term = ''; fillTerms(); render(); });
+    $('term').addEventListener('change', function () { state.term = this.value; render(); });
+    $('past').addEventListener('change', function () { state.past = this.checked; render(); });
+    $('staff').addEventListener('change', function () { state.staff = this.checked; render(); });
+
+    function fillTerms() {
+      var terms = {};
+      cal.years[state.year].events.forEach(function (e) { if (e.term && e.term.slice(0, 3) === String(+state.year.slice(0, 4) - 1900)) terms[e.term] = 1; });
+      $('term').innerHTML = '<option value="">Every semester</option>' + Object.keys(terms).sort().map(function (t) { return '<option value="' + t + '">' + esc(semName(t).replace(/ \d{4}\/\d{4}$/, '')) + '</option>'; }).join('');
+      if (!terms[state.term]) state.term = '';
+      $('term').value = state.term;
+    }
+
+    readUrl();
+    fetch(DATA + 'calendar.json').then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }).then(function (d) {
+      cal = d;
+      var ys = Object.keys(d.years);
+      if (!ys.length) throw new Error('empty');
+      // A semester in the link picks its year
+      var fromTerm = state.term && ys.filter(function (y) { return String(+y.slice(0, 4) - 1900) === state.term.slice(0, 3); })[0];
+      state.year = fromTerm || pickYear();
+      $('year').innerHTML = ys.map(function (y) { return '<option value="' + y + '">' + y + '</option>'; }).join('');
+      $('year').value = state.year;
+      $('year').hidden = ys.length < 2;
+      fillTerms();
+      var src = d.years[state.year].source;
+      $('src').innerHTML = 'From Ritaj’s <a href="' + esc(src) + '" target="_blank" rel="noopener">public academic calendar</a>. Dates marked expected depend on the moon and can move by a day.';
+      $('updated').textContent = 'Last change ' + fmt(d.updated_at.slice(0, 10), { day: 'numeric', month: 'short', year: 'numeric' }) + ' · checked against Ritaj every day';
+      facts();
+      render();
+    }).catch(function () {
+      $('rows').innerHTML = '<div class="status">Couldn’t load the calendar. Check your connection and reload.</div>';
+    });
+
+    // The page head: this academic year, its days off, and the next date coming up
+    function facts() {
+      var ev = cal.years[state.year].events, t = today();
+      var off = ev.filter(function (e) { return e.kind === 'holiday'; }).length;
+      var next = ev.filter(function (e) { return e.date > t && e.kind !== 'staff'; })[0];
+      var pairs = [[state.year, 'academic year'], [off, 'holidays'], next ? [daysTo(next.date) + (daysTo(next.date) === 1 ? ' day' : ' days'), 'until ' + title(next)] : null];
+      $('pfacts').innerHTML = pairs.filter(Boolean).map(function (p) { return '<div><dt>' + esc(p[1]) + '</dt><dd>' + esc(p[0]) + '</dd></div>'; }).join('');
+    }
+  })();
+</script>
+<Fragment slot="footer">
+  <a href="https://github.com/mabushelbaia/bzu-course-catalog" target="_blank" rel="noopener">Data: bzu-course-catalog<svg class="ext" viewBox="0 0 10 10" aria-hidden="true"><path d="M3 7l4-4M3.5 3H7v3.5"/></svg></a>
+</Fragment>
+</Base>
