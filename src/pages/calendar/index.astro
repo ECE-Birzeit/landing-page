@@ -55,7 +55,8 @@ import PageHead from '../../components/PageHead.astro';
   .note a { color: var(--mu2); text-underline-offset: 3px }
 
   /* The dates, month by month: a date tile, then what happens */
-  .bar wa-button { --wa-form-control-height: 28px }
+  /* [size] lifts this above wa.css's size rule, which ties with it and comes later in the built CSS */
+  .bar wa-button[size] { --wa-form-control-height: 28px }
   .bar wa-button::part(button) { padding-inline: 12px; font-size: 12px }
   .month { display: flex; align-items: baseline; gap: 12px; padding: 16px 16px 8px; font: 500 16px var(--sans); color: var(--i) }
   .month small { font: 400 12px var(--mono); color: var(--mu) }
